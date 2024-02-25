@@ -4,37 +4,34 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Carousel from 'react-bootstrap/Carousel';
+import ExampleCarouselImage from './ExampleCarouselImage';
 
 function Homepage() {
-  return (
-    /* Navbar template taken from: https://react-bootstrap.netlify.app/docs/components/navbar/ */
-    <Navbar expand="lg" className="bg-body-tertiary">
-    <Container>
-      <Navbar.Brand href="#home">Gym-App</Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="me-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#displayAll">Display All</Nav.Link>
-          <Nav.Link href="#register">Register</Nav.Link>
-          <Nav.Link href="#classes">Classes</Nav.Link>
-          <Nav.Link href="#dashboard">Dashboard</Nav.Link>
-          <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.2">
-              Another action
-            </NavDropdown.Item>
-            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="#action/3.4">
-              Separated link
-            </NavDropdown.Item>
-          </NavDropdown>
-        </Nav>
-      </Navbar.Collapse>
-    </Container>
-  </Navbar>
-  );
+    return (
+        <div>
+            <div className="d-flex justify-content-center align-items-center">
+                {/* Define a Carousel component with a fixed width and height */}
+                <Carousel style={{ width: '32rem', height: '300px' }}>
+                    {/* Map through the carouselImages array to create individual carousel items */}
+                    {ExampleCarouselImage.map((imageUrl, index) => (
+                        <Carousel.Item key={index}>
+                            {/* Display an image with the following properties */}
+                            <img
+                                className="d-block w-100"
+                                src={imageUrl}
+                                alt={`Slide ${index + 1}`}
+                                style={{ height: '300px' }}
+                            />
+                        </Carousel.Item>
+                    ))}
+                </Carousel>
+            </div>
+        </div>
+
+
+
+    );
 }
 
 export default Homepage;
