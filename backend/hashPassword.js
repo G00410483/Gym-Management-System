@@ -1,7 +1,7 @@
 // hashPassword.js
 const bcrypt = require('bcrypt');
 
-const password = '1234';
+const password = '4567';
 const saltRounds = 10;
 
 bcrypt.hash(password, saltRounds, function(err, hash) {

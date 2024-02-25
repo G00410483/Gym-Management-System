@@ -12,7 +12,7 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-const users = [{ id: "1", email: "user@example.com", password: "$2b$10$KPFpcEqFxVTpDrfE.MjtIeKGMxVL6XnxfjWIQBaIN8.qfv0iW/aka" }];
+const users = [{ id: "1", email: "user@example.com", password: "1234" }];
 
 app.post('/login', async (req, res) => {
   const { email, password } = req.body;
