@@ -1,18 +1,32 @@
 .schedule-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .schedule-table, .schedule-table th, .schedule-table td {
-    border: 1px solid black;
-  }
-  
-  .schedule-table th, .schedule-table td {
-    padding: 8px;
-    text-align: center;
-  }
-  
-  .schedule-table th {
-    background-color: #f2f2f2;
-  }
-  
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid #ddd; /* Lighter border color */
+  padding: 12px; /* Increased padding for better spacing */
+  text-align: center;
+}
+
+.schedule-table th {
+  background-color: #333; /* Dark background color */
+  color: #fff; /* White text color */
+}
+
+.schedule-table td button {
+  background-color: #555; /* Dark button background color */
+  color: #fff; /* Button text color */
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.schedule-table td button:hover {
+  background-color: #777; /* Darker button color on hover */
+}
+
+.selected {
+  background-color: #ccc; /* Light background color for selected cell */
+}

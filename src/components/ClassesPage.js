@@ -1,18 +1,28 @@
-import React from 'react';
-import './ClassesPage.css'; // Make sure to create a CSS file for styling
+import React, { useState } from 'react';
+import './ClassesPage.css';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
-const timeSlots = [
-  '8:00 AM', '11:00 AM', '14:00 PM', '17:00 PM', '20:00 PM',
-
-];
-
+const timeSlots = ['8:00 AM', '11:00 AM', '2:00 PM', '5:00 PM', '8:00 PM'];
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 function ClassesPage() {
-  // Placeholder for generating table cells
-  const generateTableData = (dayIndex) => {
-    return timeSlots.map((_, timeIndex) => (
-      <td key={`time-${timeIndex}`}>Class {dayIndex + 1}-{timeIndex + 1}</td>
+  const [selectedClass, setSelectedClass] = useState(null);
+
+  const handleClassSelect = (dayIndex, timeIndex) => {
+    setSelectedClass(`Class ${dayIndex + 1}-${timeIndex + 1}`);
+  };
+
+  const generateTableData = (timeIndex) => {
+    return daysOfWeek.map((_, dayIndex) => (
+      <td
+        key={`time-${timeIndex}-day-${dayIndex}`}
+        className={selectedClass === `Class ${dayIndex + 1}-${timeIndex + 1}` ? 'selected' : ''}
+      >
+        <button onClick={() => handleClassSelect(dayIndex, timeIndex)}>
+          Class {dayIndex + 1}-{timeIndex + 1}
+        </button>
+      </td>
     ));
   };
 
@@ -23,20 +33,31 @@ function ClassesPage() {
         <thead>
           <tr>
             <th>Time / Day</th>
-            {daysOfWeek.map((day) => (
-              <th key={day}>{day}</th>
+            {daysOfWeek.map((day, index) => (
+              <th key={index}>{day}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {timeSlots.map((time, index) => (
-            <tr key={time}>
+            <tr key={index}>
               <td>{time}</td>
               {generateTableData(index)}
             </tr>
           ))}
         </tbody>
       </table>
+      <div><Card style={{ width: '18rem' }}>
+      <Card.Img variant="top" src="holder.js/100px180" />
+      <Card.Body>
+        <Card.Title>Card Title</Card.Title>
+        <Card.Text>
+          Some quick example text to build on the card title and make up the
+          bulk of the card's content.
+        </Card.Text>
+        <Button variant="primary">Go somewhere</Button>
+      </Card.Body>
+    </Card>{selectedClass && <p>Selected Class: {selectedClass}</p>}</div>
     </div>
   );
 }

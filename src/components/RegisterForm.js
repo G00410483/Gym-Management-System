@@ -13,7 +13,9 @@ import {
     from 'mdb-react-ui-kit';
 
 
-function LoginForm() {
+function RegisterForm() {
+    const [firstName, setFirstName] = useState('');
+    const [secondName, setSecondName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -32,9 +34,9 @@ function LoginForm() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('Login successful', data);
+                console.log('Registration successful', data);
                 localStorage.setItem('token', data.token);
-                navigate('/homepage'); // Make sure '/homepage' is correctly set up in your routing
+                navigate('/');
             } else {
                 throw new Error('Unauthorized');
             }
@@ -55,23 +57,25 @@ function LoginForm() {
                             <MDBCard className='bg-dark text-white my-5 mx-auto' style={{ borderRadius: '1rem', maxWidth: '400px' }}>
                                 <MDBCardBody className='p-5 d-flex flex-column align-items-center mx-auto w-100'>
 
-                                    <h2 className="fw-bold mb-2 text-uppercase">Login</h2>
-                                    <p className="text-white-50 mb-5">Please enter your login and password!</p>
+                                    <h2 className="fw-bold mb-2 text-uppercase">REGISTER</h2>
+                                    <p className="text-white-50 mb-5">Please enter your registration details!</p>
 
+                                    <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-white' label='First Name' id='formControlLg' type='firstName' size="lg"
+                                        value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                                    <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-white' label='Second Name' id='formControlLg' type='secondName' size="lg"
+                                        value={secondName} onChange={(e) => setSecondName(e.target.value)} required />
                                     <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-white' label='Email address' id='formControlLg' type='email' size="lg"
                                         value={email} onChange={(e) => setEmail(e.target.value)} required />
                                     <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-white' label='Password' id='formControlLg' type='password' size="lg"
                                         value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-                                    <p className="small mb-3 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
-
                                     <MDBBtn className='mx-2' color='light' size='lg' type="submit">
-                                        Login
+                                        Register
                                     </MDBBtn>
-                                    <div>
-                                        <p className="mb-0">Don't have an account? <a href="/registerForm" class="text-white-50 fw-bold">Sign Up</a></p>
-
-                                    </div>
+                                    <MDBBtn className='mx-2' color='light' size='lg' type="submit" href='/'>
+                                        Back to Login
+                                    </MDBBtn>
+                 
                                 </MDBCardBody>
                             </MDBCard>
                         </MDBCol>
@@ -83,4 +87,4 @@ function LoginForm() {
     );
 }
 
-export default LoginForm;
+export default RegisterForm;

@@ -18,6 +18,8 @@ const dbConfig = {
   password: 'root',      // Password for authentication
   database: 'gymDB'      // Name of the database to connect to
 };
+
+
 // POST LOGIN METHOD
 // Endpoint for handling login requests
 app.post('/login', async (req, res) => {

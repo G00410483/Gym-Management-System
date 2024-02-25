@@ -12,6 +12,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
 import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 import Homepage from './components/Homepage';
 import ClassesPage from './components/ClassesPage';
 
@@ -20,7 +21,7 @@ function App() {
     const location = useLocation();
 
     // Do not display the Navbar on the login page
-    if (location.pathname === '/') {
+    if (location.pathname === '/' || location.pathname === '/registerForm') {
       return null;
     }
     return (
@@ -54,6 +55,7 @@ function App() {
       <ConditionalNavbar />
       <div>
         <Routes>
+        <Route path="/registerForm" element={<RegisterForm />} />
           <Route path="/homepage" element={<Homepage />} />
           <Route path="/" element={<LoginForm />} />
           <Route path="/classes" element={<ClassesPage />} />
