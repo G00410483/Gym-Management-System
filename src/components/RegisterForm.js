@@ -24,12 +24,12 @@ function RegisterForm() {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:3001/login', {
+            const response = await fetch('http://localhost:3001/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ firstName, secondName, email, password }),
             });
 
             if (response.ok) {
@@ -41,12 +41,12 @@ function RegisterForm() {
                 throw new Error('Unauthorized');
             }
         } catch (error) {
-            alert('Login failed: ' + error.message);
+            alert('Registration failed: ' + error.message);
         }
     };
 
     return (
-        /*         This template is referenced from: https://mdbootstrap.com/docs/react/extended/login-form/ */
+        /* This template is referenced from: https://mdbootstrap.com/docs/react/extended/login-form/ */
         <div>
             <form onSubmit={handleSubmit}>
                 <MDBContainer fluid>

@@ -61,13 +61,48 @@ app.post('/login', async (req, res) => {
       console.log("No user found with the provided email");
       res.status(401).send('Unauthorized');
     }
-
     // Close the database connection
     await connection.end();
+
   } catch (error) {
     // Handle any errors that occur during database connection or operation
     console.error('Database connection or operation failed:', error);
     // Send a 500 Internal Server Error status in case of an error
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// POST REGISTRATION METHOD
+// Endpoint for handling user registration
+// POST REGISTRATION METHOD
+app.post('/register', async (req, res) => {
+  const { firstName, secondName, email, password } = req.body;
+
+  if (!firstName || !secondName || !email || !password) {
+    return res.status(400).send('Missing required registration information');
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Check if user already exists
+    const [users] = await connection.execute('SELECT * FROM admins WHERE emailAddress = ?', [email.trim()]);
+    if (users.length > 0) {
+      await connection.end();
+      return res.status(409).send('User already exists');
+    }
+
+    // Hash password and insert new user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await connection.execute('INSERT INTO admins (firstName, secondName, emailAddress, password) VALUES (?, ?, ?, ?)', 
+    [firstName, secondName, email.trim(), hashedPassword]);
+    await connection.end();
+
+    // Create JWT token
+    const token = jwt.sign({ email: email.trim() }, 'your_secret_key', { expiresIn: '24h' });
+    res.json({ message: 'Registration successful', token });
+  } catch (error) {
+    console.error('Error during registration:', error);
     res.status(500).send('Internal Server Error');
   }
 });
