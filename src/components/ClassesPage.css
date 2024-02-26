@@ -1,9 +1,23 @@
+h1 {
+  font-family: 'Roboto', sans-serif; /* Modern and clean font */
+  font-size: 2.0rem; /* Adjust size as needed */
+  font-weight: 500; /* Bold */
+  color: #333; /* Dark gray for high contrast */
+  text-align: center; /* Center align the heading */
+  margin-top: 2rem; /* Add space on the top */
+  margin-bottom: 2rem; /* Add space on the bottom */
+  text-transform: uppercase; /* OPTIONAL: Makes it uppercase for a more stylized look */
+  letter-spacing: 1.5px; /* Space out the letters slightly */
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+
 .schedule-table {
   width: 80%;
   border-collapse: collapse;
   border-radius: 20%;
   text-align: center;
-  margin: 0 auto; /* Centers the table horizontally */
+  margin: 0 auto; 
   margin-top: 50px;
 }
 
@@ -62,5 +76,5 @@
   background-color: #333; /* Example: a bright, modern blue */
   border: none;
   border-radius: 0; /* Optional: for a button with sharp corners */
-  align-self: center;
+  margin: 0 auto; 
 }
