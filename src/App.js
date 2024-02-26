@@ -10,6 +10,16 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBCard,
+  MDBCardBody,
+  MDBInput,
+  MDBIcon
+} from 'mdb-react-ui-kit';
 
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
@@ -47,11 +57,13 @@ function App() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+      
     );
   };
 
   return (
-    <BrowserRouter>
+    <div>
+       <BrowserRouter>
       <ConditionalNavbar />
       <div>
         <Routes>
@@ -62,6 +74,8 @@ function App() {
         </Routes>
       </div>
     </BrowserRouter>
+    </div>
+   
   );
 }
 

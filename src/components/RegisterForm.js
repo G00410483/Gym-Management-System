@@ -9,9 +9,8 @@ import {
     MDBCardBody,
     MDBInput,
     MDBIcon
-}
-    from 'mdb-react-ui-kit';
-
+} from 'mdb-react-ui-kit';
+      
 
 function RegisterForm() {
     const [firstName, setFirstName] = useState('');
@@ -45,6 +44,8 @@ function RegisterForm() {
         }
     };
 
+    const navigateToLogin = () => navigate('/');
+
     return (
         /* This template is referenced from: https://mdbootstrap.com/docs/react/extended/login-form/ */
         <div>
@@ -68,14 +69,16 @@ function RegisterForm() {
                                         value={email} onChange={(e) => setEmail(e.target.value)} required />
                                     <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-white' label='Password' id='formControlLg' type='password' size="lg"
                                         value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                    <div>
+                                        <MDBBtn className='mx-2' color='light' size='lg' type="submit">
+                                            Register
+                                        </MDBBtn>
+                                        <MDBBtn className='mx-2' color='light' size='lg' onClick={navigateToLogin}>
+                                            Back to Login
+                                        </MDBBtn>
+                                    </div>
 
-                                    <MDBBtn className='mx-2' color='light' size='lg' type="submit">
-                                        Register
-                                    </MDBBtn>
-                                    <MDBBtn className='mx-2' color='light' size='lg' type="submit" href='/'>
-                                        Back to Login
-                                    </MDBBtn>
-                 
+
                                 </MDBCardBody>
                             </MDBCard>
                         </MDBCol>
