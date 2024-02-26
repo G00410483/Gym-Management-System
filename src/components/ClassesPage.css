@@ -1,6 +1,10 @@
 .schedule-table {
-  width: 100%;
+  width: 80%;
   border-collapse: collapse;
+  border-radius: 20%;
+  text-align: center;
+  margin: 0 auto; /* Centers the table horizontally */
+  margin-top: 50px;
 }
 
 .schedule-table th,
@@ -8,11 +12,13 @@
   border: 1px solid #ddd; /* Lighter border color */
   padding: 12px; /* Increased padding for better spacing */
   text-align: center;
+  border-radius: 20%;
 }
 
 .schedule-table th {
   background-color: #333; /* Dark background color */
   color: #fff; /* White text color */
+  border-radius: 20%;
 }
 
 .schedule-table td button {
@@ -21,12 +27,14 @@
   border: none;
   padding: 8px 12px;
   cursor: pointer;
+  border-radius: 20%;
 }
 
 .schedule-table td button:hover {
-  background-color: #777; /* Darker button color on hover */
+  background-color: #020202; /* Darker button color on hover */
 }
 
 .selected {
   background-color: #ccc; /* Light background color for selected cell */
+  border-radius: 20%;
 }
