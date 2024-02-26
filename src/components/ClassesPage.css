@@ -38,3 +38,29 @@
   background-color: #ccc; /* Light background color for selected cell */
   border-radius: 20%;
 }
+
+.card-container {
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically if needed */
+  margin-top: 20px; /* Add some space above the card */
+}
+
+.card-style {
+  width: 50%; /* Make the card wider */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Add a subtle shadow for a modern look */
+  transition: 0.3s; /* Smooth transition for hover effect */
+  border-radius: 10px; /* Slightly round the corners for a modern look */
+}
+
+.card-style:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2); /* More pronounced shadow on hover */
+}
+
+/* Adjust the button inside the card for a more modern look, if desired */
+.card-style .btn-primary {
+  background-color: #333; /* Example: a bright, modern blue */
+  border: none;
+  border-radius: 0; /* Optional: for a button with sharp corners */
+  align-self: center;
+}
