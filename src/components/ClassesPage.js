@@ -2,21 +2,40 @@ import React, { useState } from 'react';
 import './ClassesPage.css';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Form from 'react-bootstrap/Form';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const timeSlots = ['8:00 AM', '11:00 AM', '2:00 PM', '5:00 PM', '8:00 PM'];
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 function ClassesPage() {
+  const [timeSlots, setTimeSlots] = useState([]);
   const [selectedClass, setSelectedClass] = useState(null);
 
   const handleClassSelect = (dayIndex, timeIndex) => {
     setSelectedClass(`Class ${dayIndex + 1}-${timeIndex + 1}`);
   };
 
+  const handleTimeChange = (index, event) => {
+    const newTimes = [...timeSlots];
+    newTimes[index] = event.target.value;
+    setTimeSlots(newTimes);
+  };
+
+  const addTimeSlot = () => {
+    setTimeSlots([...timeSlots, '']);
+  };
+
+  const removeTimeSlot = (index) => {
+    const newTimes = [...timeSlots];
+    newTimes.splice(index, 1);
+    setTimeSlots(newTimes);
+  };
+
   const generateTableData = (timeIndex) => {
     return daysOfWeek.map((_, dayIndex) => (
       <td key={`time-${timeIndex}-day-${dayIndex}`} className={selectedClass === `Class ${dayIndex + 1}-${timeIndex + 1}` ? 'selected' : ''}>
-        <Button onClick={() => handleClassSelect(dayIndex, timeIndex)}>Class {dayIndex + 1}-{timeIndex + 1}</Button>
+        <Button variant="secondary" onClick={() => handleClassSelect(dayIndex, timeIndex)}>Class {dayIndex + 1}-{timeIndex + 1}</Button>
       </td>
     ));
   };
@@ -24,6 +43,9 @@ function ClassesPage() {
   return (
     <div>
       <h1>Weekly Class Schedule</h1>
+      <Button onClick={addTimeSlot} className="mb-3">
+        <FontAwesomeIcon icon={faPlus} /> Add Time Slot
+      </Button>
       <table className="schedule-table">
         <thead>
           <tr>
@@ -36,28 +58,39 @@ function ClassesPage() {
         <tbody>
           {timeSlots.map((time, index) => (
             <tr key={index}>
-              <td>{time}</td>
+              <td>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter time"
+                  value={time}
+                  onChange={(e) => handleTimeChange(index, e)}
+                />
+                <Button variant="danger" size="sm" onClick={() => removeTimeSlot(index)} className="mt-1">
+                  <FontAwesomeIcon icon={faTrash} />
+                </Button>
+              </td>
               {generateTableData(index)}
             </tr>
           ))}
         </tbody>
       </table>
       {selectedClass && (
-      <div className="card-container">
-        <Card className="card-style">
-          <Card.Img variant="top" src="holder.js/100px180" />
-          <Card.Body>
-            <Card.Title>Selected Class: {selectedClass}</Card.Title>
-            <Card.Text>
-              Some quick example text to build on the card title and make up the bulk of the card's content.
-            </Card.Text>
-            <Button variant="primary">Go somewhere</Button>
-          </Card.Body>
-        </Card>
-      </div>
-    )}
-  </div>
-);
+        <div className="card-container">
+          <Card className="card-style">
+            <Card.Body>
+              <Card.Title>Selected Class: {selectedClass}{timeSlots}</Card.Title>
+              <Card.Text>
+                Some quick example text to build on the card title and make up the bulk of the card's content.
+              </Card.Text>
+              <Button variant="primary" onClick={() => setSelectedClass(null)}>Close</Button>
+            </Card.Body>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+  
+  
 }
 
 export default ClassesPage;
