@@ -107,6 +107,21 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// GET Classes Method
+app.get('/classes', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [classes] = await connection.execute('SELECT * FROM classes ORDER BY time, day');
+    await connection.end();
+    res.json(classes);
+  } catch (error) {
+    console.error('Error fetching classes:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
