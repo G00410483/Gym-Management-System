@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 // Array representing days of the week.
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 function ClassesPage() {
   // State variables managed using the useState hook
@@ -134,8 +134,15 @@ function ClassesPage() {
     setTimeout(() => setShowAlert(false), 3000);
   };
 
+  // Define a function named 'groupClassesByTime' that accepts an array of objects named 'classes'.
+  // Reference: https://stackoverflow.com/questions/52027207/javascript-reduce-split-accumulator-in-multiple-variables
   const groupClassesByTime = (classes) => {
+    // Use the 'reduce' method on the 'classes' array that takes a callback function
+    // and an initial value for the accumulator (in this case, an empty object {}).
     return classes.reduce((acc, curr) => {
+      // Checks if 'acc' already has a key corresponding to the current class's 'time' property.
+      // If it does it uses that key value if not it initializes it with an empty array.
+      // Then it '.push(cur)' adds the current class object to the array for that time slot.
       (acc[curr.time] = acc[curr.time] || []).push(curr);
       return acc;
     }, {});
@@ -147,9 +154,19 @@ function ClassesPage() {
   return (
     <div>
       <h1>Weekly Class Schedule</h1>
-      <Button className="mb-3" onClick={() => setShowAdd(true)}>
-        <FontAwesomeIcon icon={faPlus} /> Add Class
-      </Button>
+
+      {/* ADD NEW CLASS BUTTON */}
+      <div className="table-container">
+        <div className="add-class-button-container">
+          <Button id='addClassBtn' className="mb-3" onClick={() => setShowAdd(true)}>
+            <FontAwesomeIcon icon={faPlus} /> Add Class
+          </Button>
+        </div>
+        <table className="schedule-table">
+          {/* table content */}
+        </table>
+      </div>
+
       {showAlert && <Alert variant="success">{alertMessage}</Alert>}
 
       {/* TIMETABLE SECTION */}
@@ -170,7 +187,7 @@ function ClassesPage() {
                 <td key={dayIndex}>
                   {classesAtThisTime.filter(classForDay => classForDay.day === day).map((filteredClass) => (
                     <div key={filteredClass.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Button id='ClassInfo' variant="outline-primary" size="sm"
+                      <Button id='classInfoBtn' variant="outline-primary" size="sm"
                         onClick={() => handleClassSelect(filteredClass.id, day)}>
                         {filteredClass.name}
                         <br />
