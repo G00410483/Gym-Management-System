@@ -1,80 +1,89 @@
-h1 {
-  font-family: 'Roboto', sans-serif; /* Modern and clean font */
-  font-size: 2.0rem; /* Adjust size as needed */
-  font-weight: 500; /* Bold */
-  color: #333; /* Dark gray for high contrast */
-  text-align: center; /* Center align the heading */
-  margin-top: 2rem; /* Add space on the top */
-  margin-bottom: 2rem; /* Add space on the bottom */
-  text-transform: uppercase; /* OPTIONAL: Makes it uppercase for a more stylized look */
-  letter-spacing: 1.5px; /* Space out the letters slightly */
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+/* Base styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4; /* Light background for contrast */
 }
 
+h1 {
+  font-size: 2.0rem;
+  color: #333;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
 
 .schedule-table {
-  width: 80%;
+  width: 100%; /* Full width to adjust with the screen size */
+  margin: auto;
   border-collapse: collapse;
-  border-radius: 20%;
-  text-align: center;
-  margin: 0 auto; 
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 .schedule-table th,
 .schedule-table td {
-  border: 1px solid #ddd; /* Lighter border color */
-  padding: 12px; /* Increased padding for better spacing */
+  padding: 12px;
   text-align: center;
-  border-radius: 20%;
+  border: 1px solid #ddd; /* Light grey border */
 }
 
 .schedule-table th {
-  background-color: #333; /* Dark background color */
-  color: #fff; /* White text color */
-  border-radius: 20%;
+  background-color: #333;
+  color: #fff;
 }
 
 .schedule-table td button {
-  background-color: #555; /* Dark button background color */
-  color: #fff; /* Button text color */
-  border: none;
+  background-color: #555;
+  color: #fff;
   padding: 8px 12px;
+  border: none;
   cursor: pointer;
-  border-radius: 20%;
+  transition: background-color 0.3s ease;
 }
 
 .schedule-table td button:hover {
-  background-color: #020202; /* Darker button color on hover */
+  background-color: #666;
 }
 
 .selected {
-  background-color: #ccc; /* Light background color for selected cell */
-  border-radius: 20%;
+  background-color: #ccc;
 }
 
 .card-container {
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically if needed */
-  margin-top: 20px; /* Add some space above the card */
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .card-style {
-  width: 50%; /* Make the card wider */
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Add a subtle shadow for a modern look */
-  transition: 0.3s; /* Smooth transition for hover effect */
-  border-radius: 10px; /* Slightly round the corners for a modern look */
+  width: 90%; /* Adjust based on screen size */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: 0.3s;
+  border-radius: 10px;
+  margin: 20px;
 }
 
-.card-style:hover {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2); /* More pronounced shadow on hover */
-}
-
-/* Adjust the button inside the card for a more modern look, if desired */
 .card-style .btn-primary {
-  background-color: #333; /* Example: a bright, modern blue */
+  background-color: #333;
   border: none;
-  border-radius: 0; /* Optional: for a button with sharp corners */
-  margin: 0 auto; 
+}
+
+@media (min-width: 768px) {
+  .schedule-table {
+    width: 80%; /* Larger screens have a more centered table */
+  }
+
+  .card-style {
+    width: 50%; /* Larger cards on wider screens */
+  }
+}
+
+@media (min-width: 1024px) {
+  .schedule-table th, .schedule-table td {
+    padding: 15px; /* More padding for larger screens */
+  }
 }

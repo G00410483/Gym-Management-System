@@ -120,7 +120,45 @@ app.get('/classes', async (req, res) => {
   }
 });
 
+app.put('/classes/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, instructor_name, time, day, max_capacity } = req.body;
 
+  if (!name || !instructor_name || !time || !day || !max_capacity) {
+    return res.status(400).send('Missing required class information');
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const query = `
+      UPDATE classes 
+      SET name = ?, instructor_name = ?, time = ?, day = ?, max_capacity = ?
+      WHERE id = ?`;
+    await connection.execute(query, [name, instructor_name, time, day, max_capacity, id]);
+    await connection.end();
+
+    res.json({ message: 'Class updated successfully' });
+  } catch (error) {
+    console.error('Failed to update class:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.delete('/classes/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const query = 'DELETE FROM classes WHERE id = ?';
+    await connection.execute(query, [id]);
+    await connection.end();
+
+    res.json({ message: 'Class deleted successfully' });
+  } catch (error) {
+    console.error('Failed to delete class:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
