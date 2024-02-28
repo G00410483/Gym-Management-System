@@ -18,7 +18,7 @@ h1 {
 }
 
 .schedule-table {
-  width: 100%; /* Full width to adjust with the screen size */
+  width: 100%;
   margin: auto;
   border-collapse: collapse;
   margin-top: 20px;
@@ -28,18 +28,22 @@ h1 {
 .schedule-table td {
   padding: 12px;
   text-align: center;
-  border: 1px solid #ddd; /* Light grey border */
+  border: 10px solid #ddd;
+
 }
 
 .schedule-table th {
   background-color: #333;
   color: #fff;
+  width: 100px;
+  border-radius: 20%;
 }
 
 .schedule-table td button {
   background-color: #555;
   color: #fff;
   padding: 8px 12px;
+  border-radius: 50%;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -53,32 +57,9 @@ h1 {
   background-color: #ccc;
 }
 
-.card-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.card-style {
-  width: 90%; /* Adjust based on screen size */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  transition: 0.3s;
-  border-radius: 10px;
-  margin: 20px;
-}
-
-.card-style .btn-primary {
-  background-color: #333;
-  border: none;
-}
-
 @media (min-width: 768px) {
   .schedule-table {
     width: 80%; /* Larger screens have a more centered table */
-  }
-
-  .card-style {
-    width: 50%; /* Larger cards on wider screens */
   }
 }
 
