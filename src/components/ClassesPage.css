@@ -1,9 +1,9 @@
-/* Base styles */
+
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4; /* Light background for contrast */
+  background-color: #f4f4f4;
 }
 
 h1 {
@@ -43,10 +43,12 @@ h1 {
   background-color: #555;
   color: #fff;
   padding: 8px 12px;
-  border-radius: 50%;
   border: none;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+#ttBtn {
+  border-radius: 50%;
 }
 
 .schedule-table td button:hover {
@@ -59,12 +61,12 @@ h1 {
 
 @media (min-width: 768px) {
   .schedule-table {
-    width: 80%; /* Larger screens have a more centered table */
+    width: 80%;
   }
 }
 
 @media (min-width: 1024px) {
   .schedule-table th, .schedule-table td {
-    padding: 15px; /* More padding for larger screens */
+    padding: 15px; 
   }
 }

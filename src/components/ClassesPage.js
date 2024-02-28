@@ -134,6 +134,16 @@ function ClassesPage() {
     setTimeout(() => setShowAlert(false), 3000);
   };
 
+  const groupClassesByTime = (classes) => {
+    return classes.reduce((acc, curr) => {
+      (acc[curr.time] = acc[curr.time] || []).push(curr);
+      return acc;
+    }, {});
+  };
+
+  // Group classes by time
+  const groupedClasses = groupClassesByTime(classes);
+
   return (
     <div>
       <h1>Weekly Class Schedule</h1>
@@ -153,35 +163,36 @@ function ClassesPage() {
           </tr>
         </thead>
         <tbody>
-          {classes.map((classData, index) => (
-            <tr key={classData.id}>
-              <td>{classData.time}</td>
+          {Object.entries(groupedClasses).map(([time, classesAtThisTime]) => (
+            <tr key={time}>
+              <td>{time}</td>
               {daysOfWeek.map((day, dayIndex) => (
-                <td key={dayIndex} className={selectedCellId === `${classData.id}-${day}` ? 'selected' : ''}> 
-                  {classData.day === day ? (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <td key={dayIndex}>
+                  {classesAtThisTime.filter(classForDay => classForDay.day === day).map((filteredClass) => (
+                    <div key={filteredClass.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Button id='ClassInfo' variant="outline-primary" size="sm"
-                        onClick={() => handleClassSelect(classData.id, day)}>
-                        {classData.name + "   "}
+                        onClick={() => handleClassSelect(filteredClass.id, day)}>
+                        {filteredClass.name}
+                        <br />
                         <FontAwesomeIcon icon={faInfoCircle} />
                       </Button>
 
                       <div>
-                        <Button variant="outline-primary" size="sm" onClick={() => { setEditingClass(classData); setShowEdit(true); }}>
+                        <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setEditingClass(filteredClass); setShowEdit(true); }}>
                           <FontAwesomeIcon icon={faEdit} />
                         </Button>
-                        {' '}
-                        <Button variant="outline-danger" size="sm" onClick={() => handleDeleteClass(classData.id)}>
+                        <Button id='ttBtn' variant="outline-danger" size="sm" onClick={() => handleDeleteClass(filteredClass.id)}>
                           <FontAwesomeIcon icon={faTrash} />
                         </Button>
                       </div>
                     </div>
-                  ) : null}
+                  ))}
                 </td>
               ))}
             </tr>
           ))}
         </tbody>
+
       </table>
 
       {/* MODAL FOR DISPLAYING SELECTED CLASS */}

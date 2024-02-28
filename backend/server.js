@@ -120,6 +120,32 @@ app.get('/classes', async (req, res) => {
   }
 });
 
+app.post('/classes', async (req, res) => {
+  const { name, instructor_name, time, day, max_capacity } = req.body;
+
+  // Check if all required fields are provided
+  if (!name || !instructor_name || !time || !day || !max_capacity) {
+    return res.status(400).send('Missing required class information');
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // SQL query to insert a new class
+    const query = 'INSERT INTO classes (name, instructor_name, time, day, max_capacity) VALUES (?, ?, ?, ?, ?)';
+    
+    // Execute the query with the class data
+    await connection.execute(query, [name, instructor_name, time, day, parseInt(max_capacity)]);
+    await connection.end();
+
+    res.status(201).json({ message: 'Class added successfully' });
+  } catch (error) {
+    console.error('Failed to add class:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 app.put('/classes/:id', async (req, res) => {
   const { id } = req.params;
   const { name, instructor_name, time, day, max_capacity } = req.body;
