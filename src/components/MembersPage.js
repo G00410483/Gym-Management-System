@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import axios from 'axios'; // Make sure to install axios with npm or yarn
+import axios from 'axios'; 
+import './MembersPage.css';
 
 function MembersPage() {
   const [members, setMembers] = useState([]);
@@ -20,7 +21,7 @@ function MembersPage() {
 
   return (
     <div className="container mt-5">
-      <h2>Members List</h2>
+      <h1>Members List</h1>
       <Table striped bordered hover>
         <thead>
           <tr>
