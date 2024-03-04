@@ -18,6 +18,7 @@ import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
 import Homepage from './components/Homepage';
 import ClassesPage from './components/ClassesPage';
+import RegisterMember from './components/RegisterMemeber';
 
 function App() {
   const appStyle = {
@@ -43,7 +44,7 @@ function App() {
               <Nav.Link href="#displayAll" className="me-3">
                 <MDBIcon fas icon="th-list" className="me-2" />Display
               </Nav.Link>
-              <Nav.Link href="#register" className="me-3">
+              <Nav.Link href="/registerMember" className="me-3">
                 <MDBIcon fas icon="user-plus" className="me-2" />Register
               </Nav.Link>
               <Nav.Link href="/classes" className="me-3">
@@ -70,6 +71,8 @@ function App() {
             <Route path="/homepage" element={<Homepage />} />
             <Route path="/" element={<LoginForm />} />
             <Route path="/classes" element={<ClassesPage />} />
+            <Route path="/registerMember" element={<RegisterMember />} />
+            
           </Routes>
         </div>
       </BrowserRouter>
