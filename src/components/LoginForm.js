@@ -34,7 +34,7 @@ function LoginForm() {
                 const data = await response.json();
                 console.log('Login successful', data);
                 localStorage.setItem('token', data.token);
-                navigate('/homepage'); // Make sure '/homepage' is correctly set up in your routing
+                navigate('/homepage'); 
             } else {
                 throw new Error('Unauthorized');
             }
@@ -44,7 +44,7 @@ function LoginForm() {
     };
 
     return (
-        /*         This template is referenced from: https://mdbootstrap.com/docs/react/extended/login-form/ */
+        /* Reference: https://mdbootstrap.com/docs/react/extended/login-form/ */
         <div>
             <form onSubmit={handleSubmit}>
                 <MDBContainer fluid>
@@ -68,6 +68,7 @@ function LoginForm() {
                                     <MDBBtn className='mx-2' color='light' size='lg' type="submit">
                                         Login
                                     </MDBBtn>
+                                    <br></br>
                                     <div>
                                         <p className="mb-0">Don't have an account? <a href="/registerForm" class="text-white-50 fw-bold">Sign Up</a></p>
 

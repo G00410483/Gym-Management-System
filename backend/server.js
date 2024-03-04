@@ -76,30 +76,37 @@ app.post('/login', async (req, res) => {
 // Endpoint for handling user registration
 // POST REGISTRATION METHOD
 app.post('/register', async (req, res) => {
+  // Request body to extract firstName, secondName, email and password
   const { firstName, secondName, email, password } = req.body;
 
+  // Checks if required fields are missing, if so sends 400 status code
   if (!firstName || !secondName || !email || !password) {
     return res.status(400).send('Missing required registration information');
   }
-
+  // Handling errors
   try {
+    // Establish connection to db
     const connection = await mysql.createConnection(dbConfig);
 
-    // Check if user already exists
+    // Check if user already exists- trimms the email address to remove the white space
     const [users] = await connection.execute('SELECT * FROM admins WHERE emailAddress = ?', [email.trim()]);
+    // Checks if user was found, if so, it closes db connection 
     if (users.length > 0) {
       await connection.end();
       return res.status(409).send('User already exists');
     }
 
-    // Hash password and insert new user
+    // Hash password with a salt round of 10
     const hashedPassword = await bcrypt.hash(password, 10);
+    // Insert new user
     await connection.execute('INSERT INTO admins (firstName, secondName, emailAddress, password) VALUES (?, ?, ?, ?)', 
     [firstName, secondName, email.trim(), hashedPassword]);
+    // Close connection
     await connection.end();
 
     // Create JWT token
     const token = jwt.sign({ email: email.trim() }, 'your_secret_key', { expiresIn: '24h' });
+    // Sends JSON response with a success message
     res.json({ message: 'Registration successful', token });
   } catch (error) {
     console.error('Error during registration:', error);
@@ -107,12 +114,17 @@ app.post('/register', async (req, res) => {
   }
 });
 
-// GET Classes Method
+// GET CLASSES METHOD
+// To fetch all class records
 app.get('/classes', async (req, res) => {
   try {
+    // Establish connection to db
     const connection = await mysql.createConnection(dbConfig);
+    // Execute a SQL query to select all records from the 'classes' table, ordering them by time and day.
     const [classes] = await connection.execute('SELECT * FROM classes ORDER BY time, day');
+    // Close connection to db
     await connection.end();
+    // Respond with the fetched classes in JSON format.
     res.json(classes);
   } catch (error) {
     console.error('Error fetching classes:', error);
@@ -120,7 +132,10 @@ app.get('/classes', async (req, res) => {
   }
 });
 
+// POST CLASSES METHOD
+// To add new class recrod
 app.post('/classes', async (req, res) => {
+  // Extract class details from the request body
   const { name, instructor_name, time, day, max_capacity } = req.body;
 
   // Check if all required fields are provided
@@ -129,6 +144,7 @@ app.post('/classes', async (req, res) => {
   }
 
   try {
+    // Establish connection to db
     const connection = await mysql.createConnection(dbConfig);
 
     // SQL query to insert a new class
@@ -136,8 +152,9 @@ app.post('/classes', async (req, res) => {
     
     // Execute the query with the class data
     await connection.execute(query, [name, instructor_name, time, day, parseInt(max_capacity)]);
+    // End the connection
     await connection.end();
-
+    // Respond with 201 status and success message
     res.status(201).json({ message: 'Class added successfully' });
   } catch (error) {
     console.error('Failed to add class:', error);
@@ -145,22 +162,30 @@ app.post('/classes', async (req, res) => {
   }
 });
 
-
+// PUT CLASSES METHOD
+// To update an existing class record
 app.put('/classes/:id', async (req, res) => {
+  // Extract the class ID from the request URL parameters
   const { id } = req.params;
+  // Extraxt the updated class details from the request body
   const { name, instructor_name, time, day, max_capacity } = req.body;
 
+  // Validate that all required class details are provided
   if (!name || !instructor_name || !time || !day || !max_capacity) {
     return res.status(400).send('Missing required class information');
   }
-
+  // Handle the errors
   try {
+    // Establish connection
     const connection = await mysql.createConnection(dbConfig);
+    // SQL query for updating the specified class record
     const query = `
       UPDATE classes 
       SET name = ?, instructor_name = ?, time = ?, day = ?, max_capacity = ?
       WHERE id = ?`;
+      // Execute the query
     await connection.execute(query, [name, instructor_name, time, day, max_capacity, id]);
+    // End the connection
     await connection.end();
 
     res.json({ message: 'Class updated successfully' });
@@ -170,15 +195,24 @@ app.put('/classes/:id', async (req, res) => {
   }
 });
 
+// DELETE CLASS METHOD
+// To delete a specific class record
 app.delete('/classes/:id', async (req, res) => {
+  // Extract the class ID from the request URL parameters
   const { id } = req.params;
 
+  // Handle the errors
   try {
+    // Establish connection to db
     const connection = await mysql.createConnection(dbConfig);
+    // SQL query to delete specific class record 
     const query = 'DELETE FROM classes WHERE id = ?';
+    // Execute query
     await connection.execute(query, [id]);
+    // End the connection
     await connection.end();
 
+    //
     res.json({ message: 'Class deleted successfully' });
   } catch (error) {
     console.error('Failed to delete class:', error);

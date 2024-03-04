@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './ClassesPage.css';
 import { Button, Modal, Form, Card, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faEdit, faTrash, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faEdit, faTrash, faInfoCircle, faChalkboardTeacher, faClock, faCalendarDay, faUsers } from '@fortawesome/free-solid-svg-icons';
+
 
 // Array representing days of the week.
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -214,22 +215,23 @@ function ClassesPage() {
 
       {/* MODAL FOR DISPLAYING SELECTED CLASS */}
       {selectedClass && (
-        <Modal show={selectedClass !== null} onHide={() => setSelectedClass(null)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Selected Class: {selectedClass.name}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>
-              Instructor: {selectedClass.instructor_name}<br />
-              Time: {selectedClass.time}<br />
-              Day: {selectedClass.day}<br />
-              Max Capacity: {selectedClass.max_capacity}
-            </p>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary" onClick={() => setSelectedClass(null)}>Close</Button>
-          </Modal.Footer>
-        </Modal>
+       <Modal show={selectedClass !== null} onHide={() => setSelectedClass(null)}>
+       <Modal.Header>
+         <Modal.Title>{selectedClass.name}</Modal.Title>
+         <FontAwesomeIcon icon={faInfoCircle} />
+       </Modal.Header>
+       <Modal.Body>
+         <p><FontAwesomeIcon icon={faChalkboardTeacher} className="modal-icon" />Instructor: {selectedClass.instructor_name}<br />
+         <FontAwesomeIcon icon={faClock} className="modal-icon" />Time: {selectedClass.time}<br />
+         <FontAwesomeIcon icon={faCalendarDay} className="modal-icon" />Day: {selectedClass.day}<br />
+         <FontAwesomeIcon icon={faUsers} className="modal-icon" />Max Capacity: {selectedClass.max_capacity}</p>
+         <img id="classImg"src="https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1000w,f_auto,q_auto:best/newscms/2020_23/1576521/workout-classes-kb-main-200603.jpg" alt="Class Visual" className="modal-image" />
+       </Modal.Body>
+       <Modal.Footer>
+         <Button variant="primary" onClick={() => setSelectedClass(null)}>Close</Button>
+       </Modal.Footer>
+     </Modal>
+     
       )}
 
       {/* MODAL FOR ADDING NEW CLASS */}

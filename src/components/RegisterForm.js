@@ -10,7 +10,8 @@ import {
     MDBInput,
     MDBIcon
 } from 'mdb-react-ui-kit';
-      
+import { alignProperty } from '@mui/material/styles/cssUtils';
+
 
 function RegisterForm() {
     const [firstName, setFirstName] = useState('');
@@ -44,10 +45,10 @@ function RegisterForm() {
         }
     };
 
-    const navigateToLogin = () => navigate('/');
+    const navigateToLogin = (e) => navigate('/');
 
     return (
-        /* This template is referenced from: https://mdbootstrap.com/docs/react/extended/login-form/ */
+        /* Reference: https://mdbootstrap.com/docs/react/extended/login-form/ */
         <div>
             <form onSubmit={handleSubmit}>
                 <MDBContainer fluid>
@@ -73,12 +74,11 @@ function RegisterForm() {
                                         <MDBBtn className='mx-2' color='light' size='lg' type="submit">
                                             Register
                                         </MDBBtn>
-                                        <MDBBtn className='mx-2' color='light' size='lg' onClick={navigateToLogin}>
-                                            Back to Login
-                                        </MDBBtn>
+                                        <div>
+                                            <p className="mb-0"><a href="/" class="text-white-50 fw-bold">Back to Login</a></p>
+
+                                        </div>
                                     </div>
-
-
                                 </MDBCardBody>
                             </MDBCard>
                         </MDBCol>
