@@ -1,0 +1,78 @@
+.modern-form {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 25px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+  
+  .form-label {
+    font-weight: 600;
+    color: #333;
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 12px 15px;
+    font-size: 16px;
+    background-color: #f8f9fa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .form-text {
+    font-size: 14px;
+    margin-top: 5px;
+    color: #6c757d;
+  }
+  
+  .submit-button {
+    background-image: linear-gradient(45deg, #007bff, #6610f2);
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    color: #fff;
+    transition: background-image 0.3s;
+  }
+  
+  .submit-button:hover {
+    background-image: linear-gradient(45deg, #0056b3, #520dc2);
+  }
+  
+  .form-check {
+    user-select: none;
+    margin-bottom: 15px;
+  }
+  
+  .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  
+  /* Add some spacing and styling for overall layout */
+  .mb-3 {
+    margin-bottom: 1rem!important;
+  }
+  
+  /* Enhance the visual feedback on focus */
+  .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(100, 100, 255, 0.25);
+  }
+  
