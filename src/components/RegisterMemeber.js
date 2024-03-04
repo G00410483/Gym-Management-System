@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import './RegisterMembers.css'; // Assuming your CSS file is named BasicExample.css
+import './RegisterMembers.css'; 
 
 function RegisterMembers() {
   return (

@@ -114,6 +114,21 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// GET MEMBERS METHOD
+// Endpoint for fetching all members
+app.get('/members', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const [members] = await connection.execute('SELECT * FROM members');
+    await connection.end();
+    res.json(members);
+  } catch (error) {
+    console.error('Error fetching members:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 // GET CLASSES METHOD
 // To fetch all class records
 app.get('/classes', async (req, res) => {
