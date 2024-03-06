@@ -45,7 +45,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               onChange={handleChange}
             />
           </Form.Group>
-          {/* Add other fields as needed */}
+
         </Form>
       </Modal.Body>
       <Modal.Footer>

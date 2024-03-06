@@ -164,7 +164,6 @@ function ClassesPage() {
           </Button>
         </div>
         <table className="schedule-table">
-          {/* table content */}
         </table>
       </div>
 

@@ -129,6 +129,34 @@ app.get('/members', async (req, res) => {
 });
 
 
+// UPDATE MEMBER METHOD
+// Endpoint for updating an existing member
+app.put('/members/:id', async (req, res) => {
+  const { id } = req.params;
+  const { first_name, second_name, email_address, gender, type_of_membership } = req.body;
+
+  if (!first_name || !second_name || !email_address || !gender || !type_of_membership) {
+    return res.status(400).send('Missing required member information');
+  }
+
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const query = `
+      UPDATE members 
+      SET first_name = ?, second_name = ?, email_address = ?, gender = ?, type_of_membership = ?
+      WHERE id = ?`;
+
+    await connection.execute(query, [first_name, second_name, email_address, gender, type_of_membership, id]);
+    await connection.end();
+
+    res.json({ message: 'Member updated successfully' });
+  } catch (error) {
+    console.error('Failed to update member:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 // GET CLASSES METHOD
 // To fetch all class records
