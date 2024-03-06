@@ -28,9 +28,10 @@ function App() {
   const ConditionalNavbar = () => {
     const location = useLocation();
 
-    // Do not display the Navbar on the login page
-    if (location.pathname === '/' || location.pathname === '/registerForm') {
+    // Do not display the Navbar on the login and registration page
+    if (location.pathname === '/login' || location.pathname === '/registerForm') {
       return null;
+
     }
     return (
       <Navbar bg="dark" variant="dark" expand="lg">
@@ -39,7 +40,7 @@ function App() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="/homepage" className="me-3">
+              <Nav.Link href="/" className="me-3">
                 <MDBIcon fas icon="home" className="me-2" />Home
               </Nav.Link>
               <Nav.Link href="/memberPage" className="me-3">
@@ -53,6 +54,9 @@ function App() {
               </Nav.Link>
               <Nav.Link href="#dashboard" className="me-3">
                 <MDBIcon fas icon="chart-line" className="me-2" />Dashboard
+              </Nav.Link>
+              <Nav.Link href="/login" className="me-3">
+                <MDBIcon fas icon="sign-in-alt" className="me-2" />Login
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
@@ -69,8 +73,8 @@ function App() {
         <div>
           <Routes>
             <Route path="/registerForm" element={<RegisterForm />} />
-            <Route path="/homepage" element={<Homepage />} />
-            <Route path="/" element={<LoginForm />} />
+            <Route path="/" element={<Homepage />} />
+            <Route path="/login" element={<LoginForm />} />
             <Route path="/memberPage" element={<MembersPage />} />
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/registerMember" element={<RegisterMember />} />

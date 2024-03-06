@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
-import axios from 'axios'; 
+import axios from 'axios';
+import EditMemberModal from './EditMemberModal'; // Import the EditMemberModal component
 import './MembersPage.css';
 
 function MembersPage() {
   const [members, setMembers] = useState([]);
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -18,6 +21,36 @@ function MembersPage() {
 
     fetchMembers();
   }, []);
+
+  const handleRowClick = (member) => {
+    setSelectedMember(member);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedMember(null);
+  };
+
+  const saveMember = async (member) => {
+    try {
+      await axios.put(`http://localhost:3001/members/${member.id}`, member);
+      setMembers(members.map(m => m.id === member.id ? member : m));
+      handleCloseModal();
+    } catch (error) {
+      console.error('There was an error saving the member:', error);
+    }
+  };
+
+  const removeMember = async (memberId) => {
+    try {
+      await axios.delete(`http://localhost:3001/members/${memberId}`);
+      setMembers(members.filter(m => m.id !== memberId));
+      handleCloseModal();
+    } catch (error) {
+      console.error('There was an error removing the member:', error);
+    }
+  };
 
   return (
     <div className="container mt-5">
@@ -35,7 +68,7 @@ function MembersPage() {
         </thead>
         <tbody>
           {members.map((member, index) => (
-            <tr key={member.id}>
+            <tr key={member.id} onClick={() => handleRowClick(member)}>
               <td>{index + 1}</td>
               <td>{member.first_name}</td>
               <td>{member.second_name}</td>
@@ -46,6 +79,15 @@ function MembersPage() {
           ))}
         </tbody>
       </Table>
+      {selectedMember && (
+        <EditMemberModal
+          show={showModal}
+          handleClose={handleCloseModal}
+          member={selectedMember}
+          saveMember={saveMember}
+          removeMember={removeMember}
+        />
+      )}
     </div>
   );
 }

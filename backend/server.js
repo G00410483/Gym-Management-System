@@ -129,6 +129,7 @@ app.get('/members', async (req, res) => {
 });
 
 
+
 // GET CLASSES METHOD
 // To fetch all class records
 app.get('/classes', async (req, res) => {
