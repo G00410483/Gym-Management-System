@@ -89,7 +89,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="danger" onClick={() => removeMember(editedMember.pps_number)}>
+        <Button variant="danger" onClick={() => removeMember(editedMember.id)}>
           Remove
         </Button>
         <Button variant="primary" onClick={() => saveMember(editedMember)}>

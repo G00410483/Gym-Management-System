@@ -130,8 +130,8 @@ app.post('/registerMember', async (req, res) => {
     // Establish connection to db
     const connection = await mysql.createConnection(dbConfig);
 
-    // Check if user already exists
-    const [members] = await connection.execute('SELECT * FROM members WHERE email_address = ?', [email.trim()]);
+    // Check if member already exists
+    const [members] = await connection.execute('SELECT * FROM members WHERE email_address = ?', [ppsNumber.trim()]);
     // Checks if user was found, if so, it closes db connection 
     if (members.length > 0) {
       await connection.end();
@@ -180,10 +180,10 @@ app.get('/members', async (req, res) => {
 app.put('/members/:id', async (req, res) => {
   const { id } = req.params;
   // Destructures the updated member details from the request body.
-  const { first_name, second_name, email_address, gender, type_of_membership } = req.body;
-
+  const { ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership } = req.body;
+  
   // Checks if any of the required member details are missing in the request body.
-  if (!first_name || !second_name || !email_address || !gender || !type_of_membership) {
+  if (!ppsNumber || !firstName || !secondName || !email || !gender || !dateOfBirth || !startDate || !typeOfMembership) {
     return res.status(400).send('Missing required member information');
   }
 
@@ -194,10 +194,10 @@ app.put('/members/:id', async (req, res) => {
     const query = `
       UPDATE members 
       SET first_name = ?, second_name = ?, email_address = ?, gender = ?, type_of_membership = ?
-      WHERE id = ?`;
+      WHERE pps_number = ?`;
 
       // Executes the SQL query with the provided member details and the member 'id'.
-    await connection.execute(query, [first_name, second_name, email_address, gender, type_of_membership, id]);
+    await connection.execute(query, [ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership , id]);
     await connection.end();
 
     // Responds with a JSON object containing a success message upon successful update
@@ -210,10 +210,10 @@ app.put('/members/:id', async (req, res) => {
 
 // DELETE MEMBER METHOD
 // Endpoint for deleting a specific member
-app.delete('/members/:ppsNumber', async (req, res) => {
+app.delete('/members/:id', async (req, res) => {
 
   // Extracts the member ID from the request parameters
-  const { ppsNumber } = req.params;
+  const { id } = req.params;
 
   try {
     // Attempts to establish a connection to the database
@@ -223,7 +223,7 @@ app.delete('/members/:ppsNumber', async (req, res) => {
     const query = 'DELETE FROM members WHERE pps_number = ?';
 
     // Executes the SQL query using the member ID to specify which member should be deleted.
-    await connection.execute(query, [ppsNumber]);
+    await connection.execute(query, [id]);
      // Closes the database connection after the query execution is complete
     await connection.end();
 
