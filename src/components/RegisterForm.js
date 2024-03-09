@@ -75,7 +75,7 @@ function RegisterForm() {
                                             Register
                                         </MDBBtn>
                                         <div>
-                                            <p className="mb-0"><a href="/" class="text-white-50 fw-bold">Back to Login</a></p>
+                                            <p className="mb-0"><a href="/login" class="text-white-50 fw-bold">Back to Login</a></p>
 
                                         </div>
                                     </div>

@@ -65,7 +65,7 @@ function LoginForm() {
 
                                     <p className="small mb-3 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
 
-                                    <MDBBtn className='mx-2' color='light' size='lg' type="submit">
+                                    <MDBBtn className='mx-2' color='ligzht' size='lg' type="submit">
                                         Login
                                     </MDBBtn>
                                     <br></br>

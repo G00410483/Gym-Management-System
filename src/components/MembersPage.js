@@ -59,10 +59,13 @@ function MembersPage() {
         <thead>
           <tr>
             <th>#</th>
+            <th>PPS Number</th>
             <th>First Name</th>
             <th>Second Name</th>
             <th>Email Address</th>
             <th>Gender</th>
+            <th>Date of Birth</th>
+            <th>Start Date</th>
             <th>Type of Membership</th>
           </tr>
         </thead>
@@ -70,10 +73,13 @@ function MembersPage() {
           {members.map((member, index) => (
             <tr key={member.id} onClick={() => handleRowClick(member)}>
               <td>{index + 1}</td>
+              <td>{member.pps_number}</td>
               <td>{member.first_name}</td>
               <td>{member.second_name}</td>
               <td>{member.email_address}</td>
               <td>{member.gender}</td>
+              <td>{member.date_of_birth}</td>
+              <td>{member.start_date}</td>
               <td>{member.type_of_membership}</td>
             </tr>
           ))}

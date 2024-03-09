@@ -15,6 +15,13 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
       </Modal.Header>
       <Modal.Body>
         <Form>
+        <Form.Group controlId="formPPS">
+            <Form.Label>PPS</Form.Label>
+            <Form.Control
+              value={editedMember.pps_number}
+              readOnly
+            />
+          </Form.Group>
           <Form.Group controlId="formFirstName">
             <Form.Label>First Name</Form.Label>
             <Form.Control
@@ -45,6 +52,36 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               onChange={handleChange}
             />
           </Form.Group>
+          <Form.Group controlId="formPPS">
+            <Form.Label>Gender</Form.Label>
+            <Form.Control
+              value={editedMember.gender}
+              readOnly
+            />
+          </Form.Group>
+          <Form.Group controlId="formPPS">
+            <Form.Label>Date of Birth</Form.Label>
+            <Form.Control
+              value={editedMember.date_of_birth}
+              readOnly
+            />
+          </Form.Group>
+          <Form.Group controlId="formPPS">
+            <Form.Label>Start Date</Form.Label>
+            <Form.Control
+              value={editedMember.start_date}
+              readOnly
+            />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="formBasicGender">
+        <Form.Label  >Type of Membership</Form.Label>
+        <Form.Select aria-label="Membership select" className="form-control" value={editedMember.type_of_memebrship}
+              onChange={handleChange}>
+          <option value="basic">basic</option>
+          <option value="premium">premium</option>
+          <option value="VIP">VIP</option>
+        </Form.Select>
+      </Form.Group>
 
         </Form>
       </Modal.Body>
@@ -52,7 +89,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="danger" onClick={() => removeMember(editedMember.id)}>
+        <Button variant="danger" onClick={() => removeMember(editedMember.pps_number)}>
           Remove
         </Button>
         <Button variant="primary" onClick={() => saveMember(editedMember)}>

@@ -72,7 +72,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// POST REGISTRATION METHOD
 // Endpoint for handling user registration
 // POST REGISTRATION METHOD
 app.post('/register', async (req, res) => {
@@ -114,13 +113,60 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// Endpoint for handling user registration
+// POST REGISTER NEW MEMBER METHOD
+app.post('/registerMember', async (req, res) => {
+  console.log("Hello");
+  
+  // Request body to extract firstName, secondName, email and password
+  const { ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership } = req.body;
+
+  // Checks if required fields are missing, if so sends 400 status code
+  if (!ppsNumber || !firstName || !secondName || !email || !gender || !dateOfBirth || !startDate || !typeOfMembership) {
+    return res.status(400).send('Missing required registration information');
+  }
+  // Handling errors
+  try {
+    // Establish connection to db
+    const connection = await mysql.createConnection(dbConfig);
+
+    // Check if user already exists
+    const [members] = await connection.execute('SELECT * FROM members WHERE email_address = ?', [email.trim()]);
+    // Checks if user was found, if so, it closes db connection 
+    if (members.length > 0) {
+      await connection.end();
+      return res.status(409).send('User already exists');
+    }
+
+    await connection.execute(
+      'INSERT INTO members (pps_number, first_name, second_name, email_address, gender, date_of_birth, start_date, type_of_membership) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership]
+
+    );
+    console.log("Done");
+
+    // Close connection
+    await connection.end();
+
+    // Sends JSON response with a success message
+    res.json({ message: 'Registration successful'});
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 // GET MEMBERS METHOD
 // Endpoint for fetching all members
 app.get('/members', async (req, res) => {
   try {
+    // Attempt to establish a connection to the database
     const connection = await mysql.createConnection(dbConfig);
+    // Execute a SQL query to select all rows from the 'members' table.
     const [members] = await connection.execute('SELECT * FROM members');
+    // Close the connection to database
     await connection.end();
+    // Respond with JSON containing the fetched member details
     res.json(members);
   } catch (error) {
     console.error('Error fetching members:', error);
@@ -133,28 +179,62 @@ app.get('/members', async (req, res) => {
 // Endpoint for updating an existing member
 app.put('/members/:id', async (req, res) => {
   const { id } = req.params;
+  // Destructures the updated member details from the request body.
   const { first_name, second_name, email_address, gender, type_of_membership } = req.body;
 
+  // Checks if any of the required member details are missing in the request body.
   if (!first_name || !second_name || !email_address || !gender || !type_of_membership) {
     return res.status(400).send('Missing required member information');
   }
 
   try {
+    // Establish connection to database
     const connection = await mysql.createConnection(dbConfig);
+     // Defines a SQL query to update a member's details in the database for the specified 'id'
     const query = `
       UPDATE members 
       SET first_name = ?, second_name = ?, email_address = ?, gender = ?, type_of_membership = ?
       WHERE id = ?`;
 
+      // Executes the SQL query with the provided member details and the member 'id'.
     await connection.execute(query, [first_name, second_name, email_address, gender, type_of_membership, id]);
     await connection.end();
 
+    // Responds with a JSON object containing a success message upon successful update
     res.json({ message: 'Member updated successfully' });
   } catch (error) {
     console.error('Failed to update member:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
+// DELETE MEMBER METHOD
+// Endpoint for deleting a specific member
+app.delete('/members/:ppsNumber', async (req, res) => {
+
+  // Extracts the member ID from the request parameters
+  const { ppsNumber } = req.params;
+
+  try {
+    // Attempts to establish a connection to the database
+    const connection = await mysql.createConnection(dbConfig);
+
+     // SQL query string to delete a member from the 'members' table where the 'id' matches the specified ID
+    const query = 'DELETE FROM members WHERE pps_number = ?';
+
+    // Executes the SQL query using the member ID to specify which member should be deleted.
+    await connection.execute(query, [ppsNumber]);
+     // Closes the database connection after the query execution is complete
+    await connection.end();
+
+     // Responds to the client with a JSON object containing a success message
+    res.json({ message: 'Member deleted successfully' });
+  } catch (error) {
+    console.error('Failed to delete member:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 
 
 
