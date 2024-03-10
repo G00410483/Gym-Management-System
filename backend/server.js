@@ -157,15 +157,27 @@ app.post('/registerMember', async (req, res) => {
 });
 
 // GET MEMBERS METHOD
-// Endpoint for fetching all members
+// Endpoint for fetching members with optional search functionality
 app.get('/members', async (req, res) => {
   try {
-    // Attempt to establish a connection to the database
+    // Extract search term from query parameters, if provided
+    const searchTerm = req.query.searchTerm ? req.query.searchTerm.toLowerCase().trim() : null; // Trim and convert to lowercase for case-insensitive search
+    // Establish connection to the database
     const connection = await mysql.createConnection(dbConfig);
-    // Execute a SQL query to select all rows from the 'members' table.
-    const [members] = await connection.execute('SELECT * FROM members');
+    
+    let query = 'SELECT * FROM members'; // Default query to select all members
+
+    // If a search term is provided, modify the query to filter members
+    if (searchTerm) {
+      query += ' WHERE LOWER(first_name) LIKE ? OR LOWER(second_name) LIKE ?';
+    }
+
+    // Execute the SQL query
+    const [members] = await connection.execute(query, searchTerm ? [`%${searchTerm}%`, `%${searchTerm}%`] : null);
+
     // Close the connection to database
     await connection.end();
+
     // Respond with JSON containing the fetched member details
     res.json(members);
   } catch (error) {
@@ -173,6 +185,7 @@ app.get('/members', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 
 // UPDATE MEMBER METHOD

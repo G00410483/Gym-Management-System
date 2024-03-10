@@ -27,7 +27,9 @@ function ConditionalNavbar() {
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Container>
-        <Navbar.Brand href="/">Gym-App</Navbar.Brand>
+        <Navbar.Brand href="/">
+        <i class="fas fa-dumbbell fa-x"></i>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
