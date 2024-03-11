@@ -35,7 +35,6 @@ app.get('/', async (req, res) => {
 
     // Respond with JSON containing the fetched member details
     res.json(plans);
-    console.log(plans);
   } catch (error) {
     console.error('Error fetching members:', error);
     res.status(500).send('Internal Server Error');
@@ -208,8 +207,6 @@ app.get('/members', async (req, res) => {
   }
 });
 
-
-
 // UPDATE MEMBER METHOD
 // Endpoint for updating an existing member
 app.put('/members/:id', async (req, res) => {
@@ -270,9 +267,6 @@ app.delete('/members/:id', async (req, res) => {
   }
 });
 
-
-
-
 // GET CLASSES METHOD
 // To fetch all class records
 app.get('/classes', async (req, res) => {
@@ -295,10 +289,10 @@ app.get('/classes', async (req, res) => {
 // To add new class recrod
 app.post('/classes', async (req, res) => {
   // Extract class details from the request body
-  const { name, instructor_name, time, day, max_capacity } = req.body;
+  const { class_name, instructor_name, time, day, max_capacity } = req.body;
 
   // Check if all required fields are provided
-  if (!name || !instructor_name || !time || !day || !max_capacity) {
+  if (!class_name || !instructor_name || !time || !day || !max_capacity) {
     return res.status(400).send('Missing required class information');
   }
 
@@ -310,7 +304,7 @@ app.post('/classes', async (req, res) => {
     const query = 'INSERT INTO classes (name, instructor_name, time, day, max_capacity) VALUES (?, ?, ?, ?, ?)';
     
     // Execute the query with the class data
-    await connection.execute(query, [name, instructor_name, time, day, parseInt(max_capacity)]);
+    await connection.execute(query, [class_name, instructor_name, time, day, parseInt(max_capacity)]);
     // End the connection
     await connection.end();
     // Respond with 201 status and success message
@@ -327,10 +321,10 @@ app.put('/classes/:id', async (req, res) => {
   // Extract the class ID from the request URL parameters
   const { id } = req.params;
   // Extraxt the updated class details from the request body
-  const { name, instructor_name, time, day, max_capacity } = req.body;
+  const { class_name, instructor_name, time, day, max_capacity } = req.body;
 
   // Validate that all required class details are provided
-  if (!name || !instructor_name || !time || !day || !max_capacity) {
+  if (!class_name || !instructor_name || !time || !day || !max_capacity) {
     return res.status(400).send('Missing required class information');
   }
   // Handle the errors
@@ -340,7 +334,7 @@ app.put('/classes/:id', async (req, res) => {
     // SQL query for updating the specified class record
     const query = `
       UPDATE classes 
-      SET name = ?, instructor_name = ?, time = ?, day = ?, max_capacity = ?
+      SET class_name = ?, instructor_name = ?, time = ?, day = ?, max_capacity = ?
       WHERE id = ?`;
       // Execute the query
     await connection.execute(query, [name, instructor_name, time, day, max_capacity, id]);
@@ -375,6 +369,77 @@ app.delete('/classes/:id', async (req, res) => {
     res.json({ message: 'Class deleted successfully' });
   } catch (error) {
     console.error('Failed to delete class:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Endpoint for handling user registration
+// POST BOOKIG METHOD
+app.post('/bookings', async (req, res) => {
+  // Destructure class_name and email_address from the request body
+  const { class_name, email_address } = req.body;
+
+  // Check if class_name or email_address is missing
+  if (!class_name || !email_address) {
+    return res.status(400).send('Missing required registration information');
+  }
+
+  try {
+    // Establish connection to database
+    const connection = await mysql.createConnection(dbConfig);
+    // Execute query to ensure provided email address exists in database
+    const [members] = await connection.execute(
+      'SELECT email_address FROM members WHERE email_address = ? LIMIT 1',
+      [email_address]
+    );
+    
+    // If member not found close connection
+    if (members.length === 0) {
+      await connection.end();
+      return res.status(404).send('Email address not found in members');
+    }
+    // If member found create new booking record
+    await connection.execute(
+      'INSERT INTO bookings (class_name, email_address) VALUES (?, ?)',
+      [class_name, email_address]
+    );
+    // Close connection
+    await connection.end();
+    
+    res.json({ message: 'Booking successful' });
+  } catch (error) {
+    console.error('Error during booking:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// GET BOOKINGS METHOD
+// Endpoint for fetching members with optional search functionality
+app.get('/bookingsDisplay', async (req, res) => {
+  try {
+    /* // Extract search term from query parameters, if provided
+    const searchTerm = req.query.searchTerm ? req.query.searchTerm.toLowerCase().trim() : null; // Trim and convert to lowercase for case-insensitive search
+    */
+    // Establish connection to the database 
+    const connection = await mysql.createConnection(dbConfig); 
+    
+    let query = 'SELECT * FROM bookings'; // Default query to select all members
+
+    /* // If a search term is provided, modify the query to filter members
+    if (searchTerm) {
+      query += ' WHERE LOWER(first_name) LIKE ? OR LOWER(second_name) LIKE ?';
+    } */
+
+    // Execute the SQL query
+    const [bookings] = await connection.execute(query); 
+
+    // Close the connection to database
+    await connection.end();
+
+    // Respond with JSON containing the fetched member details
+    res.json(bookings);
+  } catch (error) {
+    console.error('Error fetching members:', error);
     res.status(500).send('Internal Server Error');
   }
 });

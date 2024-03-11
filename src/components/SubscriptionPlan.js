@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { MDBContainer, MDBRow, MDBCol } from 'mdb-react-ui-kit';
-import './SubscriptionPlan.css'; // Assuming you might create a separate CSS file for subscription plans
+import './SubscriptionPlan.css'; 
 
 // Subscription Plans Component with Dynamic Data Fetching
 const SubscriptionPlans = () => {
     const [plans, setPlans] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3001/') // Adjust the URL as necessary
+        fetch('http://localhost:3001/') 
             .then(response => response.json())
             .then(data => setPlans(data))
             .catch(error => console.error('Error fetching subscription plans:', error));

@@ -15,6 +15,7 @@ import Homepage from './components/Homepage';
 import ClassesPage from './components/ClassesPage';
 import RegisterMember from './components/RegisterMemeber';
 import MembersPage from './components/MembersPage';
+import BookingsDisplay from './components/BookingsDisplay';
 
 function ConditionalNavbar() {
   const { isLoggedIn, logout } = useAuth();
@@ -35,8 +36,9 @@ function ConditionalNavbar() {
           <Nav className="me-auto">
             <Nav.Link href="/"><MDBIcon fas icon="home" className="me-2" />Home</Nav.Link>
             {isLoggedIn && <Nav.Link href="/memberPage"><MDBIcon fas icon="th-list" className="me-2" />Display</Nav.Link>}
-            {isLoggedIn && <Nav.Link href="/registerMember"><MDBIcon fas icon="user-plus" className="me-2" />Register</Nav.Link>}
+            <Nav.Link href="/registerMember"><MDBIcon fas icon="user-plus" className="me-2" />Register</Nav.Link>
             <Nav.Link href="/classes"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Classes</Nav.Link>
+            <Nav.Link href="/bookingsDisplay"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Bookings</Nav.Link>
             {isLoggedIn && <Nav.Link href="#dashboard"><MDBIcon fas icon="chart-line" className="me-2" />Dashboard</Nav.Link>}
           </Nav>
           <Nav className="ms-auto">
@@ -69,6 +71,7 @@ function App() {
             <Route path="/memberPage" element={<MembersPage />} />
             <Route path="/classes" element={<ClassesPage />} />
             <Route path="/registerMember" element={<RegisterMember />} />
+            <Route path="/bookingsDisplay" element={<BookingsDisplay />} />
           </Routes>
         </BrowserRouter>
       </div>

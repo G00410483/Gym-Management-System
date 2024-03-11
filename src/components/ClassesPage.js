@@ -155,6 +155,43 @@ function ClassesPage() {
     }, {});
   };
 
+  const handleBookingClass = async (event) => {
+    event.preventDefault(); // Prevent the default form submission behavior
+
+    const formData = new FormData(event.target);
+    const email = formData.get('email'); // Ensure this matches the 'name' attribute of your email input field
+
+    const bookingData = {
+      class_name: bookingClass.class_name, // Ensure this is the correct property from your state
+      email_address: email,
+    };
+
+    try {
+      const response = await fetch('http://localhost:3001/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Network response was not ok.');
+      }
+
+      const responseBody = await response.json();
+      showAlertWithMessage('Booking successful!');
+      setShowBooking(false); // Hide the booking modal on success
+    } catch (error) {
+      console.error('Failed to book class:', error);
+      showAlertWithMessage(`Failed to book class. ${error.message}`);
+    }
+  };
+
+
+
+
   // Group classes by time
   const groupedClasses = groupClassesByTime(classes);
 
@@ -197,7 +234,7 @@ function ClassesPage() {
                     <div key={filteredClass.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Button id='classInfoBtn' variant="outline-primary" size="sm"
                         onClick={() => handleClassSelect(filteredClass.id, day)}>
-                        {filteredClass.name}
+                        {filteredClass.class_name}
                         <br />
                         <FontAwesomeIcon icon={faInfoCircle} />
                       </Button>
@@ -232,7 +269,7 @@ function ClassesPage() {
       {selectedClass && (
         <Modal show={selectedClass !== null} onHide={() => setSelectedClass(null)}>
           <Modal.Header>
-            <Modal.Title>{selectedClass.name}</Modal.Title>
+            <Modal.Title>{selectedClass.class_name}</Modal.Title>
             <FontAwesomeIcon icon={faInfoCircle} />
           </Modal.Header>
           <Modal.Body>
@@ -240,7 +277,7 @@ function ClassesPage() {
               <FontAwesomeIcon icon={faClock} className="modal-icon" />Time: {selectedClass.time}<br />
               <FontAwesomeIcon icon={faCalendarDay} className="modal-icon" />Day: {selectedClass.day}<br />
               <FontAwesomeIcon icon={faUsers} className="modal-icon" />Max Capacity: {selectedClass.max_capacity}</p>
-            <img id="classImg" src="https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1000w,f_auto,q_auto:best/newscms/2020_23/1576521/workout-classes-kb-main-200603.jpg" alt="Class Visual" className="modal-image" />
+            <img id="classImg" src={selectedClass.image} alt="Class Visual" className="modal-image" />
           </Modal.Body>
           <Modal.Footer>
             <Button variant="primary" onClick={() => setSelectedClass(null)}>Close</Button>
@@ -301,7 +338,7 @@ function ClassesPage() {
           <Modal.Body>
             <Form.Group className="mb-3" controlId="formClassName">
               <Form.Label>Class Name</Form.Label>
-              <Form.Control type="text" defaultValue={editingClass.name} name="name" required />
+              <Form.Control type="text" defaultValue={editingClass.class_name} name="name" required />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formInstructorName">
               <Form.Label>Instructor Name</Form.Label>
@@ -334,27 +371,25 @@ function ClassesPage() {
           </Modal.Footer>
         </Form>
       </Modal>
-      
+
       {/* MODAL FOR BOOKING A CLASS */}
       <Modal show={showBooking} onHide={() => setShowBooking(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Book Class</Modal.Title>
         </Modal.Header>
-        <Form>
+        <Form onSubmit={handleBookingClass}>
           <Modal.Body>
-            <p>Booking class: {bookingClass.name}</p>
-            {/* Include additional form elements as needed for booking, such as participant name or contact info */}
-            <Form.Group className="mb-3" controlId="formParticipantName">
-              <Form.Label>Participant Name</Form.Label>
-              <Form.Control type="text" placeholder="Enter your name" required />
+            <p>Booking class: {bookingClass.class_name}</p>
+            <Form.Group className="mb-3" controlId="formEmail">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control type="email" name="email" placeholder="Enter your email" required />
             </Form.Group>
-            {/* Add more fields as needed */}
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowBooking(false)}>
               Close
             </Button>
-            <Button variant="primary" onClick={() => {/* Add booking logic here */ }}>
+            <Button variant="primary" type="submit">
               Book Now
             </Button>
           </Modal.Footer>
