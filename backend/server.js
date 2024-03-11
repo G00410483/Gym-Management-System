@@ -19,6 +19,28 @@ const dbConfig = {
   database: 'gymDB'      // Name of the database to connect to
 };
 
+//GET HOMEPAGE METHOD
+app.get('/', async (req, res) => {
+  try {
+    // Establish connection to the database
+    const connection = await mysql.createConnection(dbConfig);
+    
+    let query = 'SELECT DISTINCT * FROM membershipPrice'; // Default query to select all members
+
+    // Execute the SQL query
+    const [plans] = await connection.execute(query);
+
+    // Close the connection to database
+    await connection.end();
+
+    // Respond with JSON containing the fetched member details
+    res.json(plans);
+    console.log(plans);
+  } catch (error) {
+    console.error('Error fetching members:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 // POST LOGIN METHOD
 // Endpoint for handling login requests

@@ -164,15 +164,15 @@ function ClassesPage() {
 
       {/* ADD NEW CLASS BUTTON */}
       {isLoggedIn && (
-      <div className="table-container">
-        <div className="add-class-button-container">
-          <Button id='addClassBtn' className="mb-3" onClick={() => setShowAdd(true)}>
-            <FontAwesomeIcon icon={faPlus} /> Add Class
-          </Button>
+        <div className="table-container">
+          <div className="add-class-button-container">
+            <Button id='addClassBtn' className="mb-3" onClick={() => setShowAdd(true)}>
+              <FontAwesomeIcon icon={faPlus} /> Add Class
+            </Button>
+          </div>
+          <table className="schedule-table">
+          </table>
         </div>
-        <table className="schedule-table">
-        </table>
-      </div>
       )}
 
       {showAlert && <Alert variant="success">{alertMessage}</Alert>}
@@ -202,21 +202,21 @@ function ClassesPage() {
                         <FontAwesomeIcon icon={faInfoCircle} />
                       </Button>
                       {isLoggedIn && (
-                      <div>
-                        <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setEditingClass(filteredClass); setShowEdit(true); }}>
-                          <FontAwesomeIcon icon={faEdit} />
-                        </Button>
-                        <Button id='ttBtn' variant="outline-danger" size="sm" onClick={() => handleDeleteClass(filteredClass.id)}>
-                          <FontAwesomeIcon icon={faTrash} />
-                        </Button>
-                      </div>
+                        <div>
+                          <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setEditingClass(filteredClass); setShowEdit(true); }}>
+                            <FontAwesomeIcon icon={faEdit} />
+                          </Button>
+                          <Button id='ttBtn' variant="outline-danger" size="sm" onClick={() => handleDeleteClass(filteredClass.id)}>
+                            <FontAwesomeIcon icon={faTrash} />
+                          </Button>
+                        </div>
                       )}
                       {!isLoggedIn && (
-                      <div>
-                        <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setBookingClass(filteredClass); setShowBooking(true); }}>
-                          <FontAwesomeIcon icon={faEdit} />
-                        </Button>
-                      </div>
+                        <div>
+                          <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setBookingClass(filteredClass); setShowBooking(true); }}>
+                            <FontAwesomeIcon icon={faEdit} />
+                          </Button>
+                        </div>
                       )}
                     </div>
                   ))}
@@ -230,23 +230,23 @@ function ClassesPage() {
 
       {/* MODAL FOR DISPLAYING SELECTED CLASS */}
       {selectedClass && (
-       <Modal show={selectedClass !== null} onHide={() => setSelectedClass(null)}>
-       <Modal.Header>
-         <Modal.Title>{selectedClass.name}</Modal.Title>
-         <FontAwesomeIcon icon={faInfoCircle} />
-       </Modal.Header>
-       <Modal.Body>
-         <p><FontAwesomeIcon icon={faChalkboardTeacher} className="modal-icon" />Instructor: {selectedClass.instructor_name}<br />
-         <FontAwesomeIcon icon={faClock} className="modal-icon" />Time: {selectedClass.time}<br />
-         <FontAwesomeIcon icon={faCalendarDay} className="modal-icon" />Day: {selectedClass.day}<br />
-         <FontAwesomeIcon icon={faUsers} className="modal-icon" />Max Capacity: {selectedClass.max_capacity}</p>
-         <img id="classImg"src="https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1000w,f_auto,q_auto:best/newscms/2020_23/1576521/workout-classes-kb-main-200603.jpg" alt="Class Visual" className="modal-image" />
-       </Modal.Body>
-       <Modal.Footer>
-         <Button variant="primary" onClick={() => setSelectedClass(null)}>Close</Button>
-       </Modal.Footer>
-     </Modal>
-     
+        <Modal show={selectedClass !== null} onHide={() => setSelectedClass(null)}>
+          <Modal.Header>
+            <Modal.Title>{selectedClass.name}</Modal.Title>
+            <FontAwesomeIcon icon={faInfoCircle} />
+          </Modal.Header>
+          <Modal.Body>
+            <p><FontAwesomeIcon icon={faChalkboardTeacher} className="modal-icon" />Instructor: {selectedClass.instructor_name}<br />
+              <FontAwesomeIcon icon={faClock} className="modal-icon" />Time: {selectedClass.time}<br />
+              <FontAwesomeIcon icon={faCalendarDay} className="modal-icon" />Day: {selectedClass.day}<br />
+              <FontAwesomeIcon icon={faUsers} className="modal-icon" />Max Capacity: {selectedClass.max_capacity}</p>
+            <img id="classImg" src="https://media-cldnry.s-nbcnews.com/image/upload/t_fit-1000w,f_auto,q_auto:best/newscms/2020_23/1576521/workout-classes-kb-main-200603.jpg" alt="Class Visual" className="modal-image" />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={() => setSelectedClass(null)}>Close</Button>
+          </Modal.Footer>
+        </Modal>
+
       )}
 
       {/* MODAL FOR ADDING NEW CLASS */}
@@ -330,6 +330,32 @@ function ClassesPage() {
             </Button>
             <Button variant="primary" type="submit">
               Save Changes
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+      
+      {/* MODAL FOR BOOKING A CLASS */}
+      <Modal show={showBooking} onHide={() => setShowBooking(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Book Class</Modal.Title>
+        </Modal.Header>
+        <Form>
+          <Modal.Body>
+            <p>Booking class: {bookingClass.name}</p>
+            {/* Include additional form elements as needed for booking, such as participant name or contact info */}
+            <Form.Group className="mb-3" controlId="formParticipantName">
+              <Form.Label>Participant Name</Form.Label>
+              <Form.Control type="text" placeholder="Enter your name" required />
+            </Form.Group>
+            {/* Add more fields as needed */}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowBooking(false)}>
+              Close
+            </Button>
+            <Button variant="primary" onClick={() => {/* Add booking logic here */ }}>
+              Book Now
             </Button>
           </Modal.Footer>
         </Form>

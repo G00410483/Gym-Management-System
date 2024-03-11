@@ -1,9 +1,10 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import ExampleCarouselImage from './ExampleCarouselImage';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
-import './Homepage.css'; 
+import './Homepage.css';
+import SubscriptionPlans from './SubscriptionPlan';
+
 
 function Homepage() {
     return (
@@ -25,6 +26,9 @@ function Homepage() {
                     ))}
                 </Carousel>
             </div>
+            {/* Subscription Plans */}
+            <SubscriptionPlans />
+
             <MDBFooter bgColor='light' className='text-center text-lg-start text-muted'>
                 <section className='d-flex justify-content-center justify-content-lg-between p-4 border-bottom'>
                     <div className='me-5 d-none d-lg-block'>
