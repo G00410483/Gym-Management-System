@@ -3,12 +3,16 @@ import './ClassesPage.css';
 import { Button, Modal, Form, Card, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faInfoCircle, faChalkboardTeacher, faClock, faCalendarDay, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../AuthContext'; // Adjust this path as necessary
 
 
 // Array representing days of the week.
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 function ClassesPage() {
+
+  const { isLoggedIn } = useAuth(); // Use the useAuth hook to get the logged-in status
+
   // State variables managed using the useState hook
   const [classes, setClasses] = useState([]);
   const [selectedCellId, setSelectedCellId] = useState(null);
@@ -18,6 +22,8 @@ function ClassesPage() {
   const [editingClass, setEditingClass] = useState({});
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
+  const [showBooking, setShowBooking] = useState(false);
+  const [bookingClass, setBookingClass] = useState({});
 
   // useEffect hook to fetch classes data when the component mounts
   useEffect(() => {
@@ -157,6 +163,7 @@ function ClassesPage() {
       <h1>Weekly Class Schedule</h1>
 
       {/* ADD NEW CLASS BUTTON */}
+      {isLoggedIn && (
       <div className="table-container">
         <div className="add-class-button-container">
           <Button id='addClassBtn' className="mb-3" onClick={() => setShowAdd(true)}>
@@ -166,6 +173,7 @@ function ClassesPage() {
         <table className="schedule-table">
         </table>
       </div>
+      )}
 
       {showAlert && <Alert variant="success">{alertMessage}</Alert>}
 
@@ -193,7 +201,7 @@ function ClassesPage() {
                         <br />
                         <FontAwesomeIcon icon={faInfoCircle} />
                       </Button>
-
+                      {isLoggedIn && (
                       <div>
                         <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setEditingClass(filteredClass); setShowEdit(true); }}>
                           <FontAwesomeIcon icon={faEdit} />
@@ -202,6 +210,14 @@ function ClassesPage() {
                           <FontAwesomeIcon icon={faTrash} />
                         </Button>
                       </div>
+                      )}
+                      {!isLoggedIn && (
+                      <div>
+                        <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setBookingClass(filteredClass); setShowBooking(true); }}>
+                          <FontAwesomeIcon icon={faEdit} />
+                        </Button>
+                      </div>
+                      )}
                     </div>
                   ))}
                 </td>
