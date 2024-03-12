@@ -15,7 +15,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
       </Modal.Header>
       <Modal.Body>
         <Form>
-        <Form.Group controlId="formPPS">
+          <Form.Group controlId="formPPS">
             <Form.Label>PPS</Form.Label>
             <Form.Control
               value={editedMember.pps_number}
@@ -56,32 +56,36 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
             <Form.Label>Gender</Form.Label>
             <Form.Control
               value={editedMember.gender}
-              readOnly
             />
           </Form.Group>
-          <Form.Group controlId="formPPS">
+          <Form.Group controlId="formDOB">
             <Form.Label>Date of Birth</Form.Label>
             <Form.Control
-              value={editedMember.date_of_birth}
+              placeholder="Enter date of birth"
+              name="date_of_birth"
+              value={editedMember.date_of_birth ? new Date(editedMember.date_of_birth).toISOString().split('T')[0] : ''}
               readOnly
             />
           </Form.Group>
-          <Form.Group controlId="formPPS">
+          <Form.Group controlId="formStartDate">
             <Form.Label>Start Date</Form.Label>
             <Form.Control
-              value={editedMember.start_date}
+              placeholder="Enter start date"
+              name="start_date"
+              value={editedMember.start_date ? new Date(editedMember.start_date).toISOString().split('T')[0] : ''}
               readOnly
             />
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="formBasicGender">
-        <Form.Label  >Type of Membership</Form.Label>
-        <Form.Select aria-label="Membership select" className="form-control" value={editedMember.type_of_memebrship}
+            <Form.Label  >Type of Membership</Form.Label>
+            <Form.Select aria-label="Membership select" className="form-control" value={editedMember.type_of_memebrship}
               onChange={handleChange}>
-          <option value="basic">basic</option>
-          <option value="premium">premium</option>
-          <option value="VIP">VIP</option>
-        </Form.Select>
-      </Form.Group>
+              <option value="basic">basic</option>
+              <option value="premium">premium</option>
+              <option value="VIP">VIP</option>
+            </Form.Select>
+          </Form.Group>
 
         </Form>
       </Modal.Body>

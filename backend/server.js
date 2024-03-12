@@ -211,25 +211,24 @@ app.get('/members', async (req, res) => {
 // Endpoint for updating an existing member
 app.put('/members/:id', async (req, res) => {
   const { id } = req.params;
-  // Destructures the updated member details from the request body.
-  const { ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership } = req.body;
+  const { pps_number, first_name, second_name, email_address, gender, date_of_birth, start_date, type_of_membership } = req.body;
   
   // Checks if any of the required member details are missing in the request body.
-  if (!ppsNumber || !firstName || !secondName || !email || !gender || !dateOfBirth || !startDate || !typeOfMembership) {
+  if (!pps_number || !first_name || !second_name || !email_address || !gender || !date_of_birth || !start_date || !type_of_membership) {
     return res.status(400).send('Missing required member information');
   }
 
   try {
     // Establish connection to database
     const connection = await mysql.createConnection(dbConfig);
-     // Defines a SQL query to update a member's details in the database for the specified 'id'
+    // Defines a SQL query to update a member's details in the database for the specified 'id'
     const query = `
       UPDATE members 
       SET first_name = ?, second_name = ?, email_address = ?, gender = ?, type_of_membership = ?
-      WHERE pps_number = ?`;
+      WHERE id = ?`;
 
-      // Executes the SQL query with the provided member details and the member 'id'.
-    await connection.execute(query, [ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership , id]);
+    // Executes the SQL query with the provided member details and the member 'id'.
+    await connection.execute(query, [first_name, second_name, email_address, gender, type_of_membership, id]);
     await connection.end();
 
     // Responds with a JSON object containing a success message upon successful update
@@ -239,6 +238,7 @@ app.put('/members/:id', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 // DELETE MEMBER METHOD
 // Endpoint for deleting a specific member
@@ -252,7 +252,7 @@ app.delete('/members/:id', async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
 
      // SQL query string to delete a member from the 'members' table where the 'id' matches the specified ID
-    const query = 'DELETE FROM members WHERE pps_number = ?';
+    const query = 'DELETE FROM members WHERE id = ?';
 
     // Executes the SQL query using the member ID to specify which member should be deleted.
     await connection.execute(query, [id]);
@@ -337,7 +337,7 @@ app.put('/classes/:id', async (req, res) => {
       SET class_name = ?, instructor_name = ?, time = ?, day = ?, max_capacity = ?
       WHERE id = ?`;
       // Execute the query
-    await connection.execute(query, [name, instructor_name, time, day, max_capacity, id]);
+    await connection.execute(query, [class_name, instructor_name, time, day, max_capacity, id]);
     // End the connection
     await connection.end();
 

@@ -116,7 +116,7 @@ function MembersPage() {
         <tbody>
           {/* Map over filteredMembers array to render each member as a row in the table */}
           {filteredMembers.map((member, index) => (
-            <tr key={member.id} onClick={() => handleRowClick(member)}>{/* Assign a key and set click handler */}
+            <tr key={member.id} onClick={() => handleRowClick(member)}>
               <td>{index + 1}</td>
               {/* Render member details in each cell */}
               <td>{member.pps_number}</td>
@@ -124,8 +124,8 @@ function MembersPage() {
               <td>{member.second_name}</td>
               <td>{member.email_address}</td>
               <td>{member.gender}</td>
-              <td>{member.date_of_birth}</td>
-              <td>{member.start_date}</td>
+              <td>{new Date(member.date_of_birth).toISOString().split('T')[0]}</td> {/* Remove time */}
+              <td>{new Date(member.start_date).toISOString().split('T')[0]}</td> {/* Remove time */}
               <td>{member.type_of_membership}</td>
             </tr>
           ))}
