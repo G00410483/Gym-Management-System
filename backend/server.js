@@ -301,7 +301,7 @@ app.post('/classes', async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
 
     // SQL query to insert a new class
-    const query = 'INSERT INTO classes (name, instructor_name, time, day, max_capacity) VALUES (?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO classes (class_name, instructor_name, time, day, max_capacity) VALUES (?, ?, ?, ?, ?)';
     
     // Execute the query with the class data
     await connection.execute(query, [class_name, instructor_name, time, day, parseInt(max_capacity)]);

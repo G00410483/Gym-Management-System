@@ -4,12 +4,18 @@ import { Button, Modal, Form, Card, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faInfoCircle, faChalkboardTeacher, faClock, faCalendarDay, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../AuthContext'; // Adjust this path as necessary
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { daysOfWeek } from './constants';
 
 
-// Array representing days of the week.
-const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
 function ClassesPage() {
+
+  const getDayOfWeekNumber = (dayString) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days.indexOf(dayString);
+  };
 
   const { isLoggedIn } = useAuth(); // Use the useAuth hook to get the logged-in status
 
@@ -24,6 +30,7 @@ function ClassesPage() {
   const [alertMessage, setAlertMessage] = useState('');
   const [showBooking, setShowBooking] = useState(false);
   const [bookingClass, setBookingClass] = useState({});
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   // useEffect hook to fetch classes data when the component mounts
   useEffect(() => {
@@ -190,8 +197,6 @@ function ClassesPage() {
   };
 
 
-
-
   // Group classes by time
   const groupedClasses = groupClassesByTime(classes);
 
@@ -295,16 +300,18 @@ function ClassesPage() {
           <Modal.Body>
             <Form.Group className="mb-3" controlId="formClassName">
               <Form.Label>Class Name</Form.Label>
-              <Form.Control type="text" name="name" required />
+              <Form.Control type="class_name" name="class_name" required />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formInstructorName">
               <Form.Label>Instructor Name</Form.Label>
-              <Form.Control type="text" name="instructor_name" required />
+              <Form.Control type="instructor_name" name="instructor_name" required />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="formTime">
               <Form.Label>Time</Form.Label>
               <Form.Control type="time" name="time" required />
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="formDay">
               <Form.Label>Day</Form.Label>
               <Form.Select name="day" required>
@@ -313,6 +320,7 @@ function ClassesPage() {
                 ))}
               </Form.Select>
             </Form.Group>
+
             <Form.Group className="mb-3" controlId="formMaxCapacity">
               <Form.Label>Max Capacity</Form.Label>
               <Form.Control type="number" name="max_capacity" required />
@@ -328,6 +336,7 @@ function ClassesPage() {
           </Modal.Footer>
         </Form>
       </Modal>
+
 
       {/* MODAL FOR EDITING SPECIFIC CLASS */}
       <Modal show={showEdit} onHide={() => setShowEdit(false)}>
@@ -380,9 +389,19 @@ function ClassesPage() {
         <Form onSubmit={handleBookingClass}>
           <Modal.Body>
             <p>Booking class: {bookingClass.class_name}</p>
-            <Form.Group className="mb-3" controlId="formEmail">
-              <Form.Label>Email Address</Form.Label>
-              <Form.Control type="email" name="email" placeholder="Enter your email" required />
+            <Form.Group className="mb-3" controlId="formBookingDate">
+              <Form.Label>Select Date</Form.Label>
+              {/* References:
+              https://github.com/Hacker0x01/react-datepicker/issues/1018
+              https://stackoverflow.com/questions/70182747/get-react-datepicker-date-value-in-onchange */}
+              <DatePicker
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+                dateFormat="dd/MM/yyyy"
+                minDate={new Date()}
+                filterDate={(date) => date.getDay() === getDayOfWeekNumber(bookingClass.day)}
+                required
+              />
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
