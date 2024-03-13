@@ -3,12 +3,15 @@ import './ClassesPage.css';
 import { Button, Modal, Form, Card, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faInfoCircle, faChalkboardTeacher, faClock, faCalendarDay, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../AuthContext'; // Adjust this path as necessary
+import { useAuth } from '../../AuthContext'; // Adjust this path as necessary
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { daysOfWeek } from './constants';
-
-
+import { daysOfWeek } from '../constants';
+import BookClass from './BookClass';
+import ClassInfo from './ClassInfo';
+import EditClass from './EditClass';
+import AddClass from './AddClass';
+import Timetable from './Timetable';
 
 function ClassesPage() {
 
@@ -186,7 +189,6 @@ function ClassesPage() {
         const errorText = await response.text();
         throw new Error(errorText || 'Network response was not ok.');
       }
-
       const responseBody = await response.json();
       showAlertWithMessage('Booking successful!');
       setShowBooking(false); // Hide the booking modal on success
@@ -220,200 +222,45 @@ function ClassesPage() {
       {showAlert && <Alert variant="success">{alertMessage}</Alert>}
 
       {/* TIMETABLE SECTION */}
-      <table className="schedule-table">
-        <thead>
-          <tr>
-            <th>Time / Day</th>
-            {daysOfWeek.map((day, index) => (
-              <th key={index}>{day}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(groupedClasses).map(([time, classesAtThisTime]) => (
-            <tr key={time}>
-              <td>{time}</td>
-              {daysOfWeek.map((day, dayIndex) => (
-                <td key={dayIndex}>
-                  {classesAtThisTime.filter(classForDay => classForDay.day === day).map((filteredClass) => (
-                    <div key={filteredClass.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Button id='classInfoBtn' variant="outline-primary" size="sm"
-                        onClick={() => handleClassSelect(filteredClass.id, day)}>
-                        {filteredClass.class_name}
-                        <br />
-                        <FontAwesomeIcon icon={faInfoCircle} />
-                      </Button>
-                      {isLoggedIn && (
-                        <div>
-                          <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setEditingClass(filteredClass); setShowEdit(true); }}>
-                            <FontAwesomeIcon icon={faEdit} />
-                          </Button>
-                          <Button id='ttBtn' variant="outline-danger" size="sm" onClick={() => handleDeleteClass(filteredClass.id)}>
-                            <FontAwesomeIcon icon={faTrash} />
-                          </Button>
-                        </div>
-                      )}
-                      {!isLoggedIn && (
-                        <div>
-                          <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setBookingClass(filteredClass); setShowBooking(true); }}>
-                            <FontAwesomeIcon icon={faEdit} />
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-
-      </table>
+      <Timetable
+            groupedClasses={groupedClasses}
+            handleClassSelect={handleClassSelect}
+            handleDeleteClass={handleDeleteClass}
+            isLoggedIn={isLoggedIn}
+            setEditingClass={setEditingClass}
+            setShowEdit={setShowEdit}
+            setBookingClass={setBookingClass}
+            setShowBooking={setShowBooking}
+          />
 
       {/* MODAL FOR DISPLAYING SELECTED CLASS */}
-      {selectedClass && (
-        <Modal show={selectedClass !== null} onHide={() => setSelectedClass(null)}>
-          <Modal.Header>
-            <Modal.Title>{selectedClass.class_name}</Modal.Title>
-            <FontAwesomeIcon icon={faInfoCircle} />
-          </Modal.Header>
-          <Modal.Body>
-            <p><FontAwesomeIcon icon={faChalkboardTeacher} className="modal-icon" />Instructor: {selectedClass.instructor_name}<br />
-              <FontAwesomeIcon icon={faClock} className="modal-icon" />Time: {selectedClass.time}<br />
-              <FontAwesomeIcon icon={faCalendarDay} className="modal-icon" />Day: {selectedClass.day}<br />
-              <FontAwesomeIcon icon={faUsers} className="modal-icon" />Max Capacity: {selectedClass.max_capacity}</p>
-            <img id="classImg" src={selectedClass.image} alt="Class Visual" className="modal-image" />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary" onClick={() => setSelectedClass(null)}>Close</Button>
-          </Modal.Footer>
-        </Modal>
-
-      )}
+      <ClassInfo selectedClass={selectedClass} onHide={() => setSelectedClass(null)} />
 
       {/* MODAL FOR ADDING NEW CLASS */}
-      <Modal show={showAdd} onHide={() => setShowAdd(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Class</Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleAddClass}>
-          <Modal.Body>
-            <Form.Group className="mb-3" controlId="formClassName">
-              <Form.Label>Class Name</Form.Label>
-              <Form.Control type="class_name" name="class_name" required />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formInstructorName">
-              <Form.Label>Instructor Name</Form.Label>
-              <Form.Control type="instructor_name" name="instructor_name" required />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formTime">
-              <Form.Label>Time</Form.Label>
-              <Form.Control type="time" name="time" required />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formDay">
-              <Form.Label>Day</Form.Label>
-              <Form.Select name="day" required>
-                {daysOfWeek.map((day, index) => (
-                  <option key={index} value={day}>{day}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formMaxCapacity">
-              <Form.Label>Max Capacity</Form.Label>
-              <Form.Control type="number" name="max_capacity" required />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowAdd(false)}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit">
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-
+      <AddClass
+        show={showAdd}
+        handleClose={() => setShowAdd(false)}
+        handleAddClass={handleAddClass}
+      />
 
       {/* MODAL FOR EDITING SPECIFIC CLASS */}
-      <Modal show={showEdit} onHide={() => setShowEdit(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Class</Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleEditClass}>
-          <Modal.Body>
-            <Form.Group className="mb-3" controlId="formClassName">
-              <Form.Label>Class Name</Form.Label>
-              <Form.Control type="text" defaultValue={editingClass.class_name} name="name" required />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formInstructorName">
-              <Form.Label>Instructor Name</Form.Label>
-              <Form.Control type="text" defaultValue={editingClass.instructor_name} name="instructor_name" required />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formTime">
-              <Form.Label>Time</Form.Label>
-              <Form.Control type="time" defaultValue={editingClass.time} name="time" required />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formDay">
-              <Form.Label>Day</Form.Label>
-              <Form.Select defaultValue={editingClass.day} name="day" required>
-                {daysOfWeek.map((day, index) => (
-                  <option key={index} value={day}>{day}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formMaxCapacity">
-              <Form.Label>Max Capacity</Form.Label>
-              <Form.Control type="number" defaultValue={editingClass.max_capacity} name="max_capacity" required />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowEdit(false)}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit">
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
+      <EditClass
+        show={showEdit}
+        onHide={() => setShowEdit(false)}
+        editingClass={editingClass}
+        handleEditClass={handleEditClass}
+      />
 
       {/* MODAL FOR BOOKING A CLASS */}
-      <Modal show={showBooking} onHide={() => setShowBooking(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Book Class</Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleBookingClass}>
-          <Modal.Body>
-            <p>Booking class: {bookingClass.class_name}</p>
-            <Form.Group className="mb-3" controlId="formBookingDate">
-              <Form.Label>Select Date</Form.Label>
-              {/* References:
-              https://github.com/Hacker0x01/react-datepicker/issues/1018
-              https://stackoverflow.com/questions/70182747/get-react-datepicker-date-value-in-onchange */}
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
-                dateFormat="dd/MM/yyyy"
-                minDate={new Date()}
-                filterDate={(date) => date.getDay() === getDayOfWeekNumber(bookingClass.day)}
-                required
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={() => setShowBooking(false)}>
-              Close
-            </Button>
-            <Button variant="primary" type="submit">
-              Book Now
-            </Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
+      <BookClass
+        show={showBooking}
+        onHide={() => setShowBooking(false)}
+        bookingClass={bookingClass}
+        handleBookingClass={handleBookingClass}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        getDayOfWeekNumber={getDayOfWeekNumber}
+      />
     </div>
   );
 }
