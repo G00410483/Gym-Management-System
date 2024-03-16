@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { daysOfWeek } from '../constants';
 
-function AddClass({ show, handleClose, handleAddClass }) {
+function AddClass({ show, handleClose, editingClass, handleAddClass }) {
 
   const [availableClassNames, setAvailableClass] = useState([]);
 
@@ -24,7 +24,7 @@ function AddClass({ show, handleClose, handleAddClass }) {
       <Modal.Header closeButton>
         <Modal.Title>Add New Class</Modal.Title>
       </Modal.Header>
-      <Form onSubmit={handleAddClass}>
+      <Form onSubmit={(e) => handleAddClass(e, editingClass.id)}>
         <Modal.Body>
         <Form.Group className="mb-3" controlId="formClassName">
             <Form.Label>Class Name</Form.Label>
@@ -33,10 +33,6 @@ function AddClass({ show, handleClose, handleAddClass }) {
                 <option key={index} value={classInfo.class_name}>{classInfo.class_name}</option>
               ))}
             </Form.Select>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formInstructorName">
-            <Form.Label>Instructor Name</Form.Label>
-            <Form.Control type="text" name="instructor_name" required />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formTime">
@@ -51,11 +47,6 @@ function AddClass({ show, handleClose, handleAddClass }) {
                 <option key={index} value={day}>{day}</option>
               ))}
             </Form.Select>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formMaxCapacity">
-            <Form.Label>Max Capacity</Form.Label>
-            <Form.Control type="number" name="max_capacity" required />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

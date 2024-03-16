@@ -3,7 +3,7 @@ import './ClassesPage.css';
 import { Button, Modal, Form, Card, Alert } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faEdit, faTrash, faInfoCircle, faChalkboardTeacher, faClock, faCalendarDay, faUsers } from '@fortawesome/free-solid-svg-icons';
-import { useAuth } from '../../AuthContext'; // Adjust this path as necessary
+import { useAuth } from '../../AuthContext'; 
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { daysOfWeek } from '../constants';
@@ -66,34 +66,36 @@ function ClassesPage() {
 
 
   // Define an asynchronous function named handleAddClass that takes an event parameter
-  const handleAddClass = async (event) => {
-    // Prevent the default form submission behavior
-    event.preventDefault();
-    // Create a FormData object from the form data submitted
-    const formData = new FormData(event.target);
-    // Convert the FormData object into a plain JavaScript object containing form field values
-    const classData = Object.fromEntries(formData.entries());
+const handleAddClass = async (event) => {
+  // Prevent the default form submission behavior
+  event.preventDefault();
 
-    try {
-      // Send a POST request to the server to add a new class
-      await fetch('http://localhost:3001/classes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Convert the class data object to JSON format and set it as the request body
-        body: JSON.stringify(classData),
-      });
-      // Refresh the classes data after adding a new class
-      fetchClasses();
-      // Hide the modal for adding a new class
-      setShowAdd(false);
-      // Show an alert message indicating successful class addition
-      showAlertWithMessage('Class added successfully!');
-    } catch (error) {
-      console.error('Failed to add class:', error);
-    }
-  };
+  // Create a FormData object from the form data submitted
+  const formData = new FormData(event.target);
+
+  // Convert the FormData into a JSON object
+  const classData = Object.fromEntries(formData.entries());
+
+  try {
+    // Send a POST request to add a new class on the server
+    await fetch('http://localhost:3001/classes/addNewClass', { // Adjust the URL as per your API endpoint
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Convert the classData object to JSON format and set it as the request body
+      body: JSON.stringify(classData),
+    });
+    // Refresh the classes data after adding a new class
+    fetchClasses();
+    // Hide the modal for adding a new class
+    setShowAdd(false);
+    // Show an alert message indicating successful class addition
+    showAlertWithMessage('New class added successfully!');
+  } catch (error) {
+    console.error('Failed to add new class:', error);
+  }
+};
 
   // Define an asynchronous function named handleEditClass that takes an event parameter 
   const handleEditClass = async (event) => {
@@ -167,12 +169,12 @@ function ClassesPage() {
 
   const handleBookingClass = async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
-
+  
     const formData = new FormData(event.target);
+    const email = formData.get('email_address'); // Corrected to match the form's email field name
     const bookingData = {
       class_name: bookingClass.class_name, 
-      email_address: formData.get('email_address'),
-      /* Reference: https://stackoverflow.com/questions/47066555/remove-time-after-converting-date-toisostring */
+      email_address: email, // Use the retrieved email
       date: selectedDate.toISOString().split('T')[0] // Format date as YYYY-MM-DD
     };
     try {
@@ -183,7 +185,7 @@ function ClassesPage() {
         },
         body: JSON.stringify(bookingData),
       });
-
+  
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || 'Network response was not ok.');
@@ -197,6 +199,7 @@ function ClassesPage() {
     }
   };
 
+  
 
   // Group classes by time
   const groupedClasses = groupClassesByTime(classes);

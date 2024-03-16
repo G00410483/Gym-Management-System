@@ -137,7 +137,6 @@ app.post('/register', async (req, res) => {
 // Endpoint for handling user registration
 // POST REGISTER NEW MEMBER METHOD
 app.post('/registerMember', async (req, res) => {
-  console.log("Hello");
   
   // Request body to extract firstName, secondName, email and password
   const { ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership } = req.body;
@@ -288,35 +287,33 @@ app.get('/classes', async (req, res) => {
   }
 });
 
-// POST CLASSES METHOD
-// To add new class recrod
-app.post('/classes', async (req, res) => {
-  // Extract class details from the request body
-  const { class_name, instructor_name, time, day, max_capacity } = req.body;
-
-  // Check if all required fields are provided
-  if (!class_name || !instructor_name || !time || !day || !max_capacity) {
-    return res.status(400).send('Missing required class information');
+// PUT class method
+// To update existing class record
+app.put('/classes/:id/addClass', async (req, res) => {
+  const { id } = req.params; // Extract class ID from URL
+  const { time, day } = req.body; // Assuming only time and day are being updated
+  console.log(req.body);
+  // Check if required fields are provided
+  if (!time || !day || !id) {
+    return res.status(400).send('Missing required class information for update');
   }
 
   try {
-    // Establish connection to db
+    console.log({ id, time, day });
     const connection = await mysql.createConnection(dbConfig);
-
-    // SQL query to insert a new class
-    const query = 'INSERT INTO classes (class_name, instructor_name, time, day, max_capacity) VALUES (?, ?, ?, ?, ?)';
+    // SQL query to update an existing class's time and day
+    const query = 'UPDATE classes SET time = ?, day = ? WHERE id = ?';
     
-    // Execute the query with the class data
-    await connection.execute(query, [class_name, instructor_name, time, day, parseInt(max_capacity)]);
-    // End the connection
+    // Execute the query with the new class data
+    await connection.execute(query, [time, day, id]);
     await connection.end();
-    // Respond with 201 status and success message
-    res.status(201).json({ message: 'Class added successfully' });
+    res.status(200).json({ message: 'Class updated successfully' });
   } catch (error) {
-    console.error('Failed to add class:', error);
+    console.error('Failed to update class:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 // PUT CLASSES METHOD
 // To update an existing class record
@@ -402,6 +399,7 @@ app.get('/availableClasses', async (req, res) => {
 app.post('/bookClass', async (req, res) => {
   // Destructure class_name, email_address, class_id, and date from the request body
   const { class_name, email_address, date } = req.body;
+  console.log(req.body);
 
   // Check if class_name, email_address, class_id, or date is missing
   if (!class_name || !email_address || !date) {
@@ -470,6 +468,37 @@ app.get('/bookingsDisplay', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
+
+// GET Dashboard Data
+app.get('/dashboard', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    const queries = {
+      totalMembers: 'SELECT COUNT(*) AS total FROM members',
+      totalBookings: 'SELECT COUNT(*) AS total FROM bookings',
+      genders: 'SELECT gender, COUNT(*) AS count FROM members GROUP BY gender',
+      memberships: 'SELECT type_of_membership, COUNT(*) AS count FROM members GROUP BY type_of_membership'
+    };
+
+    const [totalMembers] = await connection.query(queries.totalMembers);
+    const [totalBookings] = await connection.query(queries.totalBookings);
+    const [genders] = await connection.query(queries.genders);
+    const [memberships] = await connection.query(queries.memberships);
+    await connection.end();
+    console.log(totalMembers);
+    res.json({
+      totalMembers: totalMembers[0].total,
+      totalBookings: totalBookings[0].total,
+      genders,
+      memberships
+    });
+  } catch (error) {
+    console.error('Dashboard data fetch error:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

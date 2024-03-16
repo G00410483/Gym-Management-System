@@ -39,18 +39,21 @@ h1 {
   border-radius: 20%;
 }
 
-.schedule-table td button {
-  background-color: #555;
-  color: #fff;
-  padding: 8px 12px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+#classInfoBtn{
+  background-color: #666;
+  color: white;
+  border-color: black;
+}
+#deleteBtn {
+  color: white;
+  background-color: red;
 }
 #classInfoBtn {
   width: 100px;
 }
 #ttBtn {
+  background-color: #007bff;
+  color: white;
   border-radius: 50%;
 }
 
@@ -143,11 +146,14 @@ h1 {
   border-radius: 0.25rem;
 }
 
-
 .react-datepicker__input-container input {
   width: 100%;
   padding: 0.375rem 0.75rem;
   border: 1px solid #ced4da;
   border-radius: 0.25rem;
 }
-
+.schedule-table td button:hover {
+  background-color: #666;
+  transform: scale(1.1); /* Slightly increase the size */
+  transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth transition for transform and background color */
+}

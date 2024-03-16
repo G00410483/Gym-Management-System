@@ -4,7 +4,7 @@ import ExampleCarouselImage from './ExampleCarouselImage';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import './Homepage.css';
 import SubscriptionPlans from './SubscriptionPlan';
-import videoBg from '../assets/video.mp4'
+import videoBg from '../assets/video.mp4';
 
 
 function Homepage() {
@@ -13,7 +13,7 @@ function Homepage() {
             <video autoPlay muted loop id="videoBg" style={{ position: 'absolute', width: '100%', left: '50%', top: '50%', height: '100%', objectFit: 'cover', transform: 'translate(-50%, -50%)', zIndex: '0' }}>
                 <source src={videoBg} type="video/mp4" />
             </video>
-            <div className="video-overlay"></div> {/* Overlay Added */}
+            <div className="video-overlay"></div> 
             <div className="content-container">
                 <div className="d-flex justify-content-center align-items-center">
                     <Carousel style={{ width: '32rem', height: '300px' }}>

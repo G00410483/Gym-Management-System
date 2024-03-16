@@ -35,7 +35,7 @@ function Timetable({ groupedClasses, handleClassSelect, handleDeleteClass, isLog
                         <Button id='ttBtn' variant="outline-primary" size="sm" onClick={() => { setEditingClass(filteredClass); setShowEdit(true); }}>
                           <FontAwesomeIcon icon={faEdit} />
                         </Button>
-                        <Button id='ttBtn' variant="outline-danger" size="sm" onClick={() => handleDeleteClass(filteredClass.id)}>
+                        <Button id='deleteBtn' variant="outline-danger" size="sm" onClick={() => handleDeleteClass(filteredClass.id)}>
                           <FontAwesomeIcon icon={faTrash} />
                         </Button>
                       </div>
