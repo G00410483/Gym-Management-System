@@ -169,15 +169,14 @@ function ClassesPage() {
     event.preventDefault(); // Prevent the default form submission behavior
 
     const formData = new FormData(event.target);
-    const email = formData.get('email'); // Ensure this matches the 'name' attribute of your email input field
-
     const bookingData = {
-      class_name: bookingClass.class_name, // Ensure this is the correct property from your state
-      email_address: email,
+      class_name: bookingClass.class_name, 
+      email_address: formData.get('email_address'),
+      /* Reference: https://stackoverflow.com/questions/47066555/remove-time-after-converting-date-toisostring */
+      date: selectedDate.toISOString().split('T')[0] // Format date as YYYY-MM-DD
     };
-
     try {
-      const response = await fetch('http://localhost:3001/bookings', {
+      const response = await fetch('http://localhost:3001/bookClass', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

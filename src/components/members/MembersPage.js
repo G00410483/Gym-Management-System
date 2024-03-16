@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Form } from 'react-bootstrap';
 import axios from 'axios';
-import EditMemberModal from './EditMemberModal';
+import EditMember from './EditMember';
 import './MembersPage.css';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
+
 
 function MembersPage() {
   // State hooks to manage members data, the selected member, and modal visibility
@@ -10,21 +12,24 @@ function MembersPage() {
   const [selectedMember, setSelectedMember] = useState(null); // State for storing the selected member for editing
   const [showModal, setShowModal] = useState(false); // State for controlling the visibility of the modal
   const [searchTerm, setSearchTerm] = useState('');
+  const [sort, setSort] = useState('');
 
-  // useEffect hook to fetch members data from the server when the component mounts
+
+  // Define the fetchMembers function
+  const fetchMembers = async (sortCriteria = '') => {
+    try {
+      // Update the URL with sort parameter
+      const response = await axios.get(`http://localhost:3001/members?sort=${sortCriteria}`);
+      setMembers(response.data);
+    } catch (error) {
+      console.error('There was an error fetching the members:', error);
+    }
+  };
+
+  // useEffect hook to fetch members data from the server when the component mounts or sort state changes
   useEffect(() => {
-    const fetchMembers = async () => { // Define an asynchronous function to fetch members data
-      try {
-        const response = await axios.get('http://localhost:3001/members'); // Use Axios to make a GET request to fetch members
-        setMembers(response.data); // Update the members state with the fetched data
-      } catch (error) {
-        console.error('There was an error fetching the members:', error); // Log any errors to the console
-      }
-    };
-
-    // Call fetchMembers function
-    fetchMembers();
-  }, []); // Empty dependency array- this effect runs only once after the initial render
+    fetchMembers(sort); // Fetch members with current sort criteria
+  }, [sort]); // Include sort in the dependency array to refetch when it changes
 
   // Function to handle row click event, which sets the selected member and shows the modal
   const handleRowClick = (member) => {
@@ -74,10 +79,16 @@ function MembersPage() {
     setSearchTerm(event.target.value);
   };
 
+  const handleSortChange = (sortCriteria) => {
+    setSort(sortCriteria);
+    fetchMembers(sortCriteria); // Pass the sort criteria to your fetch function
+  };
+
   // Rendering filtered members based on search term
   const filteredMembers = members.filter(member =>
     member.first_name.toLowerCase().includes(searchTerm.toLowerCase()) || // Check if first name includes search term
-    member.second_name.toLowerCase().includes(searchTerm.toLowerCase()) // Check if second name includes search term
+    member.second_name.toLowerCase().includes(searchTerm.toLowerCase()) || // Check if second name includes search term
+    member.email_address.toLowerCase().includes(searchTerm.toLowerCase()) // Check if email address inculed search term
   );
 
   return (
@@ -95,6 +106,34 @@ function MembersPage() {
             onChange={handleSearchChange} // Set the onChange event handler to handleSearchChange directly
           />
         </Form.Group>
+        <DropdownButton
+          id="dropdown-button"
+          title="Sort Members"
+          variant="primary"
+          className="mb-3"
+        >
+          <Dropdown.Item onClick={() => handleSortChange('date_of_birth ASC')}>
+           Date of Birth (Ascending)
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSortChange('date_of_birth DESC')}>
+            Date of Birth (Descending)
+          </Dropdown.Item>
+
+          <Dropdown.Item onClick={() => handleSortChange('start_date ASC')}>
+           Start Date (Ascending)
+          </Dropdown.Item>
+          <Dropdown.Item onClick={() => handleSortChange('start_date DESC')}>
+            Start Date (Descending)
+          </Dropdown.Item>
+
+          <Dropdown.Item onClick={() => handleSortChange('gender ASC')}>
+           Gender
+          </Dropdown.Item>
+
+          <Dropdown.Item onClick={() => handleSortChange('type_of_membership ASC')}>
+           Type of Membership 
+          </Dropdown.Item>
+        </DropdownButton>
 
       </Form>
       {/* Bootstrap Table used for styling */}
@@ -134,7 +173,7 @@ function MembersPage() {
       {/* Check if 'selectedMember' is not null or undefined. This condition determines if the EditMemberModal should be rendered. */}
       {selectedMember && (
         // Render the EditMemberModal component with props passed to it. This modal is used for editing a member's details.
-        <EditMemberModal
+        <EditMember
           show={showModal} // Determines if the modal is visible.
           handleClose={handleCloseModal} // Function to call when closing the modal.
           member={selectedMember} // The member data to edit.

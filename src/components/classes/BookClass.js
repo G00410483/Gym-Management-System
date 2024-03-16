@@ -13,6 +13,10 @@ function BookClass({ show, onHide, bookingClass, handleBookingClass, selectedDat
       <Form onSubmit={handleBookingClass}>
         <Modal.Body>
           <p>Booking class: {bookingClass.class_name}</p>
+          <Form.Group className="mb-3" controlId="formBookingEmail">
+            <Form.Label>Email Address</Form.Label>
+            <Form.Control type="email" name="email_address" required />
+          </Form.Group>
           <Form.Group className="mb-3" controlId="formBookingDate">
             <Form.Label>Select Date</Form.Label>
             <DatePicker

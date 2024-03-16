@@ -181,31 +181,34 @@ app.post('/registerMember', async (req, res) => {
 // Endpoint for fetching members with optional search functionality
 app.get('/members', async (req, res) => {
   try {
-    // Extract search term from query parameters, if provided
-    const searchTerm = req.query.searchTerm ? req.query.searchTerm.toLowerCase().trim() : null; // Trim and convert to lowercase for case-insensitive search
-    // Establish connection to the database
-    const connection = await mysql.createConnection(dbConfig);
-    
-    let query = 'SELECT * FROM members'; // Default query to select all members
+    const { searchTerm, sort } = req.query; // Capture sort parameter from query
+    const searchTermLower = searchTerm ? searchTerm.toLowerCase().trim() : null;
 
-    // If a search term is provided, modify the query to filter members
-    if (searchTerm) {
-      query += ' WHERE LOWER(first_name) LIKE ? OR LOWER(second_name) LIKE ?';
+    const connection = await mysql.createConnection(dbConfig);
+
+    let query = 'SELECT * FROM members';
+
+    if (searchTermLower) {
+      query += ' WHERE LOWER(first_name) LIKE ? OR LOWER(second_name) LIKE ? OR LOWER(email_address) LIKE ?';
     }
 
-    // Execute the SQL query
-    const [members] = await connection.execute(query, searchTerm ? [`%${searchTerm}%`, `%${searchTerm}%`] : null);
+    // Sort functionality
+    if (sort) {
+      query += ` ORDER BY ${sort}`;
+    }
 
-    // Close the connection to database
+    const params = searchTermLower ? [`%${searchTermLower}%`, `%${searchTermLower}%`, `%${searchTermLower}%`] : [];
+    const [members] = await connection.execute(query, params);
+
     await connection.end();
 
-    // Respond with JSON containing the fetched member details
     res.json(members);
   } catch (error) {
     console.error('Error fetching members:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 // UPDATE MEMBER METHOD
 // Endpoint for updating an existing member
@@ -374,44 +377,47 @@ app.delete('/classes/:id', async (req, res) => {
 });
 
 // Endpoint for handling user registration
-// POST BOOKIG METHOD
-app.post('/bookings', async (req, res) => {
-  // Destructure class_name and email_address from the request body
-  const { class_name, email_address } = req.body;
+// POST BOOKING METHOD
+app.post('/bookClass', async (req, res) => {
+  // Destructure class_name, email_address, class_id, and date from the request body
+  const { class_name, email_address, date } = req.body;
 
-  // Check if class_name or email_address is missing
-  if (!class_name || !email_address) {
-    return res.status(400).send('Missing required registration information');
+  // Check if class_name, email_address, class_id, or date is missing
+  if (!class_name || !email_address || !date) {
+    return res.status(400).send('Missing required booking information');
   }
-
   try {
     // Establish connection to database
     const connection = await mysql.createConnection(dbConfig);
-    // Execute query to ensure provided email address exists in database
+
+    // Execute query to ensure provided email address exists in the members table
     const [members] = await connection.execute(
-      'SELECT email_address FROM members WHERE email_address = ? LIMIT 1',
+      'SELECT email_address FROM members WHERE email_address = ?',
       [email_address]
     );
-    
-    // If member not found close connection
+
+    // If member not found, close connection and return an error
     if (members.length === 0) {
       await connection.end();
       return res.status(404).send('Email address not found in members');
     }
-    // If member found create new booking record
+
+    // If member found, create a new booking record with the correct class_name, class_id, and date
     await connection.execute(
-      'INSERT INTO bookings (class_name, email_address) VALUES (?, ?)',
-      [class_name, email_address]
+      'INSERT INTO bookings (class_name, email_address, date) VALUES (?, ?, ?)',
+      [class_name, email_address, date]
     );
+
     // Close connection
     await connection.end();
-    
+
     res.json({ message: 'Booking successful' });
   } catch (error) {
     console.error('Error during booking:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 // GET BOOKINGS METHOD
 // Endpoint for fetching members with optional search functionality

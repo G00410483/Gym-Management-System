@@ -10,6 +10,7 @@
 .subscription-section {
   padding: 40px 0;
   background-color: var(--light-color);
+  border-radius: 15px;
 }
 
 .subscription-card {
@@ -38,30 +39,6 @@
   font-weight: bold;
   color: var(--dark-color);
   margin-bottom: 15px;
-}
-
-.features-list {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 20px;
-}
-
-.features-list li {
-  text-align: left;
-  padding-left: 15px;
-  position: relative;
-}
-
-.features-list li:before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
 }
 
 .subscribe-button {

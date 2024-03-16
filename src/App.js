@@ -14,7 +14,7 @@ import RegisterForm from './components/RegisterForm';
 import Homepage from './components/Homepage';
 import ClassesPage from './components/classes/ClassesPage';
 import RegisterMember from './components/RegisterMemeber';
-import MembersPage from './components/MembersPage';
+import MembersPage from './components/members/MembersPage';
 import BookingsDisplay from './components/BookingsDisplay';
 
 function ConditionalNavbar() {
@@ -26,7 +26,7 @@ function ConditionalNavbar() {
   }
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="dark" variant="dark" expand="lg" fixed="left">
       <Container>
         <Navbar.Brand href="/">
         <i class="fas fa-dumbbell fa-x"></i>

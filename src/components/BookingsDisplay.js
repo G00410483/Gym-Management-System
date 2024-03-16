@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './BookingsDisplay.css'; // Ensure you have this CSS file
 
 function BookingsDisplay() {
   const [bookings, setBookings] = useState([]);
@@ -7,7 +8,6 @@ function BookingsDisplay() {
     fetchBookings();
   }, []);
 
-  // Function to fetch bookings from your backend
   const fetchBookings = async () => {
     try {
       const response = await fetch('http://localhost:3001/bookingsDisplay');
@@ -21,9 +21,8 @@ function BookingsDisplay() {
     }
   };
 
-  // Render the fetched bookings
   return (
-    <div>
+    <div className="bookings-display">
       <h2>Bookings Display</h2>
       <AllBookingsView bookings={bookings} />
     </div>
@@ -32,12 +31,12 @@ function BookingsDisplay() {
 
 function AllBookingsView({ bookings }) {
   return (
-    <div>
+    <div className="bookings-grid">
       {bookings.map((booking, index) => (
-        <div key={index}>
-          <p>Email: {booking.email_address}</p>
-          <p>Class: {booking.class_name}</p>
-          <hr />
+        <div className="booking-card" key={index}>
+          <h3>{booking.class_name}</h3>
+          <p><strong>Email:</strong> {booking.email_address}</p>
+          <p><strong>Date:</strong> {new Date(booking.date).toLocaleDateString()}</p>
         </div>
       ))}
     </div>

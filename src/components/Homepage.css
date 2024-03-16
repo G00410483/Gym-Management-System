@@ -6,20 +6,6 @@ body, html {
   background-color: #f8f9fa; 
 }
 
-.content-container {
-  position: relative;
-  z-index: 1; /* Ensure content is above the video */
-  margin: 0 auto;
-  padding: 20px;
-  max-width: 1200px;
-  background-color: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 15px;
-  overflow: hidden;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
   .carousel {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -39,6 +25,8 @@ body, html {
     padding-top: 2rem;
     padding-bottom: 2rem;
     border-top: 1px solid #e7e7e7; 
+
+  
   }
   
   .mdb-footer .text-muted {
@@ -82,6 +70,49 @@ body, html {
       margin-top: 10px;
     }
   }
+
+  .video-background {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #videoBg {
+    /* Full screen with centered focus */
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    z-index: -1; /* Ensure video stays in the background */
+  }
+  
+  .video-overlay {
+    /* Overlay to enhance readability and add modern feel */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Dark overlay for better readability */
+    z-index: 1; /* Ensures overlay is above video but below content */
+  }
+  
+  .content-container {
+    position: relative;
+    z-index: 2; /* Ensure content is above the overlay */
+    margin: 0 auto;
+    padding: 20px;
+    max-width: 1200px;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
  
 
   

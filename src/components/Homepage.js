@@ -10,6 +10,10 @@ import videoBg from '../assets/video.mp4'
 function Homepage() {
     return (
         <div className="video-background">
+            <video autoPlay muted loop id="videoBg" style={{ position: 'absolute', width: '100%', left: '50%', top: '50%', height: '100%', objectFit: 'cover', transform: 'translate(-50%, -50%)', zIndex: '0' }}>
+                <source src={videoBg} type="video/mp4" />
+            </video>
+            <div className="video-overlay"></div> {/* Overlay Added */}
             <div className="content-container">
                 <div className="d-flex justify-content-center align-items-center">
                     <Carousel style={{ width: '32rem', height: '300px' }}>
@@ -25,7 +29,6 @@ function Homepage() {
                         ))}
                     </Carousel>
                 </div>
-                {/* Subscription Plans */}
                 <SubscriptionPlans />
 
                 <MDBFooter bgColor='light' className='text-center text-lg-start text-muted'>

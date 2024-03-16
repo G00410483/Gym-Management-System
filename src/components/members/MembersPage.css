@@ -61,3 +61,25 @@ h1 {
   background-color: #575757;
   transform: translateY(-2px);
 }
+.dropdown-button {
+  width: auto; 
+  margin-right: 10px;
+  background-color: #EAEAEA;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-item i {
+  margin-right: 8px;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-item:active {
+  background-color: #e9ecef;
+}
