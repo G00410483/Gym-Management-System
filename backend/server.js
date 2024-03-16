@@ -376,6 +376,27 @@ app.delete('/classes/:id', async (req, res) => {
   }
 });
 
+// Endpoint to get available class names
+app.get('/availableClasses', async (req, res) => {
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+    // Assuming 'all_class_names' is a table or a list containing all possible class names
+    const query = `
+      SELECT *
+      FROM classes 
+      WHERE time IS NULL AND day IS NULL;
+    `;
+    const [availableClasses] = await connection.execute(query);
+    await connection.end();
+    res.json(availableClasses);
+    console.log(availableClasses);
+  } catch (error) {
+    console.error('Error fetching available class names:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 // Endpoint for handling user registration
 // POST BOOKING METHOD
 app.post('/bookClass', async (req, res) => {

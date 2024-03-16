@@ -1,9 +1,24 @@
 // AddClassModal.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { daysOfWeek } from '../constants';
 
 function AddClass({ show, handleClose, handleAddClass }) {
+
+  const [availableClassNames, setAvailableClass] = useState([]);
+
+  useEffect(() => {
+    const fetchAvailableClass = async () => {
+      const response = await fetch('http://localhost:3001/availableClasses');
+      const data = await response.json();
+      setAvailableClass(data);
+    };
+
+    if (show) { // Fetch available class names only if the modal is shown
+      fetchAvailableClass();
+    }
+  }, [show]); // Re-fetch every time the modal is shown
+  
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -11,9 +26,13 @@ function AddClass({ show, handleClose, handleAddClass }) {
       </Modal.Header>
       <Form onSubmit={handleAddClass}>
         <Modal.Body>
-          <Form.Group className="mb-3" controlId="formClassName">
+        <Form.Group className="mb-3" controlId="formClassName">
             <Form.Label>Class Name</Form.Label>
-            <Form.Control type="text" name="class_name" required />
+            <Form.Select name="class_name" required>
+              {availableClassNames.map((classInfo, index) => (
+                <option key={index} value={classInfo.class_name}>{classInfo.class_name}</option>
+              ))}
+            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formInstructorName">
             <Form.Label>Instructor Name</Form.Label>
