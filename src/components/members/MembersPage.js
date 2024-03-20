@@ -97,16 +97,6 @@ function MembersPage() {
       <h1>Members List</h1>
       {/* Search input field */}
       <Form>
-        <Form.Group
-          className="mb-3 d-flex justify-content-center align-items-center"
-          controlId="exampleForm.ControlInput1">
-          <Form.Control
-            placeholder="Search"
-            style={{ width: '200px' }}
-            value={searchTerm} // Set the value prop to the searchTerm state
-            onChange={handleSearchChange} // Set the onChange event handler to handleSearchChange directly
-          />
-        </Form.Group>
         <DropdownButton
           id="dropdown-button"
           title="Sort Members"
@@ -135,6 +125,9 @@ function MembersPage() {
            Type of Membership 
           </Dropdown.Item>
         </DropdownButton>
+        <Form.Group className="mb-3" controlId="searchInput">
+          <Form.Control type="text" placeholder="Search" value={searchTerm} onChange={handleSearchChange} />
+        </Form.Group>
 
       </Form>
       {/* Bootstrap Table used for styling */}

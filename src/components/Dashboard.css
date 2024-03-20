@@ -1,0 +1,40 @@
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Container for charts */
+.chart-container {
+    display: flex;
+    justify-content: space-around; /* Distributes space evenly around the items */
+    align-items: center; /* Aligns items vertically in the center */
+    flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+    margin-bottom: 2rem; /* Adds some space below the chart container */
+}
+
+/* Style adjustments for the chart's direct parent to control size */
+.chart-wrapper {
+    flex: 1; /* Allows the chart containers to grow and fill the space evenly */
+    min-width: 250px; /* Minimum width of each chart container */
+    max-width: 50%; /* Maximum width to ensure two charts per row */
+    padding: 1rem; /* Adds some padding around the charts */
+}
+
+
+/* Chart container styles */
+div[style] {
+    margin: auto; /* Centers the chart in its container */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds subtle shadow around charts */
+    border-radius: 8px; /* Rounded corners for charts */
+}
+div[style]:hover {
+    transform: translateY(-5px); /* Slight lift effect on hover */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow for lifted look */
+}

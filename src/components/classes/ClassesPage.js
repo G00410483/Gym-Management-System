@@ -66,36 +66,29 @@ function ClassesPage() {
 
 
   // Define an asynchronous function named handleAddClass that takes an event parameter
-const handleAddClass = async (event) => {
-  // Prevent the default form submission behavior
-  event.preventDefault();
-
-  // Create a FormData object from the form data submitted
-  const formData = new FormData(event.target);
-
-  // Convert the FormData into a JSON object
-  const classData = Object.fromEntries(formData.entries());
-
-  try {
-    // Send a POST request to add a new class on the server
-    await fetch('http://localhost:3001/classes/addNewClass', { // Adjust the URL as per your API endpoint
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      // Convert the classData object to JSON format and set it as the request body
-      body: JSON.stringify(classData),
-    });
-    // Refresh the classes data after adding a new class
-    fetchClasses();
-    // Hide the modal for adding a new class
-    setShowAdd(false);
-    // Show an alert message indicating successful class addition
-    showAlertWithMessage('New class added successfully!');
-  } catch (error) {
-    console.error('Failed to add new class:', error);
-  }
-};
+  const handleAddClass = async (event) => {
+    event.preventDefault();
+  
+    const formData = new FormData(event.target);
+    const classData = Object.fromEntries(formData.entries());
+  
+    try {
+      // Corrected the URL to match the server's route
+      await fetch('http://localhost:3001/classes', { 
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(classData),
+      });
+      fetchClasses();
+      setShowAdd(false);
+      showAlertWithMessage('New class added successfully!');
+    } catch (error) {
+      console.error('Failed to add new class:', error);
+    }
+  };
+  
 
   // Define an asynchronous function named handleEditClass that takes an event parameter 
   const handleEditClass = async (event) => {
@@ -199,15 +192,12 @@ const handleAddClass = async (event) => {
     }
   };
 
-  
-
   // Group classes by time
   const groupedClasses = groupClassesByTime(classes);
 
   return (
     <div>
-      <h1>Weekly Class Schedule</h1>
-
+      <br></br>
       {/* ADD NEW CLASS BUTTON */}
       {isLoggedIn && (
         <div className="table-container">

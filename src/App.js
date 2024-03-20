@@ -10,7 +10,7 @@ import { MDBIcon } from 'mdb-react-ui-kit';
 
 
 import LoginForm from './components/LoginForm';
-import RegisterForm from './components/RegisterForm';
+import RegisterForm from './components/Register';
 import Homepage from './components/Homepage';
 import ClassesPage from './components/classes/ClassesPage';
 import RegisterMember from './components/RegisterMemeber';

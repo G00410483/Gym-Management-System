@@ -13,7 +13,7 @@ import {
 import { alignProperty } from '@mui/material/styles/cssUtils';
 
 
-function RegisterForm() {
+function Register() {
     const [firstName, setFirstName] = useState('');
     const [secondName, setSecondName] = useState('');
     const [email, setEmail] = useState('');
@@ -90,4 +90,4 @@ function RegisterForm() {
     );
 }
 
-export default RegisterForm;
+export default Register;

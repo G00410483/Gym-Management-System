@@ -24,7 +24,7 @@ app.get('/', async (req, res) => {
   try {
     // Establish connection to the database
     const connection = await mysql.createConnection(dbConfig);
-    
+
     let query = 'SELECT DISTINCT * FROM membershipPrice'; // Default query to select all members
 
     // Execute the SQL query
@@ -119,8 +119,8 @@ app.post('/register', async (req, res) => {
     // Hash password with a salt round of 10
     const hashedPassword = await bcrypt.hash(password, 10);
     // Insert new user
-    await connection.execute('INSERT INTO admins (firstName, secondName, emailAddress, password) VALUES (?, ?, ?, ?)', 
-    [firstName, secondName, email.trim(), hashedPassword]);
+    await connection.execute('INSERT INTO admins (firstName, secondName, emailAddress, password) VALUES (?, ?, ?, ?)',
+      [firstName, secondName, email.trim(), hashedPassword]);
     // Close connection
     await connection.end();
 
@@ -137,7 +137,7 @@ app.post('/register', async (req, res) => {
 // Endpoint for handling user registration
 // POST REGISTER NEW MEMBER METHOD
 app.post('/registerMember', async (req, res) => {
-  
+
   // Request body to extract firstName, secondName, email and password
   const { ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership } = req.body;
 
@@ -169,7 +169,7 @@ app.post('/registerMember', async (req, res) => {
     await connection.end();
 
     // Sends JSON response with a success message
-    res.json({ message: 'Registration successful'});
+    res.json({ message: 'Registration successful' });
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).send('Internal Server Error');
@@ -214,7 +214,7 @@ app.get('/members', async (req, res) => {
 app.put('/members/:id', async (req, res) => {
   const { id } = req.params;
   const { pps_number, first_name, second_name, email_address, gender, date_of_birth, start_date, type_of_membership } = req.body;
-  
+
   // Checks if any of the required member details are missing in the request body.
   if (!pps_number || !first_name || !second_name || !email_address || !gender || !date_of_birth || !start_date || !type_of_membership) {
     return res.status(400).send('Missing required member information');
@@ -253,15 +253,15 @@ app.delete('/members/:id', async (req, res) => {
     // Attempts to establish a connection to the database
     const connection = await mysql.createConnection(dbConfig);
 
-     // SQL query string to delete a member from the 'members' table where the 'id' matches the specified ID
+    // SQL query string to delete a member from the 'members' table where the 'id' matches the specified ID
     const query = 'DELETE FROM members WHERE id = ?';
 
     // Executes the SQL query using the member ID to specify which member should be deleted.
     await connection.execute(query, [id]);
-     // Closes the database connection after the query execution is complete
+    // Closes the database connection after the query execution is complete
     await connection.end();
 
-     // Responds to the client with a JSON object containing a success message
+    // Responds to the client with a JSON object containing a success message
     res.json({ message: 'Member deleted successfully' });
   } catch (error) {
     console.error('Failed to delete member:', error);
@@ -287,32 +287,31 @@ app.get('/classes', async (req, res) => {
   }
 });
 
-// PUT class method
-// To update existing class record
-app.put('/classes/:id/addClass', async (req, res) => {
-  const { id } = req.params; // Extract class ID from URL
-  const { time, day } = req.body; // Assuming only time and day are being updated
-  console.log(req.body);
+// POST class method to add a new class record
+app.post('/classes', async (req, res) => {
+  const { class_name, instructor_name, time, day, max_capacity, image } = req.body;
+
   // Check if required fields are provided
-  if (!time || !day || !id) {
-    return res.status(400).send('Missing required class information for update');
+  if (!class_name || !instructor_name || !time || !day || !max_capacity || !image) {
+    return res.status(400).send('Missing required class information');
   }
 
   try {
-    console.log({ id, time, day });
     const connection = await mysql.createConnection(dbConfig);
-    // SQL query to update an existing class's time and day
-    const query = 'UPDATE classes SET time = ?, day = ? WHERE id = ?';
-    
+    // SQL query to insert a new class record with the image URL
+    const query = `INSERT INTO classes (class_name, instructor_name, time, day, max_capacity, image) VALUES (?, ?, ?, ?, ?, ?)`;
+
     // Execute the query with the new class data
-    await connection.execute(query, [time, day, id]);
+    await connection.execute(query, [class_name, instructor_name, time, day, max_capacity, image]);
     await connection.end();
-    res.status(200).json({ message: 'Class updated successfully' });
+    res.status(200).json({ message: 'Class added successfully' });
   } catch (error) {
-    console.error('Failed to update class:', error);
+    console.error('Failed to add class:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
+
 
 
 // PUT CLASSES METHOD
@@ -336,7 +335,7 @@ app.put('/classes/:id', async (req, res) => {
       UPDATE classes 
       SET class_name = ?, instructor_name = ?, time = ?, day = ?, max_capacity = ?
       WHERE id = ?`;
-      // Execute the query
+    // Execute the query
     await connection.execute(query, [class_name, instructor_name, time, day, max_capacity, id]);
     // End the connection
     await connection.end();
@@ -438,30 +437,29 @@ app.post('/bookClass', async (req, res) => {
 });
 
 
-// GET BOOKINGS METHOD
-// Endpoint for fetching members with optional search functionality
 app.get('/bookingsDisplay', async (req, res) => {
   try {
-    /* // Extract search term from query parameters, if provided
-    const searchTerm = req.query.searchTerm ? req.query.searchTerm.toLowerCase().trim() : null; // Trim and convert to lowercase for case-insensitive search
-    */
-    // Establish connection to the database 
-    const connection = await mysql.createConnection(dbConfig); 
-    
-    let query = 'SELECT * FROM bookings'; // Default query to select all members
+    const { searchTerm, sort } = req.query; // Capture sort parameter from query
+    const searchTermLower = searchTerm ? searchTerm.toLowerCase().trim() : null;
 
-    /* // If a search term is provided, modify the query to filter members
-    if (searchTerm) {
-      query += ' WHERE LOWER(first_name) LIKE ? OR LOWER(second_name) LIKE ?';
-    } */
+    const connection = await mysql.createConnection(dbConfig);
 
-    // Execute the SQL query
-    const [bookings] = await connection.execute(query); 
+    let query = 'SELECT * FROM bookings';
 
-    // Close the connection to database
+    if (searchTermLower) {
+      query += ' WHERE LOWER(class_name) LIKE ? OR LOWER(email_address) LIKE ?';
+    }
+
+    // Sort functionality
+    if (sort) {
+      query += ` ORDER BY ${sort}`;
+    }
+
+    const params = searchTermLower ? [`%${searchTermLower}%`, `%${searchTermLower}%`] : [];
+    const [bookings] = await connection.execute(query, params);
+
     await connection.end();
 
-    // Respond with JSON containing the fetched member details
     res.json(bookings);
   } catch (error) {
     console.error('Error fetching members:', error);
@@ -477,26 +475,41 @@ app.get('/dashboard', async (req, res) => {
       totalMembers: 'SELECT COUNT(*) AS total FROM members',
       totalBookings: 'SELECT COUNT(*) AS total FROM bookings',
       genders: 'SELECT gender, COUNT(*) AS count FROM members GROUP BY gender',
-      memberships: 'SELECT type_of_membership, COUNT(*) AS count FROM members GROUP BY type_of_membership'
+      memberships: 'SELECT type_of_membership, COUNT(*) AS count FROM members GROUP BY type_of_membership',
+      mostBooked: 'SELECT class_name, COUNT(*) AS count FROM bookings GROUP BY class_name ORDER BY count DESC LIMIT 3',
+      // Adding new query for members over time
+      membersTimeline: `SELECT year,
+                        SUM(yearly_total) OVER (ORDER BY year ASC) AS cumulative_total
+                        FROM (
+                        SELECT YEAR(start_date) AS year, COUNT(*) AS yearly_total
+                        FROM members
+                        GROUP BY YEAR(start_date)
+                        ) AS yearly_totals
+                        ORDER BY year`
     };
 
     const [totalMembers] = await connection.query(queries.totalMembers);
     const [totalBookings] = await connection.query(queries.totalBookings);
     const [genders] = await connection.query(queries.genders);
     const [memberships] = await connection.query(queries.memberships);
+    const[mostBooked] = await connection.query(queries.mostBooked);
+    const [membersTimeline] = await connection.query(queries.membersTimeline);
     await connection.end();
-    console.log(totalMembers);
     res.json({
       totalMembers: totalMembers[0].total,
       totalBookings: totalBookings[0].total,
       genders,
-      memberships
+      memberships,
+      mostBooked,
+      // Returning new data for members over time
+      membersTimeline
     });
   } catch (error) {
     console.error('Dashboard data fetch error:', error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 
 

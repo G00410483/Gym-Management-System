@@ -12,11 +12,11 @@ function EditClass({ show, onHide, editingClass, handleEditClass }) {
         <Modal.Body>
           <Form.Group className="mb-3" controlId="formClassName">
             <Form.Label>Class Name</Form.Label>
-            <Form.Control type="text" defaultValue={editingClass.class_name} name="class_name" required />
+            <Form.Control type="text" defaultValue={editingClass.class_name} name="class_name" required readOnly/>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formInstructorName">
             <Form.Label>Instructor Name</Form.Label>
-            <Form.Control type="text" defaultValue={editingClass.instructor_name} name="instructor_name" required />
+            <Form.Control type="text" defaultValue={editingClass.instructor_name} name="instructor_name" readOnly />
           </Form.Group>
           <Form.Group className="mb-3" controlId="formTime">
             <Form.Label>Time</Form.Label>
