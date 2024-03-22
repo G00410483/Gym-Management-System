@@ -27,8 +27,9 @@ function Homepage() {
                                 />
                             </Carousel.Item>
                         ))}
-                    </Carousel>
+                    </Carousel>               
                 </div>
+                <br></br>
                 <SubscriptionPlans />
 
                 <MDBFooter bgColor='light' className='text-center text-lg-start text-muted'>

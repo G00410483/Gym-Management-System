@@ -34,7 +34,3 @@ div[style] {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds subtle shadow around charts */
     border-radius: 8px; /* Rounded corners for charts */
 }
-div[style]:hover {
-    transform: translateY(-5px); /* Slight lift effect on hover */
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow for lifted look */
-}

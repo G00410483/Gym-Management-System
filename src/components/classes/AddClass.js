@@ -1,16 +1,17 @@
 // AddClassModal.js
-import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { daysOfWeek } from '../constants';
 
+/* Functional component that extracts properties that are passed down form a parent component 'Classes' */
 function AddClass({ show, handleClose, handleAddClass }) {
 
   return (
     <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>Add New Class</Modal.Title>
       </Modal.Header>
-      <Form onSubmit = {handleAddClass}>
+      {/*  Start of form */}
+      <Form onSubmit={handleAddClass}>
         <Modal.Body>
           <Form.Group className="mb-3" controlId="formClassName">
             <Form.Label>Class Name</Form.Label>
@@ -30,10 +31,13 @@ function AddClass({ show, handleClose, handleAddClass }) {
           <Form.Group className="mb-3" controlId="formDay">
             <Form.Label>Day</Form.Label>
             <Form.Select name="day" required>
-            <option value="">Select Day</option>
+              {/* This part of the code generates a list of hardcoded options for selecting 
+            days of the week within a dropdown menu */}
+              <option value="">Select Day</option>
               {daysOfWeek.map((day, index) => (
                 <option key={index} value={day}>{day}</option>
               ))}
+
             </Form.Select>
           </Form.Group>
 
@@ -46,7 +50,6 @@ function AddClass({ show, handleClose, handleAddClass }) {
             <Form.Label>Image URL</Form.Label>
             <Form.Control type="url" name="image" placeholder="https://example.com/image.jpg" required />
           </Form.Group>
-
 
         </Modal.Body>
         <Modal.Footer>

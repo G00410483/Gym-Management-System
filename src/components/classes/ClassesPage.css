@@ -1,139 +1,228 @@
-
+/* Sets the base font, margins, and background color for the entire document */
 body {
   font-family: 'Roboto', sans-serif;
+  /* Uses Roboto font for the text */
   margin: 0;
+  /* Removes the default margin */
   padding: 0;
+  /* Removes the default padding */
   background-color: #f4f4f4;
+  /* Sets a light grey background color */
 }
 
+/* Styles for the schedule table */
 .schedule-table {
   width: 100%;
+  /* Table width set to fill its container */
   margin: auto;
+  /* Centers the table horizontally */
   border-collapse: collapse;
+  /* Collapses cell borders into a single border */
   margin-top: 20px;
+  /* Adds space above the table */
 }
 
+/* Common styles for table headers and cells */
 .schedule-table th,
 .schedule-table td {
   padding: 12px;
+  /* Adds padding inside table cells */
   text-align: center;
+  /* Centers text horizontally */
   border: 5px solid #ddd;
+  /* Sets the border style for cells */
 }
 
+/* Additional styles for table headers */
 .schedule-table th {
   background-color: #242424;
+  /* Dark background for headers */
   color: #fff;
+  /* White text color */
   width: 100px;
+  /* Sets a specific width for headers */
   border-radius: 10%;
+  /* Rounds the corners of the headers */
 }
 
-#classInfoBtn{
+/* Styles for a specific button */
+#classInfoBtn {
   background-color: #666;
+  /* Dark grey background */
   color: white;
+  /* White text color */
   border-color: black;
+  /* Black border */
 }
+
+/* Styles for another specific button */
 #deleteBtn {
   color: white;
+  /* White text color */
   background-color: red;
+  /* Red background */
 }
+
+/* Overrides width for the #classInfoBtn */
 #classInfoBtn {
   width: 100px;
-}
-#ttBtn {
-  background-color: #007bff;
-  color: white;
-  border-radius: 50%;
+  /* Sets width to 100px */
 }
 
-.selected {
-  background-color: #ccc;
+/* Styles for a third specific button */
+#editBtn {
+  background-color: #007bff;
+  /* Bootstrap primary color blue */
+  color: white;
+  /* White text color */
+  border-radius: 50%;
+  /* Makes the button circular */
 }
+
+/* Container for the schedule table */
 .table-container {
   display: flex;
+  /* Enables flexbox layout */
   flex-direction: column;
+  /* Stacks items vertically */
   align-items: flex-start;
-  width: fit-content; 
+  /* Aligns items to the start of the flex container */
+  width: fit-content;
+  /* Width fits the content */
   margin: auto;
+  /* Centers the container horizontally */
 }
 
+/* Container for a button to add classes */
 .add-class-button-container {
-  margin-bottom: 8px; 
+  margin-bottom: 8px;
+  /* Adds space below the container */
   align-self: stretch;
-  text-align: left; 
+  /* Stretches the container to match the width of the flex container */
+  text-align: left;
+  /* Aligns text to the left */
 }
 
+/* Removes the top margin for the schedule table in this specific context */
 .schedule-table {
-  margin-top: 0; 
-
+  margin-top: 0;
+  /* Removes the top margin set earlier */
 }
 
+/* Media query for screens at least 768px wide */
 @media (min-width: 768px) {
   .schedule-table {
     width: 80%;
+    /* Reduces table width to 80% */
   }
 }
 
+/* Media query for screens at least 1024px wide */
 @media (min-width: 1024px) {
-  .schedule-table th, .schedule-table td {
-    padding: 15px; 
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: 15px;
+    /* Increases padding inside table cells */
   }
 }
 
-.modal-header {
-  border-bottom: none; 
-  padding: 20px; 
-  background-color: #242424; 
+/* Modal styling */
+/* Reference: https://stackoverflow.com/questions/49700574/change-the-style-of-a-modal-using-react-modal */
+modal-header {
+  border-bottom: none;
+  /* Removes the bottom border */
+  padding: 20px;
+  /* Adds padding inside the header */
+  background-color: #242424;
+  /* Sets a dark background */
 }
 
+/* Styles for the title of a modal dialog */
 .modal-title {
-  font-weight: bold; 
-  color: #f8f9fa; 
+  font-weight: bold;
+  /* Makes the title text bold */
+  color: #f8f9fa;
+  /* Sets the text color to a light shade */
 }
 
+/* Styles for the body of a modal dialog */
 .modal-body {
-  padding: 20px; 
-  line-height: 1.6; 
-  font-size: 1rem; 
+  padding: 20px;
+  /* Adds padding inside the body */
+  line-height: 1.6;
+  /* Sets the line height for better readability */
+  font-size: 1rem;
+  /* Sets the font size */
 }
 
+/* Styles for the footer of a modal dialog */
 .modal-footer {
-  border-top: none; 
-  padding: 20px; 
-  background-color: #f8f9fa; 
+  border-top: none;
+  /* Removes the top border */
+  padding: 20px;
+  /* Adds padding inside the footer */
+  background-color: #f8f9fa;
+  /* Sets a light background */
 }
 
+/* Styles for icons in the modal dialog */
 .modal-icon {
-  margin-right: 10px; 
-  color: #007bff; 
+  margin-right: 10px;
+  /* Adds space to the right of the icon */
+  color: #007bff;
+  /* Sets the icon color to blue */
 }
 
+/* Styling for modal images */
 .modal-image {
-  margin-top: 20px; 
-  width: 100%; 
-  border-radius: 10px; 
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  /* Adds a 20px top margin to separate it from elements above */
+  width: 100%;
+  /* Sets the image width to occupy the full container width */
+  border-radius: 10px;
+  /* Rounds the corners of the image */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  /* Adds a subtle shadow for depth */
 }
 
+/* Styling for primary buttons within modal footers */
 .modal-footer .btn-primary {
-  background-color: #007bff; 
-  border: none; 
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #007bff;
+  /* Sets the background color to a shade of blue */
+  border: none;
+  /* Removes the border from the button */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Adds a subtle shadow for depth */
 }
 
 /* Reference: https://stackoverflow.com/questions/55794770/how-can-i-style-react-datepicker */
+/* React datepicker global styling - changes apply to all instances of the datepicker */
 .react-datepicker {
   border: 1px solid #ced4da;
+  /* Sets a light gray border */
   border-radius: 0.25rem;
+  /* Rounds the corners slightly for a softer look */
 }
 
+/* Styling for the input field within the datepicker's input container */
 .react-datepicker__input-container input {
   width: 100%;
+  /* Ensures the input field occupies the full width of its container */
   padding: 0.375rem 0.75rem;
+  /* Adds internal space around the input text for better readability */
   border: 1px solid #ced4da;
+  /* Defines a solid border with a light gray color */
   border-radius: 0.25rem;
+  /* Rounds the corners of the input field */
 }
+
+/* Adds interactivity to buttons within table cells on hover */
 .schedule-table td button:hover {
   background-color: #666;
-  transform: scale(1.1); /* Slightly increase the size */
-  transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth transition for transform and background color */
+  /* Changes the button background to a darker shade */
+  transform: scale(1.1);
+  /* Slightly enlarges the button to indicate it's clickable */
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  /* Smoothly animates the transformations */
 }

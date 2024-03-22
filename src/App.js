@@ -20,7 +20,7 @@ import Dashboard from './components/Dashboard';
 
 
 function ConditionalNavbar() {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, logout, isRole } = useAuth();
   const location = useLocation();
 
   if (location.pathname === '/login' || location.pathname === '/registerForm') {
@@ -37,11 +37,11 @@ function ConditionalNavbar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Nav.Link href="/"><MDBIcon fas icon="home" className="me-2" />Home</Nav.Link>
-            {isLoggedIn && <Nav.Link href="/memberPage"><MDBIcon fas icon="th-list" className="me-2" />Display</Nav.Link>}
-            <Nav.Link href="/registerMember"><MDBIcon fas icon="user-plus" className="me-2" />Register</Nav.Link>
+            {isLoggedIn && isRole('admin') && <Nav.Link href="/memberPage"><MDBIcon fas icon="th-list" className="me-2" />Display</Nav.Link>}
+            {isLoggedIn && isRole('') || isRole('admin') && <Nav.Link href="/registerMember"><MDBIcon fas icon="user-plus" className="me-2" />Register</Nav.Link>}
             <Nav.Link href="/classes"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Classes</Nav.Link>
-            <Nav.Link href="/bookingsDisplay"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Bookings</Nav.Link>
-            {isLoggedIn && <Nav.Link href="/dashboard"><MDBIcon fas icon="chart-line" className="me-2" />Dashboard</Nav.Link>}
+            {isLoggedIn && isRole('admin') && <Nav.Link href="/bookingsDisplay"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Bookings</Nav.Link>}
+            {isLoggedIn && isRole('admin') && <Nav.Link href="/dashboard"><MDBIcon fas icon="chart-line" className="me-2" />Dashboard</Nav.Link>}
           </Nav>
           <Nav className="ms-auto">
             {isLoggedIn ? (

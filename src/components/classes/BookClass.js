@@ -4,10 +4,12 @@ import { Modal, Form, Button } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+/* Functional component that extracts properties that are passed down form a parent component 'Classes' */
+/*  */
 function BookClass({ show, onHide, bookingClass, handleBookingClass, selectedDate, setSelectedDate, getDayOfWeekNumber }) {
   return (
     <Modal show={show} onHide={onHide}>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>Book Class</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleBookingClass}>
@@ -19,11 +21,17 @@ function BookClass({ show, onHide, bookingClass, handleBookingClass, selectedDat
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBookingDate">
             <Form.Label>Select Date</Form.Label>
+           {/*  Reference: https://stackoverflow.com/questions/62239735/react-date-picker-filtering-dates-issue */}
             <DatePicker
+              /*Selected date **/
               selected={selectedDate}
+              /* Update the selected date */
               onChange={(date) => setSelectedDate(date)}
+              /* Formatting */
               dateFormat="dd/MM/yyyy"
+              /*  Set minimum as "today"*/
               minDate={new Date()}
+              /* Filtering selectable dates based on the day of the week */
               filterDate={(date) => date.getDay() === getDayOfWeekNumber(bookingClass.day)}
               required
             />

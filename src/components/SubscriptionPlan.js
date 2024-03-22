@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { MDBContainer, MDBRow, MDBCol } from 'mdb-react-ui-kit';
+import { useNavigate } from 'react-router-dom';
 import './SubscriptionPlan.css'; 
 
 // Subscription Plans Component with Dynamic Data Fetching
 const SubscriptionPlans = () => {
     const [plans, setPlans] = useState([]);
+
+    const navigate = useNavigate();
+
+    const handleSubscribeClick = () => {
+      navigate('/registerMember'); // The path you've associated with RegisterMembers in your routing setup
+    };
 
     useEffect(() => {
         fetch('http://localhost:3001/') 
@@ -25,7 +32,7 @@ const SubscriptionPlans = () => {
                                 <ul className="features-list">
                                     <li>Total number of members: {plan.total_members}</li>
                                 </ul>
-                                <button className="subscribe-button">Subscribe</button>
+                                <button className="subscribe-button" onClick={handleSubscribeClick}>Subscribe</button>
                             </div>
                         </MDBCol>
                     ))}

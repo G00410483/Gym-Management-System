@@ -20,7 +20,7 @@ function ClassesPage() {
     return days.indexOf(dayString);
   };
 
-  const { isLoggedIn } = useAuth(); // Use the useAuth hook to get the logged-in status
+  const { isLoggedIn, isRole } = useAuth(); // Use the useAuth hook to get the logged-in status
 
   // State variables managed using the useState hook
   const [classes, setClasses] = useState([]);
@@ -199,7 +199,7 @@ function ClassesPage() {
     <div>
       <br></br>
       {/* ADD NEW CLASS BUTTON */}
-      {isLoggedIn && (
+      {isLoggedIn && isRole('admi') && (
         <div className="table-container">
           <div className="add-class-button-container">
             <Button id='addClassBtn' className="mb-3" onClick={() => setShowAdd(true)}>
@@ -219,6 +219,7 @@ function ClassesPage() {
             handleClassSelect={handleClassSelect}
             handleDeleteClass={handleDeleteClass}
             isLoggedIn={isLoggedIn}
+            isRole={isRole}
             setEditingClass={setEditingClass}
             setShowEdit={setShowEdit}
             setBookingClass={setBookingClass}

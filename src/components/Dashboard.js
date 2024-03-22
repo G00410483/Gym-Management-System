@@ -104,7 +104,7 @@ function Dashboard() {
                 </div> */}
                 <div className="md:col-span-2 bg-white shadow-lg rounded-lg p-5 chart-container">
                 <div className="chart-wrapper">
-                        <h3 className="text-lg font-semibold text-gray-700 mb-4">Genders Breakdown</h3>
+                        <h3 className="text-lg font-semibold text-gray-700 mb-4">Membership Ratio</h3>
                         <div style={{ width: '100%', height: '250px' }}>
                             {dashboardData.memberships.length > 0 && <Pie data={membershipsChartData} options={options} />}
                         </div>

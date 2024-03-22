@@ -9,6 +9,8 @@ function RegisterMembers() {
   const [firstName, setFirstName] = useState('');
   const [secondName, setSecondName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [gender, setGender] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -16,8 +18,36 @@ function RegisterMembers() {
 
   const navigate = useNavigate();
 
+  // Calculate the date 16 years ago from today
+  const today = new Date();
+  const minimumAge = 16;
+  const minDateOfBirth = new Date(today.getFullYear() - minimumAge, today.getMonth(), today.getDate());
+
+  // Calculate today's date in YYYY-MM-DD format
+  const todayFormatted = new Date().toISOString().split('T')[0];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // PPS Number validation
+    // 7 digits followed by 2 letters
+    const ppsRegex = /^\d{7}[A-Z]{2}$/i; // The 'i' flag makes it case-insensitive
+    if (!ppsRegex.test(ppsNumber)) {
+      alert('Invalid PPS Number format. Please enter 7 numbers followed by 2 letters.');
+      return; // Stop the form submission
+    }
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      alert('Passwords do not match. Please try again.');
+      return; // Stop the form submission
+    }
+
+    // Compare entered date of birth with the calculated date
+    if (new Date(dateOfBirth) > minDateOfBirth) {
+      alert('You must be at least 16 years old.');
+      return; // Stop the form submission
+    }
 
     try {
       const response = await fetch('http://localhost:3001/registerMember', {
@@ -25,7 +55,7 @@ function RegisterMembers() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership }),
+        body: JSON.stringify({ ppsNumber, firstName, secondName, email, password, gender, dateOfBirth, startDate, typeOfMembership }),
       });
 
       if (response.ok) {
@@ -43,30 +73,40 @@ function RegisterMembers() {
   return (
     <Form className="modern-form" onSubmit={handleSubmit}>
       {/* Enter pps number */}
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3" controlId="formPPS">
         <Form.Label className="form-label" >PPS Number</Form.Label>
         <Form.Control type="ppsNumber" placeholder="Enter PPS Number" className="form-control" value={ppsNumber} onChange={(e) => setPPSNumber(e.target.value)} required />
       </Form.Group>
       {/* Enter first name */}
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3" controlId="formName">
         <Form.Label className="form-label" >First name</Form.Label>
         <Form.Control type="firstName" placeholder="Enter First Name" className="form-control" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
       </Form.Group>
       {/* Enter second name */}
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3" controlId="formSurname">
         <Form.Label className="form-label" >Second name</Form.Label>
         <Form.Control type="secondName" placeholder="Enter Second Name" className="form-control" value={secondName} onChange={(e) => setSecondName(e.target.value)} required />
       </Form.Group>
       {/* Enter email address */}
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3" controlId="formEmail">
         <Form.Label className="form-label" >Email address</Form.Label>
         <Form.Control type="email" placeholder="Enter email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <Form.Text className="text-muted form-text">
           We'll never share your email with anyone else.
         </Form.Text>
-        {/* Enter gender */}
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicGender">
+      {/* Enter password */}
+      <Form.Group className="mb-3" controlId="formPassword">
+        <Form.Label className="form-label">Password</Form.Label>
+        <Form.Control type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      </Form.Group>
+      {/* Confirm password */}
+      <Form.Group className="mb-3" controlId="formConfirmPassword">
+        <Form.Label className="form-label">Confirm Password</Form.Label>
+        <Form.Control type="password" placeholder="Confirm password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+      </Form.Group>
+      {/* Enter gender */}
+      <Form.Group className="mb-3" controlId="formGender">
         <Form.Label className="form-label" >Gender</Form.Label>
         <Form.Select aria-label="Gender select" className="form-control" value={gender} onChange={(e) => setGender(e.target.value)} required>
           <option value="">Select your gender</option> {/* Default prompt option */}
@@ -80,10 +120,17 @@ function RegisterMembers() {
         <Form.Label className="form-label" >Date of Birth</Form.Label>
         <Form.Control type="date" placeholder="Enter Date of Birth" className="form-control" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required />
       </Form.Group>
-      {/* Enter start date */}
       <Form.Group className="mb-3" controlId="formStartDate">
         <Form.Label className="form-label" >Start Date</Form.Label>
-        <Form.Control type="date" placeholder="Enter Start Date" className="form-control" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+        <Form.Control
+          type="date"
+          placeholder="Enter Start Date"
+          className="form-control"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+          min={todayFormatted} // Set the minimum date to today
+          required
+        />
       </Form.Group>
       {/* Enter type of membership */}
       <Form.Group className="mb-3" controlId="formBasicGender">

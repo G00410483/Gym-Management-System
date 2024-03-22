@@ -53,9 +53,19 @@ app.post('/login', async (req, res) => {
     // Establish a connection to the database using the provided configuration
     const connection = await mysql.createConnection(dbConfig);
     // SQL query to retrieve user information based on the provided email
-    const query = 'SELECT * FROM admins WHERE emailAddress = ?';
+    let query = 'SELECT * FROM admins WHERE emailAddress = ?';
     // Execute the query, passing the email parameter
-    const [rows] = await connection.execute(query, [email.trim()]); // Trim to remove potential spaces
+    let [rows] = await connection.execute(query, [email.trim()]); // Trim to remove potential spaces
+
+    let role = 'admin'; 
+
+    if (rows.length === 0) {
+      // If not found in admins, check the members table
+      query = 'SELECT * FROM members WHERE email_address = ?';
+      [rows] = await connection.execute(query, [email.trim()]);
+
+      role = 'member'; // User must be a member if found in this table
+    }
 
     // Check if any user with the provided email exists
     if (rows.length > 0) {
@@ -69,9 +79,9 @@ app.post('/login', async (req, res) => {
       // If passwords match, generate a JWT token for authentication
       if (match) {
         // Create a JWT token containing the user's ID with a 24-hour expiration
-        const token = jwt.sign({ userId: user.id }, 'your_secret_key', { expiresIn: '24h' }); // Adjusted to 'id'
+       const token = jwt.sign({ userId: user.id, role: role }, 'your_secret_key', { expiresIn: '24h' });
         // Send the token as a JSON response
-        res.json({ token });
+        res.json({ token, role });
       } else {
         // If passwords don't match, send a 401 Unauthorized status
         console.log("Password comparison failed");
@@ -82,6 +92,7 @@ app.post('/login', async (req, res) => {
       console.log("No user found with the provided email");
       res.status(401).send('Unauthorized');
     }
+    console.log(role);
     // Close the database connection
     await connection.end();
 
@@ -115,6 +126,19 @@ app.post('/register', async (req, res) => {
       await connection.end();
       return res.status(409).send('User already exists');
     }
+    // Compare the provided password with the hashed password stored in the database
+    const match = await bcrypt.compare(password, user.password.trim()); // Adjusted to 'password' and ensured it's trimmed
+    // If passwords match, generate a JWT token for authentication
+    if (match) {
+      // Create a JWT token containing the user's ID with a 24-hour expiration
+      const token = jwt.sign({ userId: user.id }, 'your_secret_key', { expiresIn: '24h' });
+      // Send the token as a JSON response
+      res.json({ token });
+    } else {
+      // If passwords don't match, send a 401 Unauthorized status
+      console.log("Password comparison failed");
+      res.status(401).send('Unauthorized');
+    }
 
     // Hash password with a salt round of 10
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -139,10 +163,10 @@ app.post('/register', async (req, res) => {
 app.post('/registerMember', async (req, res) => {
 
   // Request body to extract firstName, secondName, email and password
-  const { ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership } = req.body;
+  const { ppsNumber, firstName, secondName, email, password, gender, dateOfBirth, startDate, typeOfMembership } = req.body;
 
   // Checks if required fields are missing, if so sends 400 status code
-  if (!ppsNumber || !firstName || !secondName || !email || !gender || !dateOfBirth || !startDate || !typeOfMembership) {
+  if (!ppsNumber || !firstName || !secondName || !email || !password || !gender || !dateOfBirth || !startDate || !typeOfMembership) {
     return res.status(400).send('Missing required registration information');
   }
   // Handling errors
@@ -158,12 +182,15 @@ app.post('/registerMember', async (req, res) => {
       return res.status(409).send('User already exists');
     }
 
+    // Hash password with a salt round of 10
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await connection.execute(
-      'INSERT INTO members (pps_number, first_name, second_name, email_address, gender, date_of_birth, start_date, type_of_membership) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [ppsNumber, firstName, secondName, email, gender, dateOfBirth, startDate, typeOfMembership]
+      'INSERT INTO members (pps_number, first_name, second_name, email_address, password, gender, date_of_birth, start_date, type_of_membership) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [ppsNumber, firstName, secondName, email, hashedPassword, gender, dateOfBirth, startDate, typeOfMembership]
 
     );
-    console.log("Done");
+    console.log("New member save.");
 
     // Close connection
     await connection.end();
@@ -310,8 +337,6 @@ app.post('/classes', async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 });
-
-
 
 
 // PUT CLASSES METHOD
@@ -492,7 +517,7 @@ app.get('/dashboard', async (req, res) => {
     const [totalBookings] = await connection.query(queries.totalBookings);
     const [genders] = await connection.query(queries.genders);
     const [memberships] = await connection.query(queries.memberships);
-    const[mostBooked] = await connection.query(queries.mostBooked);
+    const [mostBooked] = await connection.query(queries.mostBooked);
     const [membersTimeline] = await connection.query(queries.membersTimeline);
     await connection.end();
     res.json({
