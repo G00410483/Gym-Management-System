@@ -129,7 +129,7 @@ body {
 
 /* Modal styling */
 /* Reference: https://stackoverflow.com/questions/49700574/change-the-style-of-a-modal-using-react-modal */
-modal-header {
+.modal-header {
   border-bottom: none;
   /* Removes the bottom border */
   padding: 20px;

@@ -29,7 +29,7 @@ function LoginForm() {
             if (response.ok) {
                 // If login is successful, parse the JSON response and use the login function from AuthContext.
                 const data = await response.json();
-                login(data.token);
+                login(data.token, data.role);
                 navigate('/');
             } else {
                 throw new Error('Unauthorized');

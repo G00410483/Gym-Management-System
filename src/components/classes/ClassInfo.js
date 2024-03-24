@@ -7,7 +7,7 @@ import { faInfoCircle, faChalkboardTeacher, faClock, faCalendarDay, faUsers } fr
 function ClassInfo({ selectedClass, onHide }) {
   return (
     <Modal show={!!selectedClass} onHide={onHide}>
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title>{selectedClass?.class_name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>

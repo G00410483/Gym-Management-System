@@ -4,17 +4,18 @@ import axios from 'axios';
 import EditMember from './EditMember';
 import './MembersPage.css';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { useAuth } from '../../AuthContext'; 
 
 
 
 function MembersPage() {
+  const { isLoggedIn, isRole } = useAuth();
   // State hooks to manage members data, the selected member, and modal visibility
   const [members, setMembers] = useState([]); // State for storing members list
   const [selectedMember, setSelectedMember] = useState(null); // State for storing the selected member for editing
   const [showModal, setShowModal] = useState(false); // State for controlling the visibility of the modal
   const [searchTerm, setSearchTerm] = useState('');
   const [sort, setSort] = useState('');
-
 
   // Define the fetchMembers function
   const fetchMembers = async (sortCriteria = '') => {

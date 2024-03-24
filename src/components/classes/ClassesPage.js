@@ -199,7 +199,7 @@ function ClassesPage() {
     <div>
       <br></br>
       {/* ADD NEW CLASS BUTTON */}
-      {isLoggedIn && isRole('admi') && (
+      {isLoggedIn && isRole('admin') && (
         <div className="table-container">
           <div className="add-class-button-container">
             <Button id='addClassBtn' className="mb-3" onClick={() => setShowAdd(true)}>

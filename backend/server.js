@@ -57,7 +57,7 @@ app.post('/login', async (req, res) => {
     // Execute the query, passing the email parameter
     let [rows] = await connection.execute(query, [email.trim()]); // Trim to remove potential spaces
 
-    let role = 'admin'; 
+    let role = 'admin'; // Assume user is an admin initially
 
     if (rows.length === 0) {
       // If not found in admins, check the members table
