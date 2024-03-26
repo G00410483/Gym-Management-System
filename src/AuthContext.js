@@ -9,10 +9,12 @@ export function useAuth() {
 export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
     const [role, setRole] = useState(localStorage.getItem('role') || '');
+    const [email, setEmail] = useState(localStorage.getItem('email') || '');
 
-    const login = (token, userRole) => {
+    const login = (token, userRole, userEmail) => {
         localStorage.setItem('token', token);
         localStorage.setItem('role', userRole); 
+        localStorage.setItem('email', userEmail);
         setIsLoggedIn(true);
         setRole(userRole); 
     };
@@ -32,7 +34,9 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         isRole,
+        email
     };
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+

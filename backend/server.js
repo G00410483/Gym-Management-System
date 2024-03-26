@@ -11,6 +11,7 @@ const PORT = 3001;
 app.use(cors());
 app.use(bodyParser.json());
 
+
 // Define a configuration object for connecting to a database
 const dbConfig = {
   host: 'localhost',     // Host name or IP address of the database server
@@ -53,7 +54,7 @@ app.post('/login', async (req, res) => {
     // Establish a connection to the database using the provided configuration
     const connection = await mysql.createConnection(dbConfig);
     // SQL query to retrieve user information based on the provided email
-    let query = 'SELECT * FROM admins WHERE emailAddress = ?';
+    let query = 'SELECT * FROM admins WHERE email_address = ?';
     // Execute the query, passing the email parameter
     let [rows] = await connection.execute(query, [email.trim()]); // Trim to remove potential spaces
 
@@ -79,9 +80,9 @@ app.post('/login', async (req, res) => {
       // If passwords match, generate a JWT token for authentication
       if (match) {
         // Create a JWT token containing the user's ID with a 24-hour expiration
-       const token = jwt.sign({ userId: user.id, role: role }, 'your_secret_key', { expiresIn: '24h' });
-        // Send the token as a JSON response
-        res.json({ token, role });
+       const token = jwt.sign({ email: user.email_address, role: role }, 'your_secret_key', { expiresIn: '24h' });
+       // Send the token as a JSON response
+        res.json({ token, role, email});
       } else {
         // If passwords don't match, send a 401 Unauthorized status
         console.log("Password comparison failed");
@@ -92,7 +93,6 @@ app.post('/login', async (req, res) => {
       console.log("No user found with the provided email");
       res.status(401).send('Unauthorized');
     }
-    console.log(role);
     // Close the database connection
     await connection.end();
 
@@ -535,7 +535,46 @@ app.get('/dashboard', async (req, res) => {
   }
 });
 
+// Display Member Details Endpoint
+app.get('/displayMember', async (req, res) => {
+  // Extract the token from the Authorization header
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+      return res.status(401).send('No token provided');
+  }
 
+  try {
+      // Verify and decode the token to get the user's email
+      const decoded = jwt.verify(token, 'your_secret_key');
+      const userEmail = decoded.email;
+
+      // Establish a connection to the database
+      const connection = await mysql.createConnection(dbConfig);
+
+      // Fetch user details from the members table
+      const member = 'SELECT * FROM members WHERE email_address = ?';
+      const [rows] = await connection.execute(member, [userEmail]);
+
+      // Close the database connection
+      await connection.end();
+
+      if (rows.length > 0) {
+          // Send the member details as a response
+          res.json(rows[0]);
+      } else {
+          // User not found in members table, send appropriate response
+          res.status(404).send('Member not found');
+      }
+  } catch (error) {
+      // Error handling for invalid token or database errors
+      if (error.name === 'JsonWebTokenError') {
+          res.status(401).send('Invalid token');
+      } else {
+          console.error('Database connection or operation failed:', error);
+          res.status(500).send('Internal Server Error');
+      }
+  }
+});
 
 
 app.listen(PORT, () => {
