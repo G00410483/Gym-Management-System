@@ -51,6 +51,7 @@ function MembersPage() {
 
   // Function to save edited member
   const saveMember = async (member) => {
+    
     try {
       // Use Axios to make a PUT request to update the membe
       await axios.put(`http://localhost:3001/members/${member.id}`, member);

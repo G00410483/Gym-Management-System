@@ -5,9 +5,13 @@ import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-k
 import './Homepage.css';
 import SubscriptionPlans from './SubscriptionPlan';
 import videoBg from '../assets/video.mp4';
+import { useAuth } from '../AuthContext'; 
 
 
 function Homepage() {
+    const { isLoggedIn, isRole } = useAuth(); // Use the useAuth hook to get the logged-in status
+
+
     return (
         <div className="video-background">
             <video autoPlay muted loop id="videoBg" style={{ position: 'absolute', width: '100%', left: '50%', top: '50%', height: '100%', objectFit: 'cover', transform: 'translate(-50%, -50%)', zIndex: '0' }}>
@@ -30,7 +34,7 @@ function Homepage() {
                     </Carousel>               
                 </div>
                 <br></br>
-                <SubscriptionPlans />
+                {!isLoggedIn && <SubscriptionPlans />}
 
                 <MDBFooter bgColor='light' className='text-center text-lg-start text-muted'>
                     <section className='d-flex justify-content-center justify-content-lg-between p-4 border-bottom'>

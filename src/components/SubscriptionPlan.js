@@ -29,9 +29,6 @@ const SubscriptionPlans = () => {
                             <div className="subscription-card">
                                 <h5 className="subscription-title">{plan.type_of_membership.toUpperCase()}</h5>
                                 <p className="price">${plan.price}/month</p>
-                                <ul className="features-list">
-                                    <li>Total number of members: {plan.total_members}</li>
-                                </ul>
                                 <button className="subscribe-button" onClick={handleSubscribeClick}>Subscribe</button>
                             </div>
                         </MDBCol>

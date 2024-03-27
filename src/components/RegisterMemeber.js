@@ -37,6 +37,13 @@ function RegisterMembers() {
       return; // Stop the form submission
     }
 
+    // 
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!strongPasswordRegex.test(password)) {
+      alert('Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
+      return; // Stop the form submission
+    }
+
     // Check if passwords match
     if (password !== confirmPassword) {
       alert('Passwords do not match. Please try again.');

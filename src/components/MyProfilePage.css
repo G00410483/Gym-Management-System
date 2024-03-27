@@ -1,2 +1,41 @@
 
+  /* MyProfilePage.css */
+
+body {
+    background-color: #f4f5f7;
+  }
+  h6 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #333;
+  }
   
+  section {
+    padding-top: 20px;
+  }
+  
+  .rounded-circle {
+    border: 3px solid #fff; /* White border */
+    margin-top: -3em;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .text-muted {
+    color: #333;
+    font-size: 1.0rem;
+  }
+  
+  
+  hr {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 0;
+    border-top: 1px solid rgba(0,0,0,.1);
+  }
+
+  .MDBCardImage {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+

@@ -20,6 +20,7 @@ const dbConfig = {
   database: 'gymDB'      // Name of the database to connect to
 };
 
+
 //GET HOMEPAGE METHOD
 app.get('/', async (req, res) => {
   try {
