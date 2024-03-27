@@ -492,6 +492,28 @@ app.get('/bookingsDisplay', async (req, res) => {
   }
 });
 
+// DELETE booking method
+app.delete('/deleteBooking/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+      const connection = await mysql.createConnection(dbConfig);
+
+      // SQL query to delete a booking by ID
+      const query = 'DELETE FROM bookings WHERE id = ?';
+
+      // Execute the query
+      await connection.execute(query, [id]);
+      await connection.end();
+
+      // Respond to the client
+      res.json({ message: 'Booking deleted successfully' });
+  } catch (error) {
+      console.error('Failed to delete booking:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
 // GET Dashboard Data
 app.get('/dashboard', async (req, res) => {
   try {
@@ -537,36 +559,41 @@ app.get('/dashboard', async (req, res) => {
 
 // Display Member Details Endpoint
 app.get('/displayMember', async (req, res) => {
-  // Extract the token from the Authorization header
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
       return res.status(401).send('No token provided');
   }
 
   try {
-      // Verify and decode the token to get the user's email
       const decoded = jwt.verify(token, 'your_secret_key');
       const userEmail = decoded.email;
 
-      // Establish a connection to the database
       const connection = await mysql.createConnection(dbConfig);
 
       // Fetch user details from the members table
-      const member = 'SELECT * FROM members WHERE email_address = ?';
-      const [rows] = await connection.execute(member, [userEmail]);
+      const memberQuery = 'SELECT * FROM members WHERE email_address = ?';
+      const [memberRows] = await connection.execute(memberQuery, [userEmail]);
+
+      if (memberRows.length > 0) {
+        // Fetch bookings related to the member's email address
+        const bookingsQuery = 'SELECT * FROM bookings WHERE email_address = ?';
+        const [bookingRows] = await connection.execute(bookingsQuery, [userEmail]);
+
+        // Combine member details with their bookings
+        const response = {
+            memberDetails: memberRows[0],
+            bookings: bookingRows
+        };
+
+        // Send the combined details as a response
+        res.json(response);
+      } else {
+          res.status(404).send('Member not found');
+      }
 
       // Close the database connection
       await connection.end();
-
-      if (rows.length > 0) {
-          // Send the member details as a response
-          res.json(rows[0]);
-      } else {
-          // User not found in members table, send appropriate response
-          res.status(404).send('Member not found');
-      }
   } catch (error) {
-      // Error handling for invalid token or database errors
       if (error.name === 'JsonWebTokenError') {
           res.status(401).send('Invalid token');
       } else {
@@ -575,6 +602,7 @@ app.get('/displayMember', async (req, res) => {
       }
   }
 });
+
 
 
 app.listen(PORT, () => {
