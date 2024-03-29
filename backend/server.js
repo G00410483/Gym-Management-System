@@ -81,9 +81,9 @@ app.post('/login', async (req, res) => {
       // If passwords match, generate a JWT token for authentication
       if (match) {
         // Create a JWT token containing the user's ID with a 24-hour expiration
-       const token = jwt.sign({ email: user.email_address, role: role }, 'your_secret_key', { expiresIn: '24h' });
-       // Send the token as a JSON response
-        res.json({ token, role, email});
+        const token = jwt.sign({ email: user.email_address, role: role }, 'your_secret_key', { expiresIn: '24h' });
+        // Send the token as a JSON response
+        res.json({ token, role, email });
       } else {
         // If passwords don't match, send a 401 Unauthorized status
         console.log("Password comparison failed");
@@ -363,6 +363,19 @@ app.put('/classes/:id', async (req, res) => {
       WHERE id = ?`;
     // Execute the query
     await connection.execute(query, [class_name, instructor_name, time, day, max_capacity, id]);
+
+    const [booking_emails] = await connection.execute('SELECT email_address FROM bookings WHERE class_name = ?', [class_name]);
+    
+    // Loop over each booking email and insert a notification for each
+    for (let i = 0; i < booking_emails.length; i++) {
+      // Extract the email address from the current booking email object
+      const email = booking_emails[i].email_address;
+      console.log(email);
+    
+      // For each email, insert a new notification into the class_notifications table
+      await connection.execute('INSERT INTO class_notifications (class_name, time, day, email_address) VALUES (?, ?, ?, ?)', [class_name, time, day, email]);
+    }
+  
     // End the connection
     await connection.end();
 
@@ -394,26 +407,6 @@ app.delete('/classes/:id', async (req, res) => {
     res.json({ message: 'Class deleted successfully' });
   } catch (error) {
     console.error('Failed to delete class:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-// Endpoint to get available class names
-app.get('/availableClasses', async (req, res) => {
-  try {
-    const connection = await mysql.createConnection(dbConfig);
-    // Assuming 'all_class_names' is a table or a list containing all possible class names
-    const query = `
-      SELECT *
-      FROM classes 
-      WHERE time IS NULL AND day IS NULL;
-    `;
-    const [availableClasses] = await connection.execute(query);
-    await connection.end();
-    res.json(availableClasses);
-    console.log(availableClasses);
-  } catch (error) {
-    console.error('Error fetching available class names:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -498,20 +491,20 @@ app.delete('/deleteBooking/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-      const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(dbConfig);
 
-      // SQL query to delete a booking by ID
-      const query = 'DELETE FROM bookings WHERE id = ?';
+    // SQL query to delete a booking by ID
+    const query = 'DELETE FROM bookings WHERE id = ?';
 
-      // Execute the query
-      await connection.execute(query, [id]);
-      await connection.end();
+    // Execute the query
+    await connection.execute(query, [id]);
+    await connection.end();
 
-      // Respond to the client
-      res.json({ message: 'Booking deleted successfully' });
+    // Respond to the client
+    res.json({ message: 'Booking deleted successfully' });
   } catch (error) {
-      console.error('Failed to delete booking:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Failed to delete booking:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
@@ -562,48 +555,72 @@ app.get('/dashboard', async (req, res) => {
 app.get('/displayMember', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
-      return res.status(401).send('No token provided');
+    return res.status(401).send('No token provided');
   }
 
   try {
-      const decoded = jwt.verify(token, 'your_secret_key');
-      const userEmail = decoded.email;
+    const decoded = jwt.verify(token, 'your_secret_key');
+    const userEmail = decoded.email;
 
-      const connection = await mysql.createConnection(dbConfig);
+    const connection = await mysql.createConnection(dbConfig);
 
-      // Fetch user details from the members table
-      const memberQuery = 'SELECT * FROM members WHERE email_address = ?';
-      const [memberRows] = await connection.execute(memberQuery, [userEmail]);
+    // Fetch user details from the members table
+    const memberQuery = 'SELECT * FROM members WHERE email_address = ?';
+    const [memberRows] = await connection.execute(memberQuery, [userEmail]);
 
-      if (memberRows.length > 0) {
-        // Fetch bookings related to the member's email address
-        const bookingsQuery = 'SELECT * FROM bookings WHERE email_address = ?';
-        const [bookingRows] = await connection.execute(bookingsQuery, [userEmail]);
+    if (memberRows.length > 0) {
+      // Fetch bookings related to the member's email address
+      const bookingsQuery = 'SELECT * FROM bookings WHERE email_address = ?';
+      const [bookingRows] = await connection.execute(bookingsQuery, [userEmail]);
 
-        // Combine member details with their bookings
-        const response = {
-            memberDetails: memberRows[0],
-            bookings: bookingRows
-        };
+      notifQuery = 'SELECT * FROM class_notifications WHERE email_address = ?';
+      const [notifRows] = await connection.execute(notifQuery, [userEmail]);
 
-        // Send the combined details as a response
-        res.json(response);
-      } else {
-          res.status(404).send('Member not found');
-      }
+      // Combine member details with their bookings
+      const response = {
+        memberDetails: memberRows[0],
+        bookings: bookingRows,
+        notifs: notifRows
+      };
 
-      // Close the database connection
-      await connection.end();
+      // Send the combined details as a response
+      res.json(response);
+    } else {
+      res.status(404).send('Member not found');
+    }
+
+    // Close the database connection
+    await connection.end();
   } catch (error) {
-      if (error.name === 'JsonWebTokenError') {
-          res.status(401).send('Invalid token');
-      } else {
-          console.error('Database connection or operation failed:', error);
-          res.status(500).send('Internal Server Error');
-      }
+    if (error.name === 'JsonWebTokenError') {
+      res.status(401).send('Invalid token');
+    } else {
+      console.error('Database connection or operation failed:', error);
+      res.status(500).send('Internal Server Error');
+    }
   }
 });
 
+app.delete('/deleteNotification/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log(req.params);
+  try {
+    const connection = await mysql.createConnection(dbConfig);
+
+    // SQL query to delete a booking by ID
+    const query = 'DELETE FROM class_notifications WHERE id = ?';
+
+    // Execute the query
+    await connection.execute(query, [id]);
+    await connection.end();
+
+    // Respond to the client
+    res.json({ message: 'Notification deleted successfully' });
+  } catch (error) {
+    console.error('Failed to delete notification:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 
 app.listen(PORT, () => {

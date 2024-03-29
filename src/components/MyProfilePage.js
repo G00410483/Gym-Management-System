@@ -24,6 +24,12 @@ const MemberDetails = () => {
     const [member, setMember] = useState({});
     const [editMode, setEditMode] = useState(false);
     const [bookings, setBookings] = useState([]);
+    const [notifs, setNotifications] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleNotifications = () => {
+        setIsOpen(!isOpen); // Toggle the state
+    };
 
     useEffect(() => {
         fetchMemberDetails();
@@ -39,6 +45,7 @@ const MemberDetails = () => {
             const response = await axios.get('http://localhost:3001/displayMember', config);
             setMember(response.data.memberDetails);
             setBookings(response.data.bookings);
+            setNotifications(response.data.notifs);
         } catch (err) {
             console.error(err);
         }
@@ -69,6 +76,20 @@ const MemberDetails = () => {
             setBookings(bookings.filter(booking => booking.id !== bookingId));
         } catch (err) {
             console.error('Failed to delete booking', err);
+        }
+    };
+
+    // Function to delete a notification
+    const deleteNotification = async (notificationId) => {
+        try {
+            const token = localStorage.getItem('token');
+            await axios.delete(`http://localhost:3001/deleteNotification/${notificationId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            // Remove the notification from the local state to update UI
+            setNotifications(notifs.filter(notif => notif.id !== notificationId));
+        } catch (err) {
+            console.error('Failed to delete notification', err);
         }
     };
 
@@ -246,6 +267,38 @@ const MemberDetails = () => {
                                             </MDBListGroup>
                                         ) : (
                                             <MDBCardText>No bookings found</MDBCardText>
+                                        )}
+                                    </MDBCardBody>
+                                </MDBCard>
+                            </MDBCol>
+                            <MDBCol md="6">
+                                <MDBCard className="mb-4">
+                                    <MDBCardBody id='notifSection'>
+                                        {/* Toggle Button */}
+                                        <span className="text-black" onClick={toggleNotifications} style={{ cursor: 'pointer' }}>Notifications</span>
+                                        <span className="text-white" id='notifNum'>{notifs.length}</span>
+
+
+                                        {/* Conditionally render the notifications list based on isOpen state */}
+                                        {isOpen && (
+                                            bookings.length > 0 ? (
+                                                <MDBListGroup style={{ margin: '15px' }}>
+                                                    {notifs.map((notif, index) => (
+                                                        <MDBListGroupItem id='message' key={index}>
+                                                            Dear Member
+                                                            <hr />
+                                                            Your booking for {notif.class_name} class has been cancelled.
+                                                            <hr />
+                                                            New Class Schedule: {notif.day}, {notif.time}
+                                                            <hr />
+                                                            <MDBBtn className="ms-2" color="danger" size="sm" onClick={() => deleteNotification(notif.id)}>Delete</MDBBtn>
+                                                        </MDBListGroupItem>
+                                                    ))}
+                                                    <br />
+                                                </MDBListGroup>
+                                            ) : (
+                                                <MDBCardText>No bookings found</MDBCardText>
+                                            )
                                         )}
                                     </MDBCardBody>
                                 </MDBCard>
