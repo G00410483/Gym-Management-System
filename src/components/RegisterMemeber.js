@@ -3,6 +3,13 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import './RegisterMember.css';
 import { useNavigate } from 'react-router-dom';
+import PaymentPage from './PaymentPage';
+
+const membershipPrices = {
+  basic: 40000, 
+  premium: 55000,
+  VIP: 70000,
+};
 
 function RegisterMembers() {
   const [ppsNumber, setPPSNumber] = useState('');
@@ -56,6 +63,9 @@ function RegisterMembers() {
       return; // Stop the form submission
     }
 
+
+    
+
     try {
       const response = await fetch('http://localhost:3001/registerMember', {
         method: 'POST',
@@ -68,7 +78,7 @@ function RegisterMembers() {
       if (response.ok) {
         const data = await response.json();
         console.log('Registration successful', data);
-        navigate('/');
+        navigate('/payment', { state: { price: membershipPrices[typeOfMembership] } });
       }
       else {
         throw new Error('Unauthorized');
@@ -149,10 +159,11 @@ function RegisterMembers() {
           <option value="VIP">VIP</option>
         </Form.Select>
       </Form.Group>
-
+      <PaymentPage membershipPrice={membershipPrices[typeOfMembership]}/>
       <Button variant="primary" type="submit" className="submit-button">
         Submit
       </Button>
+
     </Form>
   );
 }

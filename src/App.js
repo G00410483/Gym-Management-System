@@ -18,6 +18,7 @@ import MembersPage from './components/members/MembersPage';
 import BookingsDisplay from './components/BookingsDisplay';
 import Dashboard from './components/Dashboard';
 import MyProfilePage from './components/MyProfilePage';
+import PaymentPage from './components/PaymentPage';
 
 
 function ConditionalNavbar() {
@@ -44,6 +45,7 @@ function ConditionalNavbar() {
             <Nav.Link href="/classes"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Classes</Nav.Link>
             {isLoggedIn  && isRole('admin') && <Nav.Link href="/bookingsDisplay"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Bookings</Nav.Link>}
             {isLoggedIn && isRole('admin') && <Nav.Link href="/dashboard"><MDBIcon fas icon="chart-line" className="me-2" />Dashboard</Nav.Link>}
+            <Nav.Link href="/payment"><MDBIcon fas icon="chalkboard-teacher" className="me-2" />Pay</Nav.Link>
           </Nav>
           <Nav className="ms-auto">
             {isLoggedIn ? (
@@ -84,6 +86,7 @@ function App() {
             <Route path="/bookingsDisplay" element={<BookingsDisplay />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/myProfile" element={<MyProfilePage />} />
+            <Route path="/payment" element={<PaymentPage />} />
           </Routes>
         </BrowserRouter>
       </div>

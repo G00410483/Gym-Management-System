@@ -1,9 +1,12 @@
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mysql = require('mysql2/promise');
+const stripe = require("stripe")('sk_test_51OyyOfRpGdubHKaAe5oG4WuHX4MxKxVBTcfADBei7Tu5hkhDKmocCKVsK8DRKxt7q3UeEFDCUCPaHqbY22Xv90cc00sRySxfuT');
+
 
 const app = express();
 const PORT = 3001;
@@ -19,6 +22,23 @@ const dbConfig = {
   password: 'root',      // Password for authentication
   database: 'gymDB'      // Name of the database to connect to
 };
+
+
+app.post('/create-payment-intent', async (req, res) => {
+  const { amount } = req.body;
+  
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: 'eur',
+    });
+
+    // Send the client_secret within a JSON object
+    res.status(200).json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 //GET HOMEPAGE METHOD
