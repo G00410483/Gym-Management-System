@@ -1,10 +1,13 @@
 import React from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './CheckoutForm.css';
+import { useNavigate } from 'react-router-dom';
 
-const CheckoutForm = ({ price }) => {
+const CheckoutForm = ({ price, email }) => {
   const stripe = useStripe();
   const elements = useElements();
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -37,8 +40,10 @@ const CheckoutForm = ({ price }) => {
         },
         body: JSON.stringify({
           amount: price,
+          email: email,
         }),
       });
+      navigate('/');
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -71,7 +76,7 @@ const CheckoutForm = ({ price }) => {
   return (
     <form className='checkoutForm' onSubmit={handleSubmit}>
       {/* Display price or use it as needed */}
-      <p>Total Price: € {price / 1000}</p>
+      <p>Total Price: € {price/1000}</p>
       <CardElement />
       <button className='formBtn' type="submit" disabled={!stripe}>
         Pay

@@ -25,17 +25,33 @@ const dbConfig = {
 
 
 app.post('/create-payment-intent', async (req, res) => {
-  const { amount } = req.body;
-  
+  const { amount, email } = req.body;
+
   try {
     const paymentIntent = await stripe.paymentIntents.create({
+      receipt_email: email,
       amount: amount,
       currency: 'eur',
     });
+    // Establish connection to the database
+    const connection = await mysql.createConnection(dbConfig);
+    // Insert into payments table
+    const paymentDate = new Date().toISOString().slice(0, 10); // Format to YYYY-MM-DD
+    await connection.execute(
+      'INSERT INTO payments (email_address, amount, payment_date) VALUES (?, ?, ?)',
+      [email, amount, paymentDate]
+    );
+
+    // Optionally, update last_payment_date in members table
+    await connection.execute(
+      'UPDATE members SET last_payment_date = ? WHERE email_address = ?',
+      [paymentDate, email]
+    );
 
     // Send the client_secret within a JSON object
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
+    console.error('Error creating payment intent:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -385,17 +401,17 @@ app.put('/classes/:id', async (req, res) => {
     await connection.execute(query, [class_name, instructor_name, time, day, max_capacity, id]);
 
     const [booking_emails] = await connection.execute('SELECT email_address FROM bookings WHERE class_name = ?', [class_name]);
-    
+
     // Loop over each booking email and insert a notification for each
     for (let i = 0; i < booking_emails.length; i++) {
       // Extract the email address from the current booking email object
       const email = booking_emails[i].email_address;
       console.log(email);
-    
+
       // For each email, insert a new notification into the class_notifications table
       await connection.execute('INSERT INTO class_notifications (class_name, time, day, email_address) VALUES (?, ?, ?, ?)', [class_name, time, day, email]);
     }
-  
+
     // End the connection
     await connection.end();
 

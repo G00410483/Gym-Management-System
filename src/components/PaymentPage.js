@@ -7,13 +7,14 @@ import CheckoutForm from './CheckoutForm';
 // Load your Stripe publishable key here
 const stripePromise = loadStripe('pk_test_51OyyOfRpGdubHKaA6VpqAAfcsozJuhCtLUjpEasbzDoD0dBBUrNCm9PZ8ZhFOrRjySB2NNNzAYOeSkuTNyGk94DI00UDap7uvu');
 
-const PaymentPage = ({price}) => {
+const PaymentPage = () => {
   const location = useLocation();
-  //const { price } = location.state || {}; // Accessing price from the state
+  const { price } = location.state || {}; // Accessing price from the state
+  const { email } = location.state || {}; // Accessing email from the state
 
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm price={price} />
+      <CheckoutForm price={price} email={email}/>
     </Elements>
   );
 };

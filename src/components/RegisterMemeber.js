@@ -63,9 +63,6 @@ function RegisterMembers() {
       return; // Stop the form submission
     }
 
-
-    
-
     try {
       const response = await fetch('http://localhost:3001/registerMember', {
         method: 'POST',
@@ -78,7 +75,7 @@ function RegisterMembers() {
       if (response.ok) {
         const data = await response.json();
         console.log('Registration successful', data);
-        navigate('/payment', { state: { price: membershipPrices[typeOfMembership] } });
+        navigate('/payment', { state: { email: email, price: membershipPrices[typeOfMembership] } });
       }
       else {
         throw new Error('Unauthorized');
@@ -152,14 +149,13 @@ function RegisterMembers() {
       {/* Enter type of membership */}
       <Form.Group className="mb-3" controlId="formBasicGender">
         <Form.Label className="form-label" >Type of Membership</Form.Label>
-        <Form.Select aria-label="Membership select" className="form-control" value={typeOfMembership} onChange={(e) => setTypeOfMembership(e.target.value)} required>
+        <Form.Select aria-label="Membership select" className="form-control" value={typeOfMembership} onChange={(e) => {setTypeOfMembership(e.target.value)}} required>
           <option value="">Select Membership Type</option>
           <option value="basic">basic</option>
           <option value="premium">premium</option>
           <option value="VIP">VIP</option>
         </Form.Select>
       </Form.Group>
-      <PaymentPage membershipPrice={membershipPrices[typeOfMembership]}/>
       <Button variant="primary" type="submit" className="submit-button">
         Submit
       </Button>
