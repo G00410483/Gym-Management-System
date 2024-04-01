@@ -4,7 +4,7 @@ import axios from 'axios';
 import EditMember from './EditMember';
 import './MembersPage.css';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
-import { useAuth } from '../../AuthContext'; 
+import { useAuth } from '../../AuthContext';
 
 
 
@@ -51,7 +51,7 @@ function MembersPage() {
 
   // Function to save edited member
   const saveMember = async (member) => {
-    
+
     try {
       // Use Axios to make a PUT request to update the membe
       await axios.put(`http://localhost:3001/members/${member.id}`, member);
@@ -106,25 +106,25 @@ function MembersPage() {
           className="mb-3"
         >
           <Dropdown.Item onClick={() => handleSortChange('date_of_birth ASC')}>
-           Date of Birth (Ascending)
+            Date of Birth (Ascending)
           </Dropdown.Item>
           <Dropdown.Item onClick={() => handleSortChange('date_of_birth DESC')}>
             Date of Birth (Descending)
           </Dropdown.Item>
 
           <Dropdown.Item onClick={() => handleSortChange('start_date ASC')}>
-           Start Date (Ascending)
+            Start Date (Ascending)
           </Dropdown.Item>
           <Dropdown.Item onClick={() => handleSortChange('start_date DESC')}>
             Start Date (Descending)
           </Dropdown.Item>
 
           <Dropdown.Item onClick={() => handleSortChange('gender ASC')}>
-           Gender
+            Gender
           </Dropdown.Item>
 
           <Dropdown.Item onClick={() => handleSortChange('type_of_membership ASC')}>
-           Type of Membership 
+            Type of Membership
           </Dropdown.Item>
         </DropdownButton>
         <Form.Group className="mb-3" controlId="searchInput">
@@ -138,9 +138,9 @@ function MembersPage() {
           <tr>
             {/* Table headers */}
             <th>#</th>
-            <th>PPS Number</th>
             <th>First Name</th>
             <th>Second Name</th>
+            <th>Subscription</th>
             <th>Email Address</th>
             <th>Gender</th>
             <th>Date of Birth</th>
@@ -150,20 +150,35 @@ function MembersPage() {
         </thead>
         <tbody>
           {/* Map over filteredMembers array to render each member as a row in the table */}
-          {filteredMembers.map((member, index) => (
-            <tr key={member.id} onClick={() => handleRowClick(member)}>
-              <td>{index + 1}</td>
-              {/* Render member details in each cell */}
-              <td>{member.pps_number}</td>
-              <td>{member.first_name}</td>
-              <td>{member.second_name}</td>
-              <td>{member.email_address}</td>
-              <td>{member.gender}</td>
-              <td>{new Date(member.date_of_birth).toISOString().split('T')[0]}</td> {/* Remove time */}
-              <td>{new Date(member.start_date).toISOString().split('T')[0]}</td> {/* Remove time */}
-              <td>{member.type_of_membership}</td>
-            </tr>
-          ))}
+          {filteredMembers.map((member, index) => {
+            // Convert last_payment_date from string to Date object
+            const lastPaymentDate = new Date(member.last_payment_date);
+            // Get today's date
+            const today = new Date();
+            // Calculate the difference in months
+            const monthDifference = today.getMonth() - lastPaymentDate.getMonth() +
+              (12 * (today.getFullYear() - lastPaymentDate.getFullYear()));
+            // Determine if the member is active based on the month difference
+            const isActive = monthDifference <= 1;
+
+            return (
+              <tr key={member.id} onClick={() => handleRowClick(member)}>
+                <td>{index + 1}</td>
+                {/* Render member details in each cell */}
+                <td>{member.first_name}</td>
+                <td>{member.second_name}</td>
+                {/* Display status with dot */}
+                <td style={{ color: isActive ? 'green' : 'red' }}>
+                  ● {isActive ? 'Active' : 'Inactive'}
+                </td>
+                <td>{member.email_address}</td>
+                <td>{member.gender}</td>
+                <td>{new Date(member.date_of_birth).toISOString().split('T')[0]}</td> {/* Remove time */}
+                <td>{new Date(member.start_date).toISOString().split('T')[0]}</td> {/* Remove time */}
+                <td>{member.type_of_membership}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
       {/* Check if 'selectedMember' is not null or undefined. This condition determines if the EditMemberModal should be rendered. */}

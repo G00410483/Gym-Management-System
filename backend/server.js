@@ -63,7 +63,7 @@ app.get('/', async (req, res) => {
     // Establish connection to the database
     const connection = await mysql.createConnection(dbConfig);
 
-    let query = 'SELECT DISTINCT * FROM membershipPrice'; 
+    let query = 'SELECT DISTINCT * FROM membership'; 
 
     // Execute the SQL query
     const [plans] = await connection.execute(query);
@@ -133,7 +133,7 @@ app.post('/login', async (req, res) => {
             console.log(typeOfMembership);
 
             // Fetch membership price for this user
-            query = 'SELECT price FROM membershipprice WHERE type_of_membership = ?';
+            query = 'SELECT price FROM membership WHERE type_of_membership = ?';
             const [priceRows] = await connection.execute(query, [typeOfMembership]);
             const price = priceRows.length > 0 ? priceRows[0].price : null;
             console.log(price);
@@ -342,29 +342,47 @@ app.put('/members/:id', async (req, res) => {
 // DELETE MEMBER METHOD
 // Endpoint for deleting a specific member
 app.delete('/members/:id', async (req, res) => {
-
-  // Extracts the member ID from the request parameters
   const { id } = req.params;
+  console.log(req.params);
 
   try {
-    // Attempts to establish a connection to the database
     const connection = await mysql.createConnection(dbConfig);
+    
+    // Retrieve the email address of the member
+    const getEmailQuery = 'SELECT email_address FROM members WHERE id = ?';
+    const [members] = await connection.execute(getEmailQuery, [id]);
+    const email = members[0].email_address;
+    console.log(email);
+    
+    // Delete all notifications for that email address
+    const deleteNotificationsQuery = 'DELETE FROM notifications WHERE email_address = ?';
+    await connection.execute(deleteNotificationsQuery, [email]);
 
-    // SQL query string to delete a member from the 'members' table where the 'id' matches the specified ID
-    const query = 'DELETE FROM members WHERE id = ?';
+    // Delete all bookings for that email address
+    const deleteBookingsQuery = 'DELETE FROM bookings WHERE email_address = ?';
+    await connection.execute(deleteBookingsQuery, [email]);
 
-    // Executes the SQL query using the member ID to specify which member should be deleted.
-    await connection.execute(query, [id]);
-    // Closes the database connection after the query execution is complete
+    // Delete all payments for that email address
+    const deletePaymentsQuery = 'DELETE FROM payments WHERE email_address = ?';
+    await connection.execute(deletePaymentsQuery, [email]);
+
+    // Finally, delete the member
+    const deleteMemberQuery = 'DELETE FROM members WHERE id = ?';
+    await connection.execute(deleteMemberQuery, [id]);
+    
+    // Close the database connection
     await connection.end();
 
-    // Responds to the client with a JSON object containing a success message
-    res.json({ message: 'Member deleted successfully' });
+    // Respond with success message
+    res.json({ message: 'Member and all related data deleted successfully' });
   } catch (error) {
-    console.error('Failed to delete member:', error);
-    res.status(500).send('Internal Server Error');
+    console.error('Failed to delete member and related data:', error);
+
+    res.status(500).send(`Internal Server Error: ${error.message}`);
   }
 });
+
+
 
 // GET CLASSES METHOD
 // To fetch all class records
@@ -400,6 +418,8 @@ app.post('/classes', async (req, res) => {
 
     // Execute the query with the new class data
     await connection.execute(query, [class_name, instructor_name, time, day, max_capacity, image]);
+
+    const [emails] = await connection.execute('SELECT email_address FROM bookings WHERE class_name = ?', [class_name]);
     await connection.end();
     res.status(200).json({ message: 'Class added successfully' });
   } catch (error) {
@@ -416,6 +436,7 @@ app.put('/classes/:id', async (req, res) => {
   const { id } = req.params;
   // Extraxt the updated class details from the request body
   const { class_name, instructor_name, time, day, max_capacity } = req.body;
+  const type = 'update';
 
   // Validate that all required class details are provided
   if (!class_name || !instructor_name || !time || !day || !max_capacity) {
@@ -441,8 +462,8 @@ app.put('/classes/:id', async (req, res) => {
       const email = booking_emails[i].email_address;
       console.log(email);
 
-      // For each email, insert a new notification into the class_notifications table
-      await connection.execute('INSERT INTO class_notifications (class_name, time, day, email_address) VALUES (?, ?, ?, ?)', [class_name, time, day, email]);
+      // For each email, insert a new notification into the notifications table
+      await connection.execute('INSERT INTO notifications (type, class_name, email_address) VALUES (?, ?, ?)', [type, class_name, email]);
     }
 
     // End the connection
@@ -458,21 +479,33 @@ app.put('/classes/:id', async (req, res) => {
 // DELETE CLASS METHOD
 // To delete a specific class record
 app.delete('/classes/:id', async (req, res) => {
-  // Extract the class ID from the request URL parameters
   const { id } = req.params;
+  const type = 'cancel';
 
-  // Handle the errors
   try {
-    // Establish connection to db
     const connection = await mysql.createConnection(dbConfig);
-    // SQL query to delete specific class record 
-    const query = 'DELETE FROM classes WHERE id = ?';
-    // Execute query
-    await connection.execute(query, [id]);
-    // End the connection
-    await connection.end();
+    // Correctly extracting class name
+    const [classes] = await connection.execute('SELECT class_name FROM classes WHERE id = ?', [id]);
+    if (classes.length === 0) {
+      return res.status(404).send('Class not found');
+    }
+    const className = classes[0].class_name;
 
-    //
+    // First, fetch emails for notifications before deleting
+    const [booking_emails] = await connection.execute('SELECT email_address FROM bookings WHERE class_name = ?', [className]);
+
+    // Then, delete bookings
+    await connection.execute('DELETE FROM bookings WHERE class_name = ?', [className]);
+
+    // Proceed to delete the class
+    await connection.execute('DELETE FROM classes WHERE id = ?', [id]);
+
+    // Loop over each booking email and insert a notification for each
+    for (let email of booking_emails) {
+      await connection.execute('INSERT INTO notifications (type, class_name, email_address) VALUES (?, ?, ?)', [type, className, email.email_address]);
+    }
+
+    await connection.end();
     res.json({ message: 'Class deleted successfully' });
   } catch (error) {
     console.error('Failed to delete class:', error);
@@ -642,7 +675,7 @@ app.get('/displayMember', async (req, res) => {
       const bookingsQuery = 'SELECT * FROM bookings WHERE email_address = ?';
       const [bookingRows] = await connection.execute(bookingsQuery, [userEmail]);
 
-      notifQuery = 'SELECT * FROM class_notifications WHERE email_address = ?';
+      notifQuery = 'SELECT * FROM notifications WHERE email_address = ?';
       const [notifRows] = await connection.execute(notifQuery, [userEmail]);
 
       // Combine member details with their bookings
@@ -677,7 +710,7 @@ app.delete('/deleteNotification/:id', async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
 
     // SQL query to delete a booking by ID
-    const query = 'DELETE FROM class_notifications WHERE id = ?';
+    const query = 'DELETE FROM notifications WHERE id = ?';
 
     // Execute the query
     await connection.execute(query, [id]);

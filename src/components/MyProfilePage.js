@@ -133,8 +133,11 @@ const MemberDetails = () => {
                             <MDBCard className="mb-4">
                                 <MDBCardBody>
                                     <Form onSubmit={handleFormSubmit}>
+                                    <Form.Label>First Name</Form.Label>
                                         <MDBInput placeholder="First Name" type="text" name="first_name" value={member.first_name} onChange={handleInputChange} className="mb-4" />
+                                        <Form.Label>Second Name</Form.Label>
                                         <MDBInput placeholder="Second Name" type="text" name="second_name" value={member.second_name} onChange={handleInputChange} className="mb-4" />
+                                        <Form.Label>Email Address</Form.Label>
                                         <MDBInput placeholder="Email Address" type="email" name="email_address" value={member.email_address} onChange={handleInputChange} className="mb-4" />
                                         <Form.Group className="mb-3" controlId="formGenderSelect">
                                             <Form.Label>Gender</Form.Label>
@@ -143,16 +146,6 @@ const MemberDetails = () => {
                                                 <option value="male">male</option>
                                                 <option value="female">female</option>
                                                 <option value="prefer not to say">prefer not to say</option>
-                                            </Form.Select>
-                                        </Form.Group>
-
-                                        <Form.Group className="mb-3" controlId="formMembershipSelect">
-                                            <Form.Label>Type of Membership</Form.Label>
-                                            <Form.Select name="type_of_membership" value={member.type_of_membership} onChange={handleInputChange} className="form-control">
-                                                <option value="">Select type of membership</option>
-                                                <option value="basic">basic</option>
-                                                <option value="premium">premium</option>
-                                                <option value="VIP">VIP</option>
                                             </Form.Select>
                                         </Form.Group>
                                         <MDBBtn type="submit">Save Changes</MDBBtn>
@@ -287,9 +280,9 @@ const MemberDetails = () => {
                                                         <MDBListGroupItem id='message' key={index}>
                                                             Dear Member
                                                             <hr />
-                                                            Your booking for {notif.class_name} class has been cancelled.
+                                                            Type: {notif.type}
                                                             <hr />
-                                                            New Class Schedule: {notif.day}, {notif.time}
+                                                            Your booking for {notif.class_name}.
                                                             <hr />
                                                             <MDBBtn className="ms-2" color="danger" size="sm" onClick={() => deleteNotification(notif.id)}>Delete</MDBBtn>
                                                         </MDBListGroupItem>
