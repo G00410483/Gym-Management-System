@@ -9,9 +9,9 @@ const stripePromise = loadStripe('pk_test_51OyyOfRpGdubHKaA6VpqAAfcsozJuhCtLUjpE
 
 const PaymentPage = () => {
   const location = useLocation();
-  const { price } = location.state || {}; // Accessing price from the state
-  const { email } = location.state || {}; // Accessing email from the state
 
+  const { price, email } = location.state || { price: null, email: '' };
+  
   return (
     <Elements stripe={stripePromise}>
       <CheckoutForm price={price} email={email}/>

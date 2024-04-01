@@ -30,7 +30,7 @@ app.post('/create-payment-intent', async (req, res) => {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       receipt_email: email,
-      amount: amount,
+      amount: amount * 100,
       currency: 'eur',
     });
     // Establish connection to the database
@@ -63,7 +63,7 @@ app.get('/', async (req, res) => {
     // Establish connection to the database
     const connection = await mysql.createConnection(dbConfig);
 
-    let query = 'SELECT DISTINCT * FROM membershipPrice'; // Default query to select all members
+    let query = 'SELECT DISTINCT * FROM membershipPrice'; 
 
     // Execute the SQL query
     const [plans] = await connection.execute(query);
@@ -99,7 +99,7 @@ app.post('/login', async (req, res) => {
 
     if (rows.length === 0) {
       // If not found in admins, check the members table
-      query = 'SELECT * FROM members WHERE email_address = ?';
+      query = 'SELECT *, last_payment_date FROM members WHERE email_address = ?';
       [rows] = await connection.execute(query, [email.trim()]);
 
       role = 'member'; // User must be a member if found in this table
@@ -118,14 +118,40 @@ app.post('/login', async (req, res) => {
       if (match) {
         // Create a JWT token containing the user's ID with a 24-hour expiration
         const token = jwt.sign({ email: user.email_address, role: role }, 'your_secret_key', { expiresIn: '24h' });
-        // Send the token as a JSON response
-        res.json({ token, role, email });
-      } else {
+
+        if (role === 'member') {
+          const lastPaymentDate = new Date(user.last_payment_date);
+          const currentDate = new Date();
+          const oneMonthAgo = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+
+          // Execute the query
+          const [typeOfMembershipRows] = await connection.execute('SELECT type_of_membership FROM members WHERE email_address = ?', [email]);
+
+          // Ensure there is at least one row and access the type_of_membership field
+          if (typeOfMembershipRows.length > 0 && lastPaymentDate < oneMonthAgo || user.last_payment_date == null) {
+            const typeOfMembership = typeOfMembershipRows[0].type_of_membership;
+            console.log(typeOfMembership);
+
+            // Fetch membership price for this user
+            query = 'SELECT price FROM membershipprice WHERE type_of_membership = ?';
+            const [priceRows] = await connection.execute(query, [typeOfMembership]);
+            const price = priceRows.length > 0 ? priceRows[0].price : null;
+            console.log(price);
+
+            // User's last payment was more than a month ago, redirect to the payment page
+            return res.json({ token, role, email, redirect: 'payment', price });
+          }
+        }
+        // Either not a member or payment up-to-date; redirect to homepage
+        res.json({ token, role, email, redirect: '' });
+      }
+      else {
         // If passwords don't match, send a 401 Unauthorized status
         console.log("Password comparison failed");
         res.status(401).send('Unauthorized');
       }
-    } else {
+    }
+    else {
       // If no user with the provided email is found, send a 401 Unauthorized status
       console.log("No user found with the provided email");
       res.status(401).send('Unauthorized');
@@ -229,11 +255,18 @@ app.post('/registerMember', async (req, res) => {
     );
     console.log("New member save.");
 
+     // Fetch membership price for this user
+     query = 'SELECT price FROM membershipprice WHERE type_of_membership = ?';
+     const [priceRows] = await connection.execute(query, [typeOfMembership]);
+     const price = priceRows.length > 0 ? priceRows[0].price : null;
+     console.log(price);
+
+
     // Close connection
     await connection.end();
 
     // Sends JSON response with a success message
-    res.json({ message: 'Registration successful' });
+    res.json({ message: 'Registration successful',  redirect: 'payment', price, email});
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).send('Internal Server Error');

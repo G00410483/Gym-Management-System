@@ -5,12 +5,6 @@ import './RegisterMember.css';
 import { useNavigate } from 'react-router-dom';
 import PaymentPage from './PaymentPage';
 
-const membershipPrices = {
-  basic: 40000, 
-  premium: 55000,
-  VIP: 70000,
-};
-
 function RegisterMembers() {
   const [ppsNumber, setPPSNumber] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -75,7 +69,7 @@ function RegisterMembers() {
       if (response.ok) {
         const data = await response.json();
         console.log('Registration successful', data);
-        navigate('/payment', { state: { email: email, price: membershipPrices[typeOfMembership] } });
+        navigate('/' + data.redirect, { state: { email: data.email, price: data.price } });
       }
       else {
         throw new Error('Unauthorized');

@@ -30,7 +30,8 @@ function LoginForm() {
                 // If login is successful, parse the JSON response and use the login function from AuthContext.
                 const data = await response.json();
                 login(data.token, data.role);
-                navigate('/');
+                // Redirect based on the server's response
+                navigate('/' + data.redirect, { state: { email: data.email, price: data.price } });
             } else {
                 throw new Error('Unauthorized');
             }

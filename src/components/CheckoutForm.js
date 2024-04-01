@@ -27,7 +27,8 @@ const CheckoutForm = ({ price, email }) => {
     if (error) {
       console.log('[error]', error);
       return; 
-    } else {
+    } 
+    else {
       console.log('[PaymentMethod]', paymentMethod);
     }
 
@@ -43,7 +44,7 @@ const CheckoutForm = ({ price, email }) => {
           email: email,
         }),
       });
-      navigate('/');
+
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -56,15 +57,17 @@ const CheckoutForm = ({ price, email }) => {
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
+          billing_details: { email: email },
         },
       });
 
       if (result.error) {
         console.log('[error]', result.error);
-        // Handle errors here
+        
       } else {
         if (result.paymentIntent.status === 'succeeded') {
           console.log('Payment succeeded!');
+          navigate('/');
         }
       }
     } catch (error) {
@@ -76,7 +79,8 @@ const CheckoutForm = ({ price, email }) => {
   return (
     <form className='checkoutForm' onSubmit={handleSubmit}>
       {/* Display price or use it as needed */}
-      <p>Total Price: € {price/1000}</p>
+      <p>Email Address: € {email}</p>
+      <p>Total Price: € {price}</p>
       <CardElement />
       <button className='formBtn' type="submit" disabled={!stripe}>
         Pay
