@@ -1,19 +1,18 @@
 
 const express = require('express');
+const cors = require('cors');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const cors = require('cors');
 const mysql = require('mysql2/promise');
 const stripe = require("stripe")('sk_test_51OyyOfRpGdubHKaAe5oG4WuHX4MxKxVBTcfADBei7Tu5hkhDKmocCKVsK8DRKxt7q3UeEFDCUCPaHqbY22Xv90cc00sRySxfuT');
-
 
 const app = express();
 const PORT = 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
-
 
 // Define a configuration object for connecting to a database
 const dbConfig = {
@@ -24,9 +23,13 @@ const dbConfig = {
 };
 
 
+// POST request to /create-payment-intent
+// Reference: https://docs.stripe.com/api/payment_intents/create
 app.post('/create-payment-intent', async (req, res) => {
+  // Retrive payment details
   const { amount, email } = req.body;
 
+  // Create Stripe payment intent with provided details
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       receipt_email: email,
@@ -35,26 +38,31 @@ app.post('/create-payment-intent', async (req, res) => {
     });
     // Establish connection to the database
     const connection = await mysql.createConnection(dbConfig);
-    // Insert into payments table
+
+    // Current date in 'YYYY-MM-DD' format
     const paymentDate = new Date().toISOString().slice(0, 10); // Format to YYYY-MM-DD
+    
+    // Query to insert the payment details into payments table
     await connection.execute(
       'INSERT INTO payments (email_address, amount, payment_date) VALUES (?, ?, ?)',
       [email, amount, paymentDate]
     );
 
-    // Optionally, update last_payment_date in members table
+    // Update last_payment_date in members table
     await connection.execute(
       'UPDATE members SET last_payment_date = ? WHERE email_address = ?',
       [paymentDate, email]
     );
 
-    // Send the client_secret within a JSON object
+   // Respond to the client with a 200 OK status and send the client_secret of the payment intent in JSON format
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     console.error('Error creating payment intent:', error);
+     // Respond to the client with a 500 Internal Server Error status and send the error message in JSON format
     res.status(500).json({ error: error.message });
   }
 });
+
 
 
 //GET HOMEPAGE METHOD
@@ -63,6 +71,7 @@ app.get('/', async (req, res) => {
     // Establish connection to the database
     const connection = await mysql.createConnection(dbConfig);
 
+    // Query to select all types of membership
     let query = 'SELECT DISTINCT * FROM membership'; 
 
     // Execute the SQL query
@@ -119,9 +128,14 @@ app.post('/login', async (req, res) => {
         // Create a JWT token containing the user's ID with a 24-hour expiration
         const token = jwt.sign({ email: user.email_address, role: role }, 'your_secret_key', { expiresIn: '24h' });
 
+        // If the user's role is member
         if (role === 'member') {
+          // Reference: https://stackoverflow.com/questions/7937233/how-do-i-calculate-the-date-in-javascript-three-months-prior-to-today
+          // Create a Date object from the user's last payment date
           const lastPaymentDate = new Date(user.last_payment_date);
+          // Create a new Date object for the current date and time
           const currentDate = new Date();
+           // Subtract one month from the current date to find the date one month ago
           const oneMonthAgo = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
 
           // Execute the query
@@ -190,10 +204,12 @@ app.post('/register', async (req, res) => {
       return res.status(409).send('User already exists');
     }
     // Compare the provided password with the hashed password stored in the database
+    // Reference: https://stackoverflow.com/questions/77850971/bcrypt-compare-password
     const match = await bcrypt.compare(password, user.password.trim()); // Adjusted to 'password' and ensured it's trimmed
     // If passwords match, generate a JWT token for authentication
     if (match) {
       // Create a JWT token containing the user's ID with a 24-hour expiration
+      // Reference: https://stackoverflow.com/questions/56753929/how-to-get-user-id-using-jwt-token
       const token = jwt.sign({ userId: user.id }, 'your_secret_key', { expiresIn: '24h' });
       // Send the token as a JSON response
       res.json({ token });
@@ -204,6 +220,7 @@ app.post('/register', async (req, res) => {
     }
 
     // Hash password with a salt round of 10
+    // Reference: https://snyk.io/advisor/npm-package/bcrypt/functions/bcrypt.hash
     const hashedPassword = await bcrypt.hash(password, 10);
     // Insert new user
     await connection.execute('INSERT INTO admins (firstName, secondName, emailAddress, password) VALUES (?, ?, ?, ?)',
@@ -238,29 +255,37 @@ app.post('/registerMember', async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
 
     // Check if member already exists
-    const [members] = await connection.execute('SELECT * FROM members WHERE email_address = ?', [ppsNumber.trim()]);
-    // Checks if user was found, if so, it closes db connection 
-    if (members.length > 0) {
+    const [membersEmail] = await connection.execute('SELECT * FROM members WHERE email_address = ?', [email.trim()]);
+    const [membersPPS] = await connection.execute('SELECT * FROM members WHERE pps_number = ?', [ppsNumber.trim()]);
+    // Checks if user's email address was found, if so, it closes db connection 
+    if (membersEmail.length > 0) {
       await connection.end();
-      return res.status(409).send('User already exists');
+      res.json({ message: 'Email address already exists'});
+    }
+    // Checks if user's PPS number was found, if so, it closes db connection 
+    if (membersPPS.length > 0) {
+      await connection.end();
+      res.json({ message: 'PPS number address already exists'});
     }
 
     // Hash password with a salt round of 10
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Execute query
     await connection.execute(
       'INSERT INTO members (pps_number, first_name, second_name, email_address, password, gender, date_of_birth, start_date, type_of_membership) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [ppsNumber, firstName, secondName, email, hashedPassword, gender, dateOfBirth, startDate, typeOfMembership]
 
     );
-    console.log("New member save.");
+    console.log("New member saved.");
 
      // Fetch membership price for this user
-     query = 'SELECT price FROM membershipprice WHERE type_of_membership = ?';
+     query = 'SELECT price FROM membership WHERE type_of_membership = ?';
+     
      const [priceRows] = await connection.execute(query, [typeOfMembership]);
+     // Check if the 'priceRows' array contains any results. If it does, access the 'price' property of the first object in the array to get the price of the membership.
      const price = priceRows.length > 0 ? priceRows[0].price : null;
      console.log(price);
-
 
     // Close connection
     await connection.end();
@@ -277,23 +302,32 @@ app.post('/registerMember', async (req, res) => {
 // Endpoint for fetching members with optional search functionality
 app.get('/members', async (req, res) => {
   try {
+    // Destructures the `searchTerm` and `sort` variables from the query
     const { searchTerm, sort } = req.query; // Capture sort parameter from query
+    // Converts the `searchTerm` to lowercase and trims whitespace, or sets it to null if it's not provided.
     const searchTermLower = searchTerm ? searchTerm.toLowerCase().trim() : null;
 
+    // Establish database connection
     const connection = await mysql.createConnection(dbConfig);
 
+    // Quert to select all from members
     let query = 'SELECT * FROM members';
 
+    // Appends query to apply the filter
     if (searchTermLower) {
       query += ' WHERE LOWER(first_name) LIKE ? OR LOWER(second_name) LIKE ? OR LOWER(email_address) LIKE ?';
     }
 
-    // Sort functionality
+    // If sort parameter provided, orders result by specified column
     if (sort) {
       query += ` ORDER BY ${sort}`;
     }
 
+    // If a search term is provided, creates an array with the term to replace the placeholders (?).
+    // Reference
     const params = searchTermLower ? [`%${searchTermLower}%`, `%${searchTermLower}%`, `%${searchTermLower}%`] : [];
+    
+    // Executes the SQL query with the specified parameters (if any), and destructures the first element of the result to get the members.
     const [members] = await connection.execute(query, params);
 
     await connection.end();
@@ -320,7 +354,7 @@ app.put('/members/:id', async (req, res) => {
   try {
     // Establish connection to database
     const connection = await mysql.createConnection(dbConfig);
-    // Defines a SQL query to update a member's details in the database for the specified 'id'
+    // SQL query to update a member's details in the database for the specified 'id'
     const query = `
       UPDATE members 
       SET first_name = ?, second_name = ?, email_address = ?, gender = ?, type_of_membership = ?
@@ -628,25 +662,33 @@ app.get('/dashboard', async (req, res) => {
                         FROM members
                         GROUP BY YEAR(start_date)
                         ) AS yearly_totals
-                        ORDER BY year`
+                        ORDER BY year`,
+      paymentTrends: `SELECT YEAR(payment_date) AS year, MONTH(payment_date) AS month, SUM(amount) AS total
+                      FROM payments
+                      GROUP BY YEAR(payment_date), MONTH(payment_date)
+                      ORDER BY YEAR(payment_date) ASC, MONTH(payment_date) ASC`,
+      genderBookingDistribution: `SELECT m.gender, COUNT(b.id) AS count
+                                  FROM bookings b
+                                  INNER JOIN members m ON b.email_address = m.email_address
+                                  GROUP BY m.gender`,
+      classPopularityByDay: `SELECT c.day, COUNT(b.id) AS count
+                             FROM bookings b
+                             INNER JOIN classes c ON b.class_name = c.class_name
+                             GROUP BY c.day
+                             ORDER BY FIELD(c.day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')`
     };
 
-    const [totalMembers] = await connection.query(queries.totalMembers);
-    const [totalBookings] = await connection.query(queries.totalBookings);
-    const [genders] = await connection.query(queries.genders);
-    const [memberships] = await connection.query(queries.memberships);
-    const [mostBooked] = await connection.query(queries.mostBooked);
-    const [membersTimeline] = await connection.query(queries.membersTimeline);
-    await connection.end();
-    res.json({
-      totalMembers: totalMembers[0].total,
-      totalBookings: totalBookings[0].total,
-      genders,
-      memberships,
-      mostBooked,
-      // Returning new data for members over time
-      membersTimeline
-    });
+
+     // Execute all queries in parallel for efficiency
+     const results = await Promise.all(Object.values(queries).map(query => connection.query(query)));
+     await connection.end();
+     // Map query results to their respective keys
+     const response = Object.keys(queries).reduce((acc, key, index) => {
+      acc[key] = results[index][0];
+      return acc;
+    }, {});
+
+    res.json(response);
   } catch (error) {
     console.error('Dashboard data fetch error:', error);
     res.status(500).send('Internal Server Error');
@@ -655,30 +697,36 @@ app.get('/dashboard', async (req, res) => {
 
 // Display Member Details Endpoint
 app.get('/displayMember', async (req, res) => {
+  // Retrive token
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
     return res.status(401).send('No token provided');
   }
 
   try {
+     // Verify and decode the provided JWT using a secret key
     const decoded = jwt.verify(token, 'your_secret_key');
+    // Extract email from token
     const userEmail = decoded.email;
 
+    // Establish connection to databse
     const connection = await mysql.createConnection(dbConfig);
 
-    // Fetch user details from the members table
+    // Select all columns from the 'members' table where the email address matches the user's email.
     const memberQuery = 'SELECT * FROM members WHERE email_address = ?';
     const [memberRows] = await connection.execute(memberQuery, [userEmail]);
 
+      // Checks if any member records were found.
     if (memberRows.length > 0) {
-      // Fetch bookings related to the member's email address
+      // If a member is found, queries the 'bookings' table for records related to the member's email.
       const bookingsQuery = 'SELECT * FROM bookings WHERE email_address = ?';
       const [bookingRows] = await connection.execute(bookingsQuery, [userEmail]);
 
+      // If found queries the 'notifications' table for records related to the member's email.
       notifQuery = 'SELECT * FROM notifications WHERE email_address = ?';
       const [notifRows] = await connection.execute(notifQuery, [userEmail]);
 
-      // Combine member details with their bookings
+      // Combine member details with their bookings and notifications
       const response = {
         memberDetails: memberRows[0],
         bookings: bookingRows,
@@ -703,10 +751,13 @@ app.get('/displayMember', async (req, res) => {
   }
 });
 
+// Delete notifications endpoint
 app.delete('/deleteNotification/:id', async (req, res) => {
+  // Retrive id
   const { id } = req.params;
   console.log(req.params);
   try {
+    // Establish connection to database
     const connection = await mysql.createConnection(dbConfig);
 
     // SQL query to delete a booking by ID

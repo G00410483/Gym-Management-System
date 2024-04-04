@@ -21,28 +21,37 @@ import {
     MDBListGroupItem
 } from 'mdb-react-ui-kit';
 const MemberDetails = () => {
+    // Define state veriables to manage member data
     const [member, setMember] = useState({});
     const [editMode, setEditMode] = useState(false);
     const [bookings, setBookings] = useState([]);
     const [notifs, setNotifications] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
 
+    // Function to toggle notification visability
     const toggleNotifications = () => {
         setIsOpen(!isOpen); // Toggle the state
     };
 
+    // Fetch member details using useEffect hook
     useEffect(() => {
         fetchMemberDetails();
     }, []);
 
+    // Fetch member details from API
     const fetchMemberDetails = async () => {
         try {
+            // Retrive token from local storage 
+            // Reference: https://stackoverflow.com/questions/73283693/how-to-pass-token-to-local-storage-with-axios
             const token = localStorage.getItem('token');
+            // Configuration for axios request 
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
 
+            // Make GET request to API 
             const response = await axios.get('http://localhost:3001/displayMember', config);
+            // Update fetched data 
             setMember(response.data.memberDetails);
             setBookings(response.data.bookings);
             setNotifications(response.data.notifs);
@@ -51,48 +60,60 @@ const MemberDetails = () => {
         }
     };
 
+    // Function to handle form submit
     const handleFormSubmit = async (e) => {
+        // Prevent default
         e.preventDefault();
         try {
+            // Retrive token from local storage 
             const token = localStorage.getItem('token');
+            // Configuration for Axios request 
             const config = {
                 headers: { Authorization: `Bearer ${token}` }
             };
+            // Make PUT request to update member details
             await axios.put(`http://localhost:3001/members/${member.id}`, member, config);
-            setEditMode(false);
+            setEditMode(false); // Disable edit mode
             fetchMemberDetails(); // Refresh member details
         } catch (err) {
             console.error('Failed to update member details', err);
         }
     };
 
+    // Function to delete specific booking
     const deleteBooking = async (bookingId) => {
         try {
+            // Retrieve token from localStorage
             const token = localStorage.getItem('token');
+            // Make DELETE request to API to delete booking
             await axios.delete(`http://localhost:3001/deleteBooking/${bookingId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            // Remove the booking from the local state to update UI
+            // Update bookings state by filtering out the deleted booking
             setBookings(bookings.filter(booking => booking.id !== bookingId));
         } catch (err) {
             console.error('Failed to delete booking', err);
         }
     };
 
-    // Function to delete a notification
+    // Function to delete a specific notification
     const deleteNotification = async (notificationId) => {
         try {
+            // Retrive token 
             const token = localStorage.getItem('token');
+            // Make DELETE request to API to delete notification
             await axios.delete(`http://localhost:3001/deleteNotification/${notificationId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            // Remove the notification from the local state to update UI
+            // Update notifications state by filtering out the deleted notification
             setNotifications(notifs.filter(notif => notif.id !== notificationId));
         } catch (err) {
             console.error('Failed to delete notification', err);
         }
     };
 
+    // Function to calculate age based on date of birth
+    // Reference: https://stackoverflow.com/questions/4060004/calculate-age-given-the-birth-date-in-the-format-yyyymmdd
     function calculateAge(dob) {
         const birthday = new Date(dob);
         const today = new Date();
@@ -214,6 +235,7 @@ const MemberDetails = () => {
                                             <MDBCardText className="text-muted">
                                                 {
                                                     member.start_date ?
+                                                    /* Reference:https://stackoverflow.com/questions/47066555/remove-time-after-converting-date-toisostring */
                                                         (new Date(member.start_date).toISOString().split('T')[0]) :
                                                         'Date of Birth not available'
                                                 }
@@ -236,6 +258,19 @@ const MemberDetails = () => {
                                         </MDBCol>
                                         <MDBCol sm="9">
                                             <MDBCardText className="text-muted">{member.type_of_membership}</MDBCardText>
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <hr />
+                                    <MDBRow>
+                                        <MDBCol sm="3">
+                                            <MDBCardText>Last Payment Date</MDBCardText>
+                                        </MDBCol>
+                                        <MDBCol sm="9">
+                                            <MDBCardText className="text-muted">{
+                                                    member.last_payment_date ?
+                                                        (new Date(member.last_payment_date).toISOString().split('T')[0]) :
+                                                        'Date of Payment not available'
+                                                }</MDBCardText>
                                         </MDBCol>
                                     </MDBRow>
                                 </MDBCardBody>

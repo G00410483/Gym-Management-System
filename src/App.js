@@ -9,26 +9,31 @@ import Navbar from 'react-bootstrap/Navbar';
 import { MDBIcon } from 'mdb-react-ui-kit';
 
 
-import LoginForm from './components/LoginForm';
+import LoginForm from './components/login/LoginForm';
 import RegisterForm from './components/Register';
-import Homepage from './components/Homepage';
+import Homepage from './components/homepage/Homepage';
 import ClassesPage from './components/classes/ClassesPage';
-import RegisterMember from './components/RegisterMemeber';
+import RegisterMember from './components/register/RegisterMemeber';
 import MembersPage from './components/members/MembersPage';
-import BookingsDisplay from './components/BookingsDisplay';
+import BookingsDisplay from './components/bookings/BookingsDisplay';
 import Dashboard from './components/Dashboard';
-import MyProfilePage from './components/MyProfilePage';
-import PaymentPage from './components/PaymentPage';
+import MyProfilePage from './components/profile/MyProfilePage';
+import PaymentPage from './components/payment/PaymentPage';
 
 
+// Conditional component to show/hide navbar
 function ConditionalNavbar() {
+  // Using Auth context to manage authentication
   const { isLoggedIn, logout, isRole } = useAuth();
+  // Get current location to check path name
   const location = useLocation();
 
+  // Hiding navbar on specific pages
   if (location.pathname === '/login' || location.pathname === '/registerForm' || location.pathname === '/payment') {
     return null;
   }
 
+  // Structure of navbar
   return (
     <Navbar bg="dark" variant="dark" expand="lg" fixed="left">
       <Container>
@@ -77,6 +82,7 @@ function App() {
         <BrowserRouter>
           <ConditionalNavbar />
           <Routes>
+            {/* Define routes for different pages */}
             <Route path="/registerForm" element={<RegisterForm />} />
             <Route path="/" element={<Homepage />} />
             <Route path="/login" element={<LoginForm />} />

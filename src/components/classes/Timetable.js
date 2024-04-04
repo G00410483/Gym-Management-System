@@ -6,6 +6,14 @@ import { faInfoCircle, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons
 import { daysOfWeek } from '../constants';
 
 function Timetable({ groupedClasses, handleClassSelect, handleDeleteClass, isLoggedIn, isRole, setEditingClass, setShowEdit, setBookingClass, setShowBooking }) {
+  
+  const confirmAndDeleteClass = (classId) => {
+    const isConfirmed = window.confirm('Are you sure you want to delete this class?');
+    if (isConfirmed) {
+      handleDeleteClass(classId);
+    }
+  };
+  
   return (
     <div>
       <table className="schedule-table">
@@ -36,7 +44,7 @@ function Timetable({ groupedClasses, handleClassSelect, handleDeleteClass, isLog
                           <Button id='editBtn' variant="outline-primary" size="sm" onClick={() => { setEditingClass(filteredClass); setShowEdit(true); }}>
                             <FontAwesomeIcon icon={faEdit} />
                           </Button>
-                          <Button id='deleteBtn' variant="outline-danger" size="sm" onClick={() => handleDeleteClass(filteredClass.id)}>
+                          <Button id='deleteBtn' variant="outline-danger" size="sm" onClick={() => confirmAndDeleteClass(filteredClass.id)}>
                             <FontAwesomeIcon icon={faTrash} />
                           </Button>
                         </div>

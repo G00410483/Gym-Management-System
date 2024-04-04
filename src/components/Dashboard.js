@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Chart, registerables } from 'chart.js';
-import { Pie, Line } from 'react-chartjs-2';
+import { Pie, Line, Bar } from 'react-chartjs-2';
 import './Dashboard.css';
 
 
@@ -15,54 +15,53 @@ function Dashboard() {
         genders: [],
         memberships: [],
         mostBooked: [],
-        membersTimeline: [] // New state for members over time data
+        membersTimeline: [],
+        paymentTrends: [],
+        genderBookingDistribution: [],
+        classPopularityByDay: []
     });
 
     useEffect(() => {
-        // Fetch Dashboard Data
         fetch('http://localhost:3001/dashboard')
             .then(response => response.json())
             .then(data => {
-                // Ensure the data received is in the expected format or has the expected fallback values
-                const formattedData = {
-                    totalMembers: data.totalMembers || 0,
-                    totalBookings: data.totalBookings || 0,
-                    genders: data.genders || [],
-                    memberships: data.memberships || [],
-                    mostBooked: data.mostBooked || [],
-                    membersTimeline: data.membersTimeline || [] // Setting the new data
-                };
-                setDashboardData(formattedData);
+                setDashboardData(data);
             })
             .catch(error => console.error('Error fetching dashboard data:', error));
     }, []);
 
-    // Prepare data for the memberships pie chart
-    const membershipsChartData = {
-        labels: dashboardData.memberships.map(m => m.type_of_membership),
+    const generateChartData = (labels, data, backgroundColors) => ({
+        labels,
         datasets: [{
-            data: dashboardData.memberships.map(m => m.count),
-            backgroundColor: ['#BF0C00', '#000EE8', '#38C200'],
+            data,
+            backgroundColor: backgroundColors,
             hoverOffset: 4
         }]
-    };
-    const gendersChartData = {
-        labels: dashboardData.genders.map(m => m.gender),
-        datasets: [{
-            data: dashboardData.genders.map(m => m.count),
-            backgroundColor: ['#BF0C00', '#000EE8', '#38C200'],
-            hoverOffset: 4
-        }]
-    };
+    });
 
-    const mostBookedChartData = {
-        labels: dashboardData.mostBooked.map(m => m.class_name),
-        datasets: [{
-            data: dashboardData.mostBooked.map(m => m.count),
-            backgroundColor: ['#BF0C00', '#000EE8', '#38C200'],
-            hoverOffset: 4
-        }]
-    };
+    const membershipsChartData = generateChartData(
+        dashboardData.memberships.map(m => m.type_of_membership),
+        dashboardData.memberships.map(m => m.count),
+        ['#FF6384', '#36A2EB', '#FFCE56']
+    );
+
+    const gendersChartData = generateChartData(
+        dashboardData.genders.map(m => m.gender),
+        dashboardData.genders.map(m => m.count),
+        ['#FF6384', '#36A2EB', '#FFCE56']
+    );
+
+    const mostBookedChartData = generateChartData(
+        dashboardData.mostBooked.map(m => m.class_name),
+        dashboardData.mostBooked.map(m => m.count),
+        ['#FF6384', '#36A2EB', '#FFCE56']
+    );
+
+    const genderBookingDistributionChartData = generateChartData(
+        dashboardData.genderBookingDistribution.map(m => m.gender),
+        dashboardData.genderBookingDistribution.map(m => m.count),
+        ['#FF6384', '#36A2EB']
+    );
 
     
     const membersTimelineChartData = {
@@ -73,6 +72,31 @@ function Dashboard() {
             fill: false,
             borderColor: '#DE0101',
             tension: 0.1
+        }]
+    };
+
+    // New chart data setups
+    const paymentTrendsChartData = {
+        labels: dashboardData.paymentTrends.map(m => m.month),
+        datasets: [{
+            label: 'Revenue',
+            data: dashboardData.paymentTrends.map(m => m.total),
+            backgroundColor: '#42A5F5',
+            borderColor: '#1E88E5',
+            borderWidth: 2,
+            fill: false,
+        }]
+    };
+
+    const classPopularityByDayChartData = {
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        datasets: [{
+            label: 'Bookings',
+            data: dashboardData.classPopularityByDay.map(m => m.count),
+            backgroundColor: '#FFCE56',
+            borderColor: '#FF9F40',
+            borderWidth: 2,
+            fill: false,
         }]
     };
 
@@ -96,12 +120,7 @@ function Dashboard() {
     return (
         <div className="p-8 bg-gray-100 min-h-screen">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-               {/*  <div className="bg-white shadow-lg rounded-lg p-5">
-                    <h3 className="text-lg font-semibold text-gray-700">Total Members: {dashboardData.totalMembers}</h3>
-                </div>
-                <div className="bg-white shadow-lg rounded-lg p-5">
-                    <h3 className="text-lg font-semibold text-gray-700">Total Bookings: {dashboardData.totalBookings}</h3>
-                </div> */}
+           
                 <div className="md:col-span-2 bg-white shadow-lg rounded-lg p-5 chart-container">
                 <div className="chart-wrapper">
                         <h3 className="text-lg font-semibold text-gray-700 mb-4">Membership Ratio</h3>
@@ -121,6 +140,7 @@ function Dashboard() {
                             {dashboardData.mostBooked.length > 0 && <Pie data={mostBookedChartData} options={options} />}
                         </div>
                     </div>
+                    
                 </div>
 
 
@@ -131,7 +151,9 @@ function Dashboard() {
                             <Line data={membersTimelineChartData} options={options} />}
                     </div>
                 </div>
+               
             </div>
+            
         </div>
     );
 }

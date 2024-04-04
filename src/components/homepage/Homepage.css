@@ -112,6 +112,26 @@ body, html {
     margin-top: 20px;
     margin-bottom: 20px;
   }
+
+  .notifications-container {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.notification {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+}
+
+.notification:last-child {
+    border-bottom: none;
+}
+
+/* You might want to adjust your .content-container top margin here if necessary */
+
   
  
 

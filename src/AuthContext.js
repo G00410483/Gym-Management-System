@@ -17,13 +17,16 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('email', userEmail);
         setIsLoggedIn(true);
         setRole(userRole); 
+        setEmail(userEmail);
     };
 
     const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('role');
+        localStorage.removeItem('email');
         setIsLoggedIn(false);
         setRole('');
+        setEmail('');
     };
 
     const isRole = (expectedRole) => role === expectedRole;

@@ -138,14 +138,11 @@ function MembersPage() {
           <tr>
             {/* Table headers */}
             <th>#</th>
-            <th>First Name</th>
-            <th>Second Name</th>
+            <th>Name</th>
+            <th>Surname</th>
             <th>Subscription</th>
-            <th>Email Address</th>
-            <th>Gender</th>
-            <th>Date of Birth</th>
-            <th>Start Date</th>
-            <th>Type of Membership</th>
+            <th>Email</th>
+            <th>Type</th>
           </tr>
         </thead>
         <tbody>
@@ -172,10 +169,10 @@ function MembersPage() {
                   ● {isActive ? 'Active' : 'Inactive'}
                 </td>
                 <td>{member.email_address}</td>
-                <td>{member.gender}</td>
-                <td>{new Date(member.date_of_birth).toISOString().split('T')[0]}</td> {/* Remove time */}
-                <td>{new Date(member.start_date).toISOString().split('T')[0]}</td> {/* Remove time */}
-                <td>{member.type_of_membership}</td>
+               {/* <td>{member.gender}</td> */}
+                {/* <td>{new Date(member.date_of_birth).toISOString().split('T')[0]}</td> 
+                <td>{new Date(member.start_date).toISOString().split('T')[0]}</td>  */}
+                <td>{member.type_of_membership}</td> 
               </tr>
             );
           })}

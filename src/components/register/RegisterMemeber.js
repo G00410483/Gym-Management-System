@@ -3,9 +3,10 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import './RegisterMember.css';
 import { useNavigate } from 'react-router-dom';
-import PaymentPage from './PaymentPage';
+import PaymentPage from '../payment/PaymentPage';
 
 function RegisterMembers() {
+  // Define states for registration details
   const [ppsNumber, setPPSNumber] = useState('');
   const [firstName, setFirstName] = useState('');
   const [secondName, setSecondName] = useState('');
@@ -17,17 +18,20 @@ function RegisterMembers() {
   const [startDate, setStartDate] = useState('');
   const [typeOfMembership, setTypeOfMembership] = useState('');
 
+  // Initialize navigate
   const navigate = useNavigate();
 
   // Calculate the date 16 years ago from today
-  const today = new Date();
+  const today = new Date(); // Get today's date
   const minimumAge = 16;
   const minDateOfBirth = new Date(today.getFullYear() - minimumAge, today.getMonth(), today.getDate());
 
   // Calculate today's date in YYYY-MM-DD format
   const todayFormatted = new Date().toISOString().split('T')[0];
 
+  // Function to handle form submission
   const handleSubmit = async (e) => {
+    // Prevent dafulat behaviour
     e.preventDefault();
 
     // PPS Number validation
@@ -38,7 +42,8 @@ function RegisterMembers() {
       return; // Stop the form submission
     }
 
-    // 
+    // Password validation
+    // Reference: https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a
     const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!strongPasswordRegex.test(password)) {
       alert('Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.');
@@ -58,6 +63,7 @@ function RegisterMembers() {
     }
 
     try {
+      // Send POST request to register member endpoint
       const response = await fetch('http://localhost:3001/registerMember', {
         method: 'POST',
         headers: {
@@ -67,11 +73,15 @@ function RegisterMembers() {
       });
 
       if (response.ok) {
+        // Parse response data
         const data = await response.json();
+        // Log success message
         console.log('Registration successful', data);
+        alert(data.message);
+        // Navigate to specified route with state data
         navigate('/' + data.redirect, { state: { email: data.email, price: data.price } });
       }
-      else {
+      else {;
         throw new Error('Unauthorized');
       }
     } catch (error) {
@@ -79,7 +89,8 @@ function RegisterMembers() {
     }
   };
   return (
-    <Form className="modern-form" onSubmit={handleSubmit}>
+    /* Reference for form template: https://react-bootstrap.netlify.app/docs/forms/form-control/ */
+    <Form className="form" onSubmit={handleSubmit}>
       {/* Enter pps number */}
       <Form.Group className="mb-3" controlId="formPPS">
         <Form.Label className="form-label" >PPS Number</Form.Label>

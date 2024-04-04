@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Carousel from 'react-bootstrap/Carousel';
-import ExampleCarouselImage from './ExampleCarouselImage';
+import ExampleCarouselImage from '../ExampleCarouselImage';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import './Homepage.css';
 import SubscriptionPlans from './SubscriptionPlan';
-import videoBg from '../assets/video.mp4';
-import { useAuth } from '../AuthContext'; 
+import videoBg from '../../assets/video.mp4';
+import { useAuth } from '../../AuthContext'; 
 
 
 function Homepage() {

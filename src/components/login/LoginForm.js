@@ -1,8 +1,10 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from '../AuthContext';
+import { AuthProvider, useAuth } from '../../AuthContext';
 import { MDBBtn, MDBContainer, MDBRow, MDBCol, MDBCard, MDBCardBody, MDBInput } from 'mdb-react-ui-kit';
+import './LoginForm.css';
+
 
 function LoginForm() {
     // State hooks for managing the email and password input fields.
@@ -30,6 +32,7 @@ function LoginForm() {
                 // If login is successful, parse the JSON response and use the login function from AuthContext.
                 const data = await response.json();
                 login(data.token, data.role);
+                alert('Welcome back !');
                 // Redirect based on the server's response
                 navigate('/' + data.redirect, { state: { email: data.email, price: data.price } });
             } else {

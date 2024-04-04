@@ -8,6 +8,14 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
     setEditedMember({ ...editedMember, [e.target.name]: e.target.value });
   };
 
+  const confirmAndRemoveMember = (id) => {
+    // Confirmation dialog
+    const isConfirmed = window.confirm('Are you sure you want to remove this member?');
+    if (isConfirmed) {
+      removeMember(id);
+    }
+  };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -93,7 +101,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button variant="danger" onClick={() => removeMember(editedMember.id)}>
+        <Button variant="danger" onClick={() => confirmAndRemoveMember(editedMember.id)}>
           Remove
         </Button>
         <Button variant="primary" onClick={() => saveMember(editedMember)}>

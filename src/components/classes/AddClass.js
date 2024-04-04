@@ -31,8 +31,6 @@ function AddClass({ show, handleClose, handleAddClass }) {
           <Form.Group className="mb-3" controlId="formDay">
             <Form.Label>Day</Form.Label>
             <Form.Select name="day" required>
-              {/* This part of the code generates a list of hardcoded options for selecting 
-            days of the week within a dropdown menu */}
               <option value="">Select Day</option>
               {daysOfWeek.map((day, index) => (
                 <option key={index} value={day}>{day}</option>
