@@ -52,7 +52,7 @@ function LoginForm() {
                             <MDBCard className='bg-dark text-white my-5 mx-auto' style={{ borderRadius: '1rem', maxWidth: '400px' }}>
                                 {/* Top section of login  */}
                                 <MDBCardBody className='p-5 d-flex flex-column align-items-center mx-auto w-100'>
-                                    <h2 className="fw-bold mb-2 text-uppercase">Login</h2>
+                                    <h1 className="fw-bold mb-2 text-white">Login</h1>
                                     <p className="text-white-50 mb-5">Please enter your login and password!</p>
                                     {/* Email section */}
                                     <MDBInput wrapperClass='mb-4 mx-5 w-100' labelClass='text-white' label='Email address' id='formControlLg' type='email' size="lg"
@@ -72,7 +72,7 @@ function LoginForm() {
                                     <br></br>
                                     {/* Singup section */}
                                     <div>
-                                        <p className="mb-0">Don't have an account? <a href="/registerForm" className="text-white-50 fw-bold">Sign Up</a></p>
+                                        {/* <p className="mb-0">Don't have an account? <a href="/registerForm" className="text-white-50 fw-bold">Sign Up</a></p> */}
                                     </div>
                                 </MDBCardBody>
                             </MDBCard>

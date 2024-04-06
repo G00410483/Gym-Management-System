@@ -14,14 +14,15 @@ function MembersPage() {
   const [members, setMembers] = useState([]); // State for storing members list
   const [selectedMember, setSelectedMember] = useState(null); // State for storing the selected member for editing
   const [showModal, setShowModal] = useState(false); // State for controlling the visibility of the modal
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sort, setSort] = useState('');
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [sort, setSort] = useState(''); // State for sorting criteria
 
   // Define the fetchMembers function
   const fetchMembers = async (sortCriteria = '') => {
     try {
       // Update the URL with sort parameter
       const response = await axios.get(`http://localhost:3001/members?sort=${sortCriteria}`);
+      // Update the members state with the fetched data
       setMembers(response.data);
     } catch (error) {
       console.error('There was an error fetching the members:', error);
@@ -78,10 +79,12 @@ function MembersPage() {
     }
   };
 
+  // Function to handle search input change
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
+  // Function to handle sorting criteria change
   const handleSortChange = (sortCriteria) => {
     setSort(sortCriteria);
     fetchMembers(sortCriteria); // Pass the sort criteria to your fetch function

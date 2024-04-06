@@ -1,36 +1,82 @@
-
-body, html {
+/* General Reset */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
 }
 
-* {
-    box-sizing: border-box;
+/* Dashboard Container */
+.page {
+    padding: 20px;
 }
 
-/* Container for charts */
+h2 {
+    background-color: #e9ecef;
+    font-size: medium;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    width: 100px;
+}
+select {
+    margin-bottom: 20px;
+}
+h2:hover {
+    background-color: #333;
+    color: #e9ecef;
+    cursor: pointer;
+}
+
+h3 {
+    margin-bottom: 0.75rem;
+}
+
+/* Chart Containers */
 .chart-container {
-    display: flex;
-    justify-content: space-around; /* Distributes space evenly around the items */
-    align-items: center; /* Aligns items vertically in the center */
-    flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
-    margin-bottom: 2rem; /* Adds some space below the chart container */
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+
 }
 
-/* Style adjustments for the chart's direct parent to control size */
-.chart-wrapper {
-    flex: 1; /* Allows the chart containers to grow and fill the space evenly */
-    min-width: 250px; /* Minimum width of each chart container */
-    max-width: 50%; /* Maximum width to ensure two charts per row */
-    padding: 1rem; /* Adds some padding around the charts */
+#yearSelector {
+    width: 100px;
 }
 
 
-/* Chart container styles */
-div[style] {
-    margin: auto; /* Centers the chart in its container */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Adds subtle shadow around charts */
-    border-radius: 8px; /* Rounded corners for charts */
+/* Utility Classes */
+.mt-6 {
+    margin-top: 24px;
 }
+
+.mb-2 {
+    margin-bottom: 8px;
+}
+
+.block {
+    display: block;
+}
+
+.p-2 {
+    padding: 8px;
+}
+
+.border {
+    border-width: 1px;
+}
+
+.border-gray-300 {
+    border-color: #d6d8db;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+
+

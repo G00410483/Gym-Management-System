@@ -47,7 +47,6 @@ function BookingsDisplay() {
 
   return (
     <div className="bookings-display">
-      <h2>Bookings Display</h2>
       <Form>
         {/* Dropdown menu for selecting sort criteria */}
         <DropdownButton

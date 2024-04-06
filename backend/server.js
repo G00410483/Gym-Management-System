@@ -41,7 +41,7 @@ app.post('/create-payment-intent', async (req, res) => {
 
     // Current date in 'YYYY-MM-DD' format
     const paymentDate = new Date().toISOString().slice(0, 10); // Format to YYYY-MM-DD
-    
+
     // Query to insert the payment details into payments table
     await connection.execute(
       'INSERT INTO payments (email_address, amount, payment_date) VALUES (?, ?, ?)',
@@ -54,11 +54,11 @@ app.post('/create-payment-intent', async (req, res) => {
       [paymentDate, email]
     );
 
-   // Respond to the client with a 200 OK status and send the client_secret of the payment intent in JSON format
+    // Respond to the client with a 200 OK status and send the client_secret of the payment intent in JSON format
     res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
     console.error('Error creating payment intent:', error);
-     // Respond to the client with a 500 Internal Server Error status and send the error message in JSON format
+    // Respond to the client with a 500 Internal Server Error status and send the error message in JSON format
     res.status(500).json({ error: error.message });
   }
 });
@@ -72,7 +72,7 @@ app.get('/', async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
 
     // Query to select all types of membership
-    let query = 'SELECT DISTINCT * FROM membership'; 
+    let query = 'SELECT DISTINCT * FROM membership';
 
     // Execute the SQL query
     const [plans] = await connection.execute(query);
@@ -135,7 +135,7 @@ app.post('/login', async (req, res) => {
           const lastPaymentDate = new Date(user.last_payment_date);
           // Create a new Date object for the current date and time
           const currentDate = new Date();
-           // Subtract one month from the current date to find the date one month ago
+          // Subtract one month from the current date to find the date one month ago
           const oneMonthAgo = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
 
           // Execute the query
@@ -260,12 +260,12 @@ app.post('/registerMember', async (req, res) => {
     // Checks if user's email address was found, if so, it closes db connection 
     if (membersEmail.length > 0) {
       await connection.end();
-      res.json({ message: 'Email address already exists'});
+      res.json({ message: 'Email address already exists' });
     }
     // Checks if user's PPS number was found, if so, it closes db connection 
     if (membersPPS.length > 0) {
       await connection.end();
-      res.json({ message: 'PPS number address already exists'});
+      res.json({ message: 'PPS number address already exists' });
     }
 
     // Hash password with a salt round of 10
@@ -279,19 +279,19 @@ app.post('/registerMember', async (req, res) => {
     );
     console.log("New member saved.");
 
-     // Fetch membership price for this user
-     query = 'SELECT price FROM membership WHERE type_of_membership = ?';
-     
-     const [priceRows] = await connection.execute(query, [typeOfMembership]);
-     // Check if the 'priceRows' array contains any results. If it does, access the 'price' property of the first object in the array to get the price of the membership.
-     const price = priceRows.length > 0 ? priceRows[0].price : null;
-     console.log(price);
+    // Fetch membership price for this user
+    query = 'SELECT price FROM membership WHERE type_of_membership = ?';
+
+    const [priceRows] = await connection.execute(query, [typeOfMembership]);
+    // Check if the 'priceRows' array contains any results. If it does, access the 'price' property of the first object in the array to get the price of the membership.
+    const price = priceRows.length > 0 ? priceRows[0].price : null;
+    console.log(price);
 
     // Close connection
     await connection.end();
 
     // Sends JSON response with a success message
-    res.json({ message: 'Registration successful',  redirect: 'payment', price, email});
+    res.json({ message: 'Registration successful', redirect: 'payment', price, email });
   } catch (error) {
     console.error('Error during registration:', error);
     res.status(500).send('Internal Server Error');
@@ -326,7 +326,7 @@ app.get('/members', async (req, res) => {
     // If a search term is provided, creates an array with the term to replace the placeholders (?).
     // Reference
     const params = searchTermLower ? [`%${searchTermLower}%`, `%${searchTermLower}%`, `%${searchTermLower}%`] : [];
-    
+
     // Executes the SQL query with the specified parameters (if any), and destructures the first element of the result to get the members.
     const [members] = await connection.execute(query, params);
 
@@ -381,13 +381,13 @@ app.delete('/members/:id', async (req, res) => {
 
   try {
     const connection = await mysql.createConnection(dbConfig);
-    
+
     // Retrieve the email address of the member
     const getEmailQuery = 'SELECT email_address FROM members WHERE id = ?';
     const [members] = await connection.execute(getEmailQuery, [id]);
     const email = members[0].email_address;
     console.log(email);
-    
+
     // Delete all notifications for that email address
     const deleteNotificationsQuery = 'DELETE FROM notifications WHERE email_address = ?';
     await connection.execute(deleteNotificationsQuery, [email]);
@@ -403,7 +403,7 @@ app.delete('/members/:id', async (req, res) => {
     // Finally, delete the member
     const deleteMemberQuery = 'DELETE FROM members WHERE id = ?';
     await connection.execute(deleteMemberQuery, [id]);
-    
+
     // Close the database connection
     await connection.end();
 
@@ -591,28 +591,34 @@ app.post('/bookClass', async (req, res) => {
   }
 });
 
-
+// GET bookings- To display details of all bookings
 app.get('/bookingsDisplay', async (req, res) => {
   try {
     const { searchTerm, sort } = req.query; // Capture sort parameter from query
     const searchTermLower = searchTerm ? searchTerm.toLowerCase().trim() : null;
 
+    // Establish connection to MySQL database
     const connection = await mysql.createConnection(dbConfig);
 
+    // SQL query to select all bookings
     let query = 'SELECT * FROM bookings';
 
+    // If search term is provided, add WHERE clause to filter results by class name or email address
     if (searchTermLower) {
       query += ' WHERE LOWER(class_name) LIKE ? OR LOWER(email_address) LIKE ?';
     }
 
-    // Sort functionality
+    // Add sorting functionality if sort parameter is provided
     if (sort) {
       query += ` ORDER BY ${sort}`;
     }
 
+    // Parameter for SQL query based on search terms
     const params = searchTermLower ? [`%${searchTermLower}%`, `%${searchTermLower}%`] : [];
+    // Execute query
     const [bookings] = await connection.execute(query, params);
 
+    // Close db connection
     await connection.end();
 
     res.json(bookings);
@@ -651,10 +657,10 @@ app.get('/dashboard', async (req, res) => {
     const queries = {
       totalMembers: 'SELECT COUNT(*) AS total FROM members',
       totalBookings: 'SELECT COUNT(*) AS total FROM bookings',
+      totalClasses: 'SELECT COUNT(*) AS total FROM classes',
       genders: 'SELECT gender, COUNT(*) AS count FROM members GROUP BY gender',
       memberships: 'SELECT type_of_membership, COUNT(*) AS count FROM members GROUP BY type_of_membership',
-      mostBooked: 'SELECT class_name, COUNT(*) AS count FROM bookings GROUP BY class_name ORDER BY count DESC LIMIT 3',
-      // Adding new query for members over time
+      mostBooked: 'SELECT class_name, COUNT(*) AS count FROM bookings GROUP BY class_name ORDER BY count DESC',
       membersTimeline: `SELECT year,
                         SUM(yearly_total) OVER (ORDER BY year ASC) AS cumulative_total
                         FROM (
@@ -663,29 +669,29 @@ app.get('/dashboard', async (req, res) => {
                         GROUP BY YEAR(start_date)
                         ) AS yearly_totals
                         ORDER BY year`,
-      paymentTrends: `SELECT YEAR(payment_date) AS year, MONTH(payment_date) AS month, SUM(amount) AS total
-                      FROM payments
-                      GROUP BY YEAR(payment_date), MONTH(payment_date)
-                      ORDER BY YEAR(payment_date) ASC, MONTH(payment_date) ASC`,
-      genderBookingDistribution: `SELECT m.gender, COUNT(b.id) AS count
-                                  FROM bookings b
-                                  INNER JOIN members m ON b.email_address = m.email_address
-                                  GROUP BY m.gender`,
-      classPopularityByDay: `SELECT c.day, COUNT(b.id) AS count
-                             FROM bookings b
-                             INNER JOIN classes c ON b.class_name = c.class_name
-                             GROUP BY c.day
-                             ORDER BY FIELD(c.day, 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')`
+      totalPayments: 'SELECT COUNT(*) AS total, SUM(amount) AS totalAmount FROM payments',
+      paymentsByYear: `SELECT YEAR(payment_date) AS year, COUNT(*) AS total, SUM(amount) AS totalAmount
+                                         FROM payments
+                                         GROUP BY YEAR(payment_date)
+                                         ORDER BY YEAR(payment_date)`,
+      paymentsByMonth: `SELECT YEAR(payment_date) AS year, MONTH(payment_date) AS month, COUNT(*) AS total, SUM(amount) AS totalAmount
+                                          FROM payments
+                                          GROUP BY YEAR(payment_date), MONTH(payment_date)
+                                          ORDER BY YEAR(payment_date), MONTH(payment_date)`
     };
 
 
-     // Execute all queries in parallel for efficiency
-     const results = await Promise.all(Object.values(queries).map(query => connection.query(query)));
-     await connection.end();
-     // Map query results to their respective keys
-     const response = Object.keys(queries).reduce((acc, key, index) => {
-      acc[key] = results[index][0];
-      return acc;
+    // Execute all queries in parallel for efficiency
+    // Reference: https://stackoverflow.com/questions/29292921/how-to-use-promise-all-with-an-object-as-input
+    const results = await Promise.all(Object.values(queries).map(query => connection.query(query)));
+    await connection.end();
+    // Map query results to their respective keys
+    // Object.keys(queries)- retrives an array of all the keys in the quaries object
+    // The 'reduce' method iterates over each element of the array 
+    // acc- value returned by previous iteration or initial value if first iteration
+    const response = Object.keys(queries).reduce((acc, key, index) => {
+      acc[key] = results[index][0]; // Assigning a value to the 'acc' object using key and corresponding value from results
+      return acc; // Return updated 'acc' object
     }, {});
 
     res.json(response);
@@ -704,7 +710,7 @@ app.get('/displayMember', async (req, res) => {
   }
 
   try {
-     // Verify and decode the provided JWT using a secret key
+    // Verify and decode the provided JWT using a secret key
     const decoded = jwt.verify(token, 'your_secret_key');
     // Extract email from token
     const userEmail = decoded.email;
@@ -716,7 +722,7 @@ app.get('/displayMember', async (req, res) => {
     const memberQuery = 'SELECT * FROM members WHERE email_address = ?';
     const [memberRows] = await connection.execute(memberQuery, [userEmail]);
 
-      // Checks if any member records were found.
+    // Checks if any member records were found.
     if (memberRows.length > 0) {
       // If a member is found, queries the 'bookings' table for records related to the member's email.
       const bookingsQuery = 'SELECT * FROM bookings WHERE email_address = ?';

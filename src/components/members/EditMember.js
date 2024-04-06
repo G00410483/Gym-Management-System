@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 function EditMemberModal({ show, handleClose, member, saveMember, removeMember }) {
+  // State to manage edited member data
   const [editedMember, setEditedMember] = useState({ ...member });
 
+  // Function to hnadle input chnages
   const handleChange = (e) => {
     setEditedMember({ ...editedMember, [e.target.name]: e.target.value });
   };
 
+  // Function to confirm and remove member
   const confirmAndRemoveMember = (id) => {
     // Confirmation dialog
     const isConfirmed = window.confirm('Are you sure you want to remove this member?');
@@ -23,6 +26,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
       </Modal.Header>
       <Modal.Body>
         <Form>
+            {/* PPS */}
           <Form.Group controlId="formPPS">
             <Form.Label>PPS</Form.Label>
             <Form.Control
@@ -30,6 +34,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               readOnly
             />
           </Form.Group>
+          {/* First Name */}
           <Form.Group controlId="formFirstName">
             <Form.Label>First Name</Form.Label>
             <Form.Control
@@ -40,6 +45,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               onChange={handleChange}
             />
           </Form.Group>
+           {/* Second Name */}
           <Form.Group controlId="formSecondName">
             <Form.Label>Second Name</Form.Label>
             <Form.Control
@@ -50,6 +56,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               onChange={handleChange}
             />
           </Form.Group>
+           {/* Email Address */}
           <Form.Group controlId="formEmailAddress">
             <Form.Label>Email Address</Form.Label>
             <Form.Control
@@ -60,12 +67,14 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="formPPS">
+           {/* Gender */}
+          <Form.Group controlId="fornGender">
             <Form.Label>Gender</Form.Label>
             <Form.Control
               value={editedMember.gender}
             />
           </Form.Group>
+           {/* Date of Birth */}
           <Form.Group controlId="formDOB">
             <Form.Label>Date of Birth</Form.Label>
             <Form.Control
@@ -75,6 +84,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               readOnly
             />
           </Form.Group>
+          {/* Start Date */}
           <Form.Group controlId="formStartDate">
             <Form.Label>Start Date</Form.Label>
             <Form.Control
@@ -84,7 +94,18 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
               readOnly
             />
           </Form.Group>
+           {/* Lastg Payment Date */}
+           <Form.Group controlId="formPaymentDat4e">
+            <Form.Label>Last Payment Date</Form.Label>
+            <Form.Control
+              placeholder="Enter start date"
+              name="last_payment_date"
+              value={editedMember.last_payment_date ? new Date(editedMember.start_date).toISOString().split('T')[0] : ''}
+              readOnly
+            />
+          </Form.Group>
 
+           {/* Membership Type */}
           <Form.Group className="mb-3" controlId="formBasicGender">
             <Form.Label  >Type of Membership</Form.Label>
             <Form.Select aria-label="Membership select" className="form-control" value={editedMember.type_of_memebrship}
@@ -101,9 +122,11 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
+         {/* Button to remove member */}
         <Button variant="danger" onClick={() => confirmAndRemoveMember(editedMember.id)}>
           Remove
         </Button>
+         {/* Button to save changes */}
         <Button variant="primary" onClick={() => saveMember(editedMember)}>
           Save Changes
         </Button>
