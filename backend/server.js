@@ -9,6 +9,7 @@ const mysql = require('mysql2/promise');
 const stripe = require("stripe")('sk_test_51OyyOfRpGdubHKaAe5oG4WuHX4MxKxVBTcfADBei7Tu5hkhDKmocCKVsK8DRKxt7q3UeEFDCUCPaHqbY22Xv90cc00sRySxfuT');
 
 const app = express();
+
 const PORT = 3001;
 
 app.use(cors());
@@ -785,3 +786,5 @@ app.delete('/deleteNotification/:id', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+module.exports = app;

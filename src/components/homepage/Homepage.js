@@ -4,7 +4,7 @@ import ExampleCarouselImage from '../ExampleCarouselImage';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import './Homepage.css';
 import SubscriptionPlans from './SubscriptionPlan';
-import videoBg from '../../assets/video.mp4';
+/* import videoBg from '../../assets/video.mp4'; */
 import { useAuth } from '../../AuthContext'; 
 
 
@@ -70,7 +70,7 @@ function Homepage() {
                                 <MDBCol md="3" lg="4" xl="3" className='mx-auto mb-4'>
                                     <h6 className='text-uppercase fw-bold mb-4'>
                                         <MDBIcon icon="gem" className="me-3" />
-                                        Company name
+                                        GMS
                                     </h6>
                                     <p>
                                         Here you can use rows and columns to organize your footer content. Lorem ipsum dolor sit amet,
@@ -82,11 +82,11 @@ function Homepage() {
                                     <h6 className='text-uppercase fw-bold mb-4'>Contact</h6>
                                     <p>
                                         <MDBIcon icon="home" className="me-2" />
-                                        New York, NY 10012, US
+                                        Parkmore, Galway H91KTS4, Ireland
                                     </p>
                                     <p>
                                         <MDBIcon icon="envelope" className="me-3" />
-                                        info@example.com
+                                        gms@galway.ie
                                     </p>
                                     <p>
                                         <MDBIcon icon="phone" className="me-3" /> + 01 234 567 88
@@ -98,13 +98,6 @@ function Homepage() {
                             </MDBRow>
                         </MDBContainer>
                     </section>
-
-                    <div className='text-center p-4' style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
-                        © 2021 Copyright:
-                        <a className='text-reset fw-bold' href='https://mdbootstrap.com/'>
-                            MDBootstrap.com
-                        </a>
-                    </div>
                 </MDBFooter>
             </div>
         </div>

@@ -98,7 +98,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
            <Form.Group controlId="formPaymentDat4e">
             <Form.Label>Last Payment Date</Form.Label>
             <Form.Control
-              placeholder="Enter start date"
+              placeholder="Inactive"
               name="last_payment_date"
               value={editedMember.last_payment_date ? new Date(editedMember.start_date).toISOString().split('T')[0] : ''}
               readOnly
