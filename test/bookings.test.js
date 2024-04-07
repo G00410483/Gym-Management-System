@@ -23,7 +23,7 @@ describe('GET /bookingsDisplay with search and sort', () => {
   test('It should respond with filtered and sorted bookings', async () => {
     // Define both a searchTerm for filtering and a sortField for sorting.
     const searchTerm = 'exampleClassName'; 
-    const sortField = 'date'; // Assuming 'date' is a valid field to sort by.
+    const sortField = 'date'; 
     // Send a GET request with both the searchTerm and sort parameters.
     const response = await request(app).get(`/bookingsDisplay?searchTerm=${searchTerm}&sort=${sortField}`);
     // Expect a successful response.

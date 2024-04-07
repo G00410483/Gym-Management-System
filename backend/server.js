@@ -411,6 +411,8 @@ app.delete('/members/:id', async (req, res) => {
 
     // Respond with success message
     res.json({ message: 'Member and all related data deleted successfully' });
+    // Return success response
+    res.status(200).json({ message: 'Member and all related data deleted successfully' });
   } catch (error) {
     console.error('Failed to delete member and related data:', error);
 
