@@ -4,7 +4,7 @@ import ExampleCarouselImage from '../ExampleCarouselImage';
 import { MDBFooter, MDBContainer, MDBRow, MDBCol, MDBIcon } from 'mdb-react-ui-kit';
 import './Homepage.css';
 import SubscriptionPlans from './SubscriptionPlan';
-/* import videoBg from '../../assets/video.mp4'; */
+import videoBg from '../../assets/video.mp4';
 import { useAuth } from '../../AuthContext'; 
 
 
