@@ -292,6 +292,7 @@ app.post('/registerMember', async (req, res) => {
     await connection.end();
 
     // Sends JSON response with a success message
+    res.status(200).json("Registered");
     res.json({ message: 'Registration successful', redirect: 'payment', price, email });
   } catch (error) {
     console.error('Error during registration:', error);
