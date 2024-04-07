@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../backend/server.js'); // Importing the server file to test
+const app = require('../../../backend/server.js'); // Importing the server file to test
 
 describe('DELETE /deleteNotification/:id', () => {
   // Test case for successful deletion

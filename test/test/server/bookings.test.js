@@ -1,6 +1,6 @@
 
 const request = require('supertest');
-const app = require('../backend/server.js');
+const app = require('../../../backend/server.js');
 
 // Group of tests for the basic functionality of GET /bookingsDisplay.
 describe('GET /bookingsDisplay', () => {

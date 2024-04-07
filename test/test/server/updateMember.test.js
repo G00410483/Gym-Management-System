@@ -1,5 +1,5 @@
 const supertest = require('supertest');
-const app = require('../backend/server.js');
+const app = require('../../../backend/server.js');
 
 describe('PUT /members/:id', () => {
   it('should update a member successfully and return a success message', async () => {

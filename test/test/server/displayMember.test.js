@@ -1,5 +1,5 @@
 const request = require('supertest'); // Importing supertest for making HTTP requests
-const app = require('../backend/server.js'); // Importing the server file to test
+const app = require('../../../backend/server.js'); // Importing the server file to test
 
 describe('GET /displayMember', () => {
    let validToken; // Declaration of the variable to store the valid token

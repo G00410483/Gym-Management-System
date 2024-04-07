@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../backend/server.js'); 
+const app = require('../../../backend/server.js'); 
 
 describe('POST /login', () => {
   it('should login successfully with correct credentials', async () => {

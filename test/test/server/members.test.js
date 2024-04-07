@@ -1,7 +1,7 @@
 // Import the supertest library for testing HTTP requests
 const supertest = require('supertest');
 // Import the app instance to test its HTTP endpoints
-const app = require('../backend/server.js');
+const app = require('../../../backend/server.js');
 
 // Describe a group of tests for the GET /members endpoint
 describe('GET /members', () => {

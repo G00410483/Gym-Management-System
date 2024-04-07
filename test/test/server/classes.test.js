@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../backend/server.js');
+const app = require('../../../backend/server.js');
 
 describe('GET /classes', () => {
     it('should return a list of classes with the correct structure', async () => {

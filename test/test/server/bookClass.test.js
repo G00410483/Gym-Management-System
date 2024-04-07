@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../backend/server.js');
+const app = require('../../../backend/server.js');
 const mysql = require('mysql2/promise');
 
 // Mock mysql2/promise to prevent actual DB operations

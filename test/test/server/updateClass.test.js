@@ -1,7 +1,7 @@
 // Supertest library for testing the API.
 const request = require('supertest');
 // Require the Express app from the server.js file in the backend directory.
-const app = require('../backend/server.js');
+const app = require('../../../backend/server.js');
 
 // Test suite for the PUT /classes/:id endpoint.
 describe('PUT /classes/:id', () => {
