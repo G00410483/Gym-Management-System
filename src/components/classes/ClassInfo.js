@@ -17,7 +17,7 @@ function ClassInfo({ selectedClass, onHide }) {
           <FontAwesomeIcon icon={faCalendarDay} className="modal-icon" /> Day: {selectedClass?.day}<br />
           <FontAwesomeIcon icon={faUsers} className="modal-icon" /> Max Capacity: {selectedClass?.max_capacity}
         </p>
-        {selectedClass?.image && <img src={selectedClass.image} alt="Class Visual" className="modal-image" />}
+        {selectedClass?.image && <img src={selectedClass.image} alt="Class Image" className="modal-image" />}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="primary" onClick={onHide}>Close</Button>

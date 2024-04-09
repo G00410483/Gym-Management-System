@@ -146,7 +146,8 @@ function ClassesPage() {
     setTimeout(() => setShowAlert(false), 3000);
   };
 
-  // Define a function named 'groupClassesByTime' that accepts an array of objects named 'classes'.
+  // Function named 'groupClassesByTime' that accepts an array of objects named 'classes'.
+  // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
   // Reference: https://stackoverflow.com/questions/52027207/javascript-reduce-split-accumulator-in-multiple-variables
   const groupClassesByTime = (classes) => {
     // Use the 'reduce' method on the 'classes' array that takes a callback function
@@ -160,37 +161,57 @@ function ClassesPage() {
     }, {});
   };
 
+  // Function to handle class booking
   const handleBookingClass = async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
   
+    // Create a new FormData object from the event target (form)
     const formData = new FormData(event.target);
+    
+    // Retrieve the value of the 'email_address' field from the form
     const email = formData.get('email_address'); // Corrected to match the form's email field name
+    
+    // Construct the booking data object
     const bookingData = {
-      class_name: bookingClass.class_name, 
+      class_name: bookingClass.class_name, // Retrieve the class name from bookingClass object
       email_address: email, // Use the retrieved email
       date: selectedDate.toISOString().split('T')[0] // Format date as YYYY-MM-DD
     };
+    
     try {
+      // Make a POST request to the server to book the class
       const response = await fetch('http://localhost:3001/bookClass', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(bookingData),
+        body: JSON.stringify(bookingData), // Convert the bookingData object to JSON
       });
   
+      // Check if the response is not okay (status code is not in the range 200-299)
       if (!response.ok) {
+        // If not okay, throw an error with the response text or a default message
         const errorText = await response.text();
         throw new Error(errorText || 'Network response was not ok.');
       }
+      
+      // If response is okay, parse the response body as JSON
       const responseBody = await response.json();
+      
+      // Display a success message to the user
       showAlertWithMessage('Booking successful!');
-      setShowBooking(false); // Hide the booking modal on success
+      
+      // Hide the booking modal on success
+      setShowBooking(false);
     } catch (error) {
+      // If an error occurs during the booking process
       console.error('Failed to book class:', error);
+      
+      // Show an alert with the error message
       showAlertWithMessage(`Failed to book class. ${error.message}`);
     }
   };
+
 
   // Group classes by time
   const groupedClasses = groupClassesByTime(classes);

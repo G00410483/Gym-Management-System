@@ -261,12 +261,12 @@ app.post('/registerMember', async (req, res) => {
     // Checks if user's email address was found, if so, it closes db connection 
     if (membersEmail.length > 0) {
       await connection.end();
-      res.json({ message: 'Email address already exists' });
+      return res.json({ message: 'Email address already exists' });
     }
     // Checks if user's PPS number was found, if so, it closes db connection 
     if (membersPPS.length > 0) {
       await connection.end();
-      res.json({ message: 'PPS number address already exists' });
+      return res.json({ message: 'PPS number address already exists' });
     }
 
     // Hash password with a salt round of 10
@@ -292,7 +292,6 @@ app.post('/registerMember', async (req, res) => {
     await connection.end();
 
     // Sends JSON response with a success message
-    res.status(200).json("Registered");
     res.json({ message: 'Registration successful', redirect: 'payment', price, email });
   } catch (error) {
     console.error('Error during registration:', error);
@@ -411,8 +410,6 @@ app.delete('/members/:id', async (req, res) => {
 
     // Respond with success message
     res.json({ message: 'Member and all related data deleted successfully' });
-    // Return success response
-    res.status(200).json({ message: 'Member and all related data deleted successfully' });
   } catch (error) {
     console.error('Failed to delete member and related data:', error);
 
