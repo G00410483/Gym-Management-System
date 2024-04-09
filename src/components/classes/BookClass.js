@@ -34,6 +34,7 @@ function BookClass({ show, onHide, bookingClass, handleBookingClass, selectedDat
               /* Filtering selectable dates based on the day of the week */
               filterDate={(date) => date.getDay() === getDayOfWeekNumber(bookingClass.day)}
               required
+              id="formBookingDate"
             />
           </Form.Group>
         </Modal.Body>
