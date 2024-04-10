@@ -1,7 +1,7 @@
 // BookClass.test.js
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import BookClass from '../../../src/components/classes/BookClass';
+import BookClass from '../../../../src/components/classes/BookClass';
 
 describe('BookClass component', () => {
   it('renders correctly', () => {

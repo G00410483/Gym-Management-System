@@ -1,7 +1,7 @@
 // Import necessary dependencies and functions for testing
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import ClassInfo from '../../../src/components/classes/ClassInfo'; 
+import ClassInfo from '../../../../src/components/classes/ClassInfo'; 
 
 describe('ClassInfo component', () => {
   const selectedClass = {
