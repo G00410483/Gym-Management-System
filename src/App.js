@@ -16,7 +16,7 @@ import ClassesPage from './components/classes/ClassesPage';
 import RegisterMember from './components/register/RegisterMemeber';
 import MembersPage from './components/members/MembersPage';
 import BookingsDisplay from './components/bookings/BookingsDisplay';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/dahsboard/Dashboard';
 import MyProfilePage from './components/profile/MyProfilePage';
 import PaymentPage from './components/payment/PaymentPage';
 

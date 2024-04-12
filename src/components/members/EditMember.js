@@ -6,6 +6,7 @@ function EditMemberModal({ show, handleClose, member, saveMember, removeMember }
   const [editedMember, setEditedMember] = useState({ ...member });
 
   // Function to hnadle input chnages
+  // Reference: https://stackoverflow.com/questions/71384018/typing-object-fromentriesnew-formdataform
   const handleChange = (e) => {
     setEditedMember({ ...editedMember, [e.target.name]: e.target.value });
   };

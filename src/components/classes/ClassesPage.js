@@ -12,6 +12,7 @@ import ClassInfo from './ClassInfo';
 import EditClass from './EditClass';
 import AddClass from './AddClass';
 import Timetable from './Timetable';
+import axios from 'axios';
 
 function ClassesPage() {
 
@@ -44,11 +45,8 @@ function ClassesPage() {
   const fetchClasses = async () => {
     try {
       // Send a GET request to fetch class data from the server
-      const response = await fetch('http://localhost:3001/classes');
-      // Extract JSON data from the response
-      const data = await response.json();
-      // Update the classes state with the fetched data
-      setClasses(data);
+      const response = await axios.get('http://localhost:3001/classes');
+      setClasses(response.data);
     } catch (error) {
       console.error('Failed to fetch classes:', error);
     }
@@ -56,7 +54,9 @@ function ClassesPage() {
 
   // Define a function named handleClassSelect that takes a classId parameter
   const handleClassSelect = (classId, day) => {
-    // Find the selected class from the classes state based on the provided classId
+    // Searching through the classes array to find an object whose id property matches the provided classId, 
+    // and it assigns that object to the selected variable
+    // c- represents each element in the 'classes' array- checks if the 'id' property of 'c' is equal to the 'classId' variable
     const selected = classes.find(c => c.id === classId);
     // Set the selected class in the state
     setSelectedClass(selected);
@@ -65,76 +65,76 @@ function ClassesPage() {
   };
 
 
-  // Define an asynchronous function named handleAddClass that takes an event parameter
+  // Define an asynchronous function that takes an event parameter
   const handleAddClass = async (event) => {
     event.preventDefault();
-  
+    // Extract form data
     const formData = new FormData(event.target);
+    // Convert form data to object
+    // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries
     const classData = Object.fromEntries(formData.entries());
   
     try {
-      // Corrected the URL to match the server's route
-      await fetch('http://localhost:3001/classes', { 
-        method: 'POST',
+      // Send POST request to add new class
+      await axios.post('http://localhost:3001/classes', classData, {
+        // Set content type header
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(classData),
       });
+      // Fetch updated list of classes
       fetchClasses();
+      // Hide add class form
       setShowAdd(false);
+      // Display success message
       showAlertWithMessage('New class added successfully!');
     } catch (error) {
       console.error('Failed to add new class:', error);
     }
   };
-  
 
-  // Define an asynchronous function named handleEditClass that takes an event parameter 
-  const handleEditClass = async (event) => {
-    // Prevent the default form submission behavior
-    event.preventDefault();
-    // Create a FormData object from the form data submitted
-    const formData = new FormData(event.target);
-    // Merge the existing editingClass data with the updated form data to create a new class data object
-    const classData = { ...editingClass, ...Object.fromEntries(formData.entries()) };
+// Define an asynchronous function  that takes an event parameter 
+const handleEditClass = async (event) => {
+  // Prevent the default form submission behavior
+  event.preventDefault();
+  // Create a FormData object from the form data submitted
+  const formData = new FormData(event.target);
+  // Merge the existing editingClass data with the updated form data to create a new class data object
+  // Reference: https://stackoverflow.com/questions/71384018/typing-object-fromentriesnew-formdataform
+  const classData = { ...editingClass, ...Object.fromEntries(formData.entries()) };
 
-    try {
-      // Send a PUT request to update the class data on the server
-      await fetch(`http://localhost:3001/classes/${editingClass.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Convert the class data object to JSON format and set it as the request body
-        body: JSON.stringify(classData),
-      });
-      // Refresh the classes data after editing a class
-      fetchClasses();
-      // Hide the modal for editing a class
-      setShowEdit(false);
-      // Show an alert message indicating successful class update
-      showAlertWithMessage('Class updated successfully!');
-    } catch (error) {
-      console.error('Failed to update class:', error);
-    }
-  };
+  try {
+    // Send a PUT request to update the class data on the server using axios
+    await axios.put(`http://localhost:3001/classes/${editingClass.id}`, classData, {
+      headers: {
+        'Content-Type': 'application/json', // Set content type header
+      },
+    });
+    // Refresh the classes data after editing a class
+    fetchClasses();
+    // Hide the modal for editing a class
+    setShowEdit(false);
+    // Show an alert message indicating successful class update
+    showAlertWithMessage('Class updated successfully!');
+  } catch (error) {
+    console.error('Failed to update class:', error);
+  }
+};
 
-  // Define an asynchronous function named handleDeleteClass that takes a classId parameter
-  const handleDeleteClass = async (classId) => {
-    try {
-      // Send a DELETE request to delete the class data on the server
-      await fetch(`http://localhost:3001/classes/${classId}`, {
-        method: 'DELETE',
-      });
-      // Refresh the classes data after deleting a class
-      fetchClasses();
-      // Show an alert message indicating successful class deletion
-      showAlertWithMessage('Class deleted successfully!');
-    } catch (error) {
-      console.error('Failed to delete class:', error);
-    }
-  };
+
+// Define an asynchronous function named handleDeleteClass that takes a classId parameter
+const handleDeleteClass = async (classId) => {
+  try {
+    // Send a DELETE request to delete the class data on the server using axios
+    await axios.delete(`http://localhost:3001/classes/${classId}`);
+    // Refresh the classes data after deleting a class
+    fetchClasses();
+    // Show an alert message indicating successful class deletion
+    showAlertWithMessage('Class deleted successfully!');
+  } catch (error) {
+    console.error('Failed to delete class:', error);
+  }
+};
 
   // Define a function named showAlertWithMessage that takes a message parameter
   const showAlertWithMessage = (message) => {
@@ -146,72 +146,63 @@ function ClassesPage() {
     setTimeout(() => setShowAlert(false), 3000);
   };
 
-  // Function named 'groupClassesByTime' that accepts an array of objects named 'classes'.
-  // Reference: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
-  // Reference: https://stackoverflow.com/questions/52027207/javascript-reduce-split-accumulator-in-multiple-variables
-  const groupClassesByTime = (classes) => {
-    // Use the 'reduce' method on the 'classes' array that takes a callback function
-    // and an initial value for the accumulator (in this case, an empty object {}).
-    return classes.reduce((acc, curr) => {
-      // Checks if 'acc' already has a key corresponding to the current class's 'time' property.
-      // If it does it uses that key value if not it initializes it with an empty array.
-      // Then it '.push(cur)' adds the current class object to the array for that time slot.
-      (acc[curr.time] = acc[curr.time] || []).push(curr);
-      return acc;
-    }, {});
+
+const groupClassesByTime = (classes) => {
+    const groupedClasses = {}; // Initialize an empty object to store grouped classes
+    
+    // Iterate through each class in the 'classes' array
+    classes.forEach(curr => {
+        // Check if 'groupedClasses' already has a key corresponding to the current class's 'time' property
+        // If it does, it concatenates the current class object to the array for that time slot
+        // If not, it initializes an array with the current class object for that time slot
+        groupedClasses[curr.time] = (groupedClasses[curr.time] || []).concat(curr);
+    });
+    
+    return groupedClasses; // Return the object containing classes grouped by time
+};
+
+
+// Function to handle class booking
+const handleBookingClass = async (event) => {
+  event.preventDefault(); // Prevent the default form submission behavior
+
+  // Create a new FormData object from the event target (form)
+  const formData = new FormData(event.target);
+
+  // Retrieve the value of the 'email_address' field from the form
+  const email = formData.get('email_address'); // Corrected to match the form's email field name
+
+  // Construct the booking data object
+  const bookingData = {
+    class_name: bookingClass.class_name, // Retrieve the class name from bookingClass object
+    email_address: email, // Use the retrieved email
+    date: selectedDate.toISOString().split('T')[0], // Format date as YYYY-MM-DD
   };
 
-  // Function to handle class booking
-  const handleBookingClass = async (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
-  
-    // Create a new FormData object from the event target (form)
-    const formData = new FormData(event.target);
-    
-    // Retrieve the value of the 'email_address' field from the form
-    const email = formData.get('email_address'); // Corrected to match the form's email field name
-    
-    // Construct the booking data object
-    const bookingData = {
-      class_name: bookingClass.class_name, // Retrieve the class name from bookingClass object
-      email_address: email, // Use the retrieved email
-      date: selectedDate.toISOString().split('T')[0] // Format date as YYYY-MM-DD
-    };
-    
-    try {
-      // Make a POST request to the server to book the class
-      const response = await fetch('http://localhost:3001/bookClass', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData), // Convert the bookingData object to JSON
-      });
-  
-      // Check if the response is not okay (status code is not in the range 200-299)
-      if (!response.ok) {
-        // If not okay, throw an error with the response text or a default message
-        const errorText = await response.text();
-        throw new Error(errorText || 'Network response was not ok.');
-      }
-      
-      // If response is okay, parse the response body as JSON
-      const responseBody = await response.json();
-      
-      // Display a success message to the user
-      showAlertWithMessage('Booking successful!');
-      
-      // Hide the booking modal on success
-      setShowBooking(false);
-    } catch (error) {
-      // If an error occurs during the booking process
-      console.error('Failed to book class:', error);
-      
-      // Show an alert with the error message
-      showAlertWithMessage(`Failed to book class. ${error.message}`);
-    }
-  };
+  try {
+    // Make a POST request to the server to book the class using Axios
+    const response = await axios.post('http://localhost:3001/bookClass', bookingData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
+    // If response is okay, parse the response data
+    const responseBody = response.data;
+
+    // Display a success message to the user
+    showAlertWithMessage('Booking successful!');
+
+    // Hide the booking modal on success
+    setShowBooking(false);
+  } catch (error) {
+    // If an error occurs during the booking process
+    console.error('Failed to book class:', error);
+
+    // Show an alert with the error message
+    showAlertWithMessage(`Failed to book class. ${error.message}`);
+  }
+};
 
   // Group classes by time
   const groupedClasses = groupClassesByTime(classes);

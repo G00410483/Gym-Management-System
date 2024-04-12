@@ -39,7 +39,6 @@ const CheckoutForm = ({ price, email }) => {
       console.log('[PaymentMethod]', paymentMethod);
     }
 
-    // Now we are sure paymentMethod is defined, we can proceed
     try {
       // Calling backend to create payment intent
       const response = await fetch('http://localhost:3001/create-payment-intent', {

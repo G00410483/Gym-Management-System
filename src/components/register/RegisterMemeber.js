@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import './RegisterMember.css';
 import { useNavigate } from 'react-router-dom';
 import PaymentPage from '../payment/PaymentPage';
+import axios from 'axios'; // Import Axios
 
 function RegisterMembers() {
   // Define states for registration details
@@ -31,7 +32,7 @@ function RegisterMembers() {
 
   // Function to handle form submission
   const handleSubmit = async (e) => {
-    // Prevent dafulat behaviour
+    // Prevent default behavior
     e.preventDefault();
 
     // PPS Number validation
@@ -63,31 +64,34 @@ function RegisterMembers() {
     }
 
     try {
-      // Send POST request to register member endpoint
-      const response = await fetch('http://localhost:3001/registerMember', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ppsNumber, firstName, secondName, email, password, gender, dateOfBirth, startDate, typeOfMembership }),
+      // Send POST request to register member endpoint using Axios
+      const response = await axios.post('http://localhost:3001/registerMember', {
+        ppsNumber,
+        firstName,
+        secondName,
+        email,
+        password,
+        gender,
+        dateOfBirth,
+        startDate,
+        typeOfMembership,
       });
 
-      if (response.ok) {
-        // Parse response data
-        const data = await response.json();
+      // Handle response
+      if (response.status === 200) {
         // Log success message
-        console.log('Registration successful', data);
-        alert(data.message);
+        console.log('Registration successful', response.data);
+        alert(response.data.message);
         // Navigate to specified route with state data
-        navigate('/' + data.redirect, { state: { email: data.email, price: data.price } });
-      }
-      else {;
+        navigate('/' + response.data.redirect, { state: { email: response.data.email, price: response.data.price } });
+      } else {
         throw new Error('Unauthorized');
       }
     } catch (error) {
       alert('Registration failed: ' + error.message);
     }
   };
+  
   return (
     /* Reference for form template: https://react-bootstrap.netlify.app/docs/forms/form-control/ */
     <Form className="form" onSubmit={handleSubmit}>

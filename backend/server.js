@@ -657,6 +657,7 @@ app.get('/dashboard', async (req, res) => {
     const connection = await mysql.createConnection(dbConfig);
     const queries = {
       totalMembers: 'SELECT COUNT(*) AS total FROM members',
+      activeMembers: 'SELECT COUNT(*) AS active_members FROM members WHERE last_payment_date >= CURDATE() - INTERVAL 1 MONTH;',
       totalBookings: 'SELECT COUNT(*) AS total FROM bookings',
       totalClasses: 'SELECT COUNT(*) AS total FROM classes',
       genders: 'SELECT gender, COUNT(*) AS count FROM members GROUP BY gender',

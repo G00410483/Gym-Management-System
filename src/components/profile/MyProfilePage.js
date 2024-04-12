@@ -325,7 +325,7 @@ const MemberDetails = () => {
                                                     <br />
                                                 </MDBListGroup>
                                             ) : (
-                                                <MDBCardText>No bookings found</MDBCardText>
+                                                <MDBCardText>No notifications found</MDBCardText>
                                             )
                                         )}
                                     </MDBCardBody>

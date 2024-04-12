@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement, PointElement } from 'chart.js';
 import { Pie, Line, Bar } from 'react-chartjs-2';
 import './Dashboard.css';
+import axios from 'axios';
 
 // Registering necessary Chart.js components for chart types used in the dashboard
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, LineElement, PointElement);
@@ -28,11 +29,17 @@ function Dashboard() {
 
     // Fetching dashboard data from the server
     useEffect(() => {
-        fetch('http://localhost:3001/dashboard')
-            .then(response => response.json())
-            .then(setDashboardData)
-            .catch(error => console.error('Error fetching dashboard data:', error));
+      axios.get('http://localhost:3001/dashboard')
+        .then(response => {
+          // Set dashboard data using Axios response data
+          setDashboardData(response.data);
+        })
+        .catch(error => {
+          // Log error if fetching fails
+          console.error('Error fetching dashboard data:', error);
+        });
     }, []);
+    
 
     // Function to generate chart data structure for Pie, Line, and Bar charts
     // Reference: https://stackoverflow.com/questions/67655635/how-can-i-get-chart-js-to-automatically-add-colours-for-dynamic-labels
@@ -84,33 +91,36 @@ function Dashboard() {
         }]
     };
 
-    // Function that calculates and return data for displaying payments by month 
     const paymentsByMonthChartData = (() => {
         // Create an array of short-form month names (Jan, Feb, Mar, etc.) to use as labels in the chart
-        // Creating an array of 12 elemets and mapping each element to its month name
         const months = Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString('default', { month: 'short' }));
-
-        // This function return and array that contains month labels and monthlyAmount data
-        const monthlyAmounts = dashboardData.paymentsByMonth
-            // Filter the payments to include only payments made in the selectede year 
-            .filter(payment => payment.year === selectedYear)
-            // Using reduce to aggregate payments by month 
-            // Reference: https://stackoverflow.com/questions/59097172/why-i-cannot-reduce-an-array
-            .reduce((acc, payment) => {
-                acc[payment.month - 1] = payment.totalAmount;
-                return acc; // Return accumulator for the next iteration
-            }, new Array(12).fill(0)); // Initialize the accumulator with 12 zeros, one for each month.
+    
+        // Initialize an array to hold the total monthly amounts, with each element representing a month (initialized with zeros)
+        const monthlyAmounts = Array(12).fill(0); // Initialize array with zeros for each month
+    
+        // Iterate through each payment in the paymentsByMonth array
+        dashboardData.paymentsByMonth.forEach(payment => {
+            // Check if the payment is made in the selected year
+            if (payment.year === selectedYear) {
+                // If the payment is made in the selected year, accumulate the total amount for the corresponding month
+                monthlyAmounts[payment.month - 1] += payment.totalAmount; // Aggregate payments by month
+            }
+        });
+    
+        // Return an object containing labels (months) and dataset (total payments for each month in the selected year)
         return {
             labels: months,
             datasets: [{
                 label: `Total Payments for ${selectedYear}`,
                 data: monthlyAmounts,
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
+                backgroundColor: 'rgba(255, 99, 132, 0.2)', // Background color for the chart bars
+                borderColor: 'rgba(255, 99, 132, 1)', // Border color for the chart bars
+                borderWidth: 1 // Border width for the chart bars
             }]
         };
     })();
+    
+    
 
     const years = [...new Set(dashboardData.paymentsByYear.map(item => item.year))];
 
