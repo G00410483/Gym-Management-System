@@ -3,6 +3,7 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'; // For expect(...).toBeInTheDocument()
 import ClassesPage from '../../../../src/components/classes/ClassesPage'; 
 
+
 // Mock useAuth hook
 jest.mock('../../../../src/AuthContext', () => ({
   useAuth: jest.fn(() => ({ isLoggedIn: true, isRole: () => true })),
@@ -39,5 +40,4 @@ describe('ClassesPage', () => {
     expect(addButton).toBeInTheDocument();
   });
 
-  // Additional tests for class selection, adding a new class, editing a class, deleting a class, and booking a class can be added here
 });

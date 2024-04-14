@@ -15,6 +15,7 @@ h2 {
     background-color: #e9ecef;
     font-size: medium;
     padding: 10px 15px;
+    margin: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -33,7 +34,7 @@ select {
 }
 
 h2:hover {
-    background-color: #333;
+    background-color: #0662ec;
     color: #e9ecef;
     cursor: pointer;
 }
@@ -84,4 +85,17 @@ h3 {
 
 .rounded-lg {
     border-radius: 0.5rem;
+}
+.header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #333; 
+    border-radius: 5%;
+    width: 400px;
+}
+
+.dashboardSection {
+    margin-top: 20px;
 }

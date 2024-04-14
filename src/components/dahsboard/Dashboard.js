@@ -29,17 +29,17 @@ function Dashboard() {
 
     // Fetching dashboard data from the server
     useEffect(() => {
-      axios.get('http://localhost:3001/dashboard')
-        .then(response => {
-          // Set dashboard data using Axios response data
-          setDashboardData(response.data);
-        })
-        .catch(error => {
-          // Log error if fetching fails
-          console.error('Error fetching dashboard data:', error);
-        });
+        axios.get('http://localhost:3001/dashboard')
+            .then(response => {
+                // Set dashboard data using Axios response data
+                setDashboardData(response.data);
+            })
+            .catch(error => {
+                // Log error if fetching fails
+                console.error('Error fetching dashboard data:', error);
+            });
     }, []);
-    
+
 
     // Function to generate chart data structure for Pie, Line, and Bar charts
     // Reference: https://stackoverflow.com/questions/67655635/how-can-i-get-chart-js-to-automatically-add-colours-for-dynamic-labels
@@ -94,10 +94,10 @@ function Dashboard() {
     const paymentsByMonthChartData = (() => {
         // Create an array of short-form month names (Jan, Feb, Mar, etc.) to use as labels in the chart
         const months = Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString('default', { month: 'short' }));
-    
+
         // Initialize an array to hold the total monthly amounts, with each element representing a month (initialized with zeros)
         const monthlyAmounts = Array(12).fill(0); // Initialize array with zeros for each month
-    
+
         // Iterate through each payment in the paymentsByMonth array
         dashboardData.paymentsByMonth.forEach(payment => {
             // Check if the payment is made in the selected year
@@ -106,7 +106,7 @@ function Dashboard() {
                 monthlyAmounts[payment.month - 1] += payment.totalAmount; // Aggregate payments by month
             }
         });
-    
+
         // Return an object containing labels (months) and dataset (total payments for each month in the selected year)
         return {
             labels: months,
@@ -119,8 +119,8 @@ function Dashboard() {
             }]
         };
     })();
-    
-    
+
+
 
     const years = [...new Set(dashboardData.paymentsByYear.map(item => item.year))];
 
@@ -147,90 +147,83 @@ function Dashboard() {
     return (
         // Wrapping div for the entire dashboard page
         <div className='page'>
-            {/* Dashboard section for managing and displaying members' information */}
-            <div className='dashboardSection' >
-                {/* Section header for Members, clickable to toggle visibility of the section */}
+
+            {/* Container for the section headers */}
+            <div className="header-container">
                 <h2 onClick={() => setActiveSection(activeSection === 'members' ? '' : 'members')} style={{ cursor: 'pointer' }}>Members</h2>
-                {/* Conditional rendering for the Members section content */}
-                {activeSection === 'members' && (
-                    <div>
-                        {/* Container for the members' timeline chart */}
-                        <div className="chart-container" >
-                            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
-                                <Line data={membersTimelineChartData} options={options} />
-                            </div>
-                        </div>
-                        {/* Container for the membership ratio chart */}
-                        <div className="chart-container" >
-                            <div>
-                                <h3>Membership Ratio</h3>
-                                <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
-                                    {dashboardData.memberships.length > 0 && <Bar data={membershipsChartData} options={options} />}
-                                </div>
-                            </div>
-                        </div>
-                        {/* Container for the genders breakdown chart */}
-                        <div className="chart-container" >
-                            <div>
-                                <h3>Genders Breakdown</h3>
-                                <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
-                                    {dashboardData.genders.length > 0 && <Pie data={gendersChartData} options={options} />}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Dashboard section for managing and displaying payments information */}
-            <div className='dashboardSection' >
-                {/* Section header for Payments, clickable to toggle visibility of the section */}
                 <h2 onClick={() => setActiveSection(activeSection === 'payments' ? '' : 'payments')} style={{ cursor: 'pointer' }}>Payments</h2>
-                {/* Conditional rendering for the Payments section content */}
-                {activeSection === 'payments' && (
-                    <div>
-                        {/* Year selector for filtering payments data */}
-                        <div>
-                            <label htmlFor="yearSelector" className="block mb-2">Select Year:</label>
-                            <select
-                                id="yearSelector"
-                                value={selectedYear}
-                                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                                className="p-2 border border-gray-300 rounded-lg"
-                            >
-                                {years.map(year => (
-                                    <option key={year} value={year}>{year}</option>
-                                ))}
-                            </select>
-                        </div>
-                        {/* Container for displaying payments by month chart */}
-                        <div className="chart-container" style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
-                            <Bar data={paymentsByMonthChartData} options={options} />
-                        </div>
-                        {/* Container for displaying payments by year chart */}
-                        <div className="chart-container" style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
-                            <Bar data={paymentsByYearChartData} options={options} />
-                        </div>
-                    </div>
-                )}
+                <h2 onClick={() => setActiveSection(activeSection === 'classes' ? '' : 'classes')} style={{ cursor: 'pointer' }}>Classes</h2>
             </div>
 
-            {/* Dashboard section for managing and displaying classes information */}
-            <div className='dashboardSection'>
-                {/* Section header for Classes, clickable to toggle visibility of the section */}
-                <h2 onClick={() => setActiveSection(activeSection === 'classes' ? '' : 'classes')} style={{ cursor: 'pointer' }}>Classes</h2>
-                {/* Conditional rendering for the Classes section content */}
-                {activeSection === 'classes' && (
-                    <div className="chart-container">
+            {/* Members Section */}
+            {activeSection === 'members' && (
+                <div className='dashboardSection'>
+                    {/* Container for the members' timeline chart */}
+                    <div className="chart-container" >
+                        <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
+                            <Line data={membersTimelineChartData} options={options} />
+                        </div>
+                    </div>
+                    {/* Container for the membership ratio chart */}
+                    <div className="chart-container" >
                         <div>
-                            <h3>Classes Bookings</h3>
+                            <h3>Membership Ratio</h3>
                             <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
-                                {dashboardData.mostBooked.length > 0 && <Bar data={mostBookedChartData} options={options} />}
+                                {dashboardData.memberships.length > 0 && <Bar data={membershipsChartData} options={options} />}
                             </div>
                         </div>
                     </div>
-                )}
-            </div>
+                    {/* Container for the genders breakdown chart */}
+                    <div className="chart-container" >
+                        <div>
+                            <h3>Genders Breakdown</h3>
+                            <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
+                                {dashboardData.genders.length > 0 && <Pie data={gendersChartData} options={options} />}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Payments Section */}
+            {activeSection === 'payments' && (
+                <div className='dashboardSection'>
+                    {/* Year selector for filtering payments data */}
+                    <div>
+                        <label htmlFor="yearSelector" className="block mb-2">Select Year:</label>
+                        <select
+                            id="yearSelector"
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(Number(e.target.value))}
+                            className="p-2 border border-gray-300 rounded-lg"
+                        >
+                            {years.map(year => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
+                        </select>
+                    </div>
+                    {/* Container for displaying payments by month chart */}
+                    <div className="chart-container" style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
+                        <Bar data={paymentsByMonthChartData} options={options} />
+                    </div>
+                    {/* Container for displaying payments by year chart */}
+                    <div className="chart-container" style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
+                        <Bar data={paymentsByYearChartData} options={options} />
+                    </div>
+                </div>
+            )}
+
+            {/* Classes Section */}
+            {activeSection === 'classes' && (
+                <div className='dashboardSection'>
+                    <h3>Classes Bookings</h3>
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', height: '400px' }}>
+                            {dashboardData.mostBooked.length > 0 && <Bar data={mostBookedChartData} options={options} />}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

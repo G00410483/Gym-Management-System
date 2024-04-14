@@ -1,6 +1,8 @@
 import React from 'react'; // Import React library
 import { render, fireEvent } from '@testing-library/react'; // Import render and fireEvent functions from testing-library/react
 import EditClass from '../../../../src/components/classes/EditClass'; // Import the EditClass component to be tested
+import '@testing-library/jest-dom/extend-expect';
+
 
 describe('EditClass component', () => {
   // Editing class for testing

@@ -2,6 +2,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import Timetable from '../../../../src/components/classes/Timetable';
+import '@testing-library/jest-dom/extend-expect';
 
 describe('Timetable component', () => {
   const groupedClasses = {
