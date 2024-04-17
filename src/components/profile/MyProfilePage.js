@@ -50,7 +50,7 @@ const MemberDetails = () => {
             };
 
             // Make GET request to API 
-            const response = await axios.get('http://localhost:3001/displayMember', config);
+            const response = await axios.get('https://gms-deployment-heroku-129176233d83.herokuapp.com/displayMember', config);
             // Update fetched data 
             setMember(response.data.memberDetails);
             setBookings(response.data.bookings);
@@ -72,7 +72,7 @@ const MemberDetails = () => {
                 headers: { Authorization: `Bearer ${token}` }
             };
             // Make PUT request to update member details
-            await axios.put(`http://localhost:3001/members/${member.id}`, member, config);
+            await axios.put(`https://gms-deployment-heroku-129176233d83.herokuapp.com/members/${member.id}`, member, config);
             setEditMode(false); // Disable edit mode
             fetchMemberDetails(); // Refresh member details
         } catch (err) {
@@ -86,7 +86,7 @@ const MemberDetails = () => {
             // Retrieve token from localStorage
             const token = localStorage.getItem('token');
             // Make DELETE request to API to delete booking
-            await axios.delete(`http://localhost:3001/deleteBooking/${bookingId}`, {
+            await axios.delete(`https://gms-deployment-heroku-129176233d83.herokuapp.com/deleteBooking/${bookingId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // Update bookings state by filtering out the deleted booking
@@ -102,7 +102,7 @@ const MemberDetails = () => {
             // Retrive token 
             const token = localStorage.getItem('token');
             // Make DELETE request to API to delete notification
-            await axios.delete(`http://localhost:3001/deleteNotification/${notificationId}`, {
+            await axios.delete(`https://gms-deployment-heroku-129176233d83.herokuapp.com/deleteNotification/${notificationId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // Update notifications state by filtering out the deleted notification

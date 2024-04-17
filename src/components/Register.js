@@ -24,7 +24,7 @@ function Register() {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:3001/register', {
+            const response = await fetch('https://gms-deployment-heroku-129176233d83.herokuapp.com/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

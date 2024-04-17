@@ -7,7 +7,6 @@ const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const mysql = require('mysql2/promise');
 const stripe = require("stripe")('sk_test_51OyyOfRpGdubHKaAe5oG4WuHX4MxKxVBTcfADBei7Tu5hkhDKmocCKVsK8DRKxt7q3UeEFDCUCPaHqbY22Xv90cc00sRySxfuT');
-
 const app = express();
 
 const PORT = 3001;
@@ -17,12 +16,13 @@ app.use(bodyParser.json());
 
 // Define a configuration object for connecting to a database
 const dbConfig = {
-  host: 'localhost',     // Host name or IP address of the database server
-  user: 'root',          // Username for authentication
-  password: 'root',      // Password for authentication
-  database: 'gymDB'      // Name of the database to connect to
+  host: 'eu-cluster-west-01.k8s.cleardb.net',     // Host name or IP address of the database server
+  user: 'b3437e87bb74fa',          // Username for authentication
+  password: '11d93021',      // Password for authentication
+  database: 'heroku_4a802ff7051486c'      // Name of the database to connect to
 };
 
+mysql://b3437e87bb74fa:11d93021@eu-cluster-west-01.k8s.cleardb.net/heroku_4a802ff7051486c?reconnect=true
 
 // POST request to /create-payment-intent
 // Reference: https://docs.stripe.com/api/payment_intents/create
@@ -783,7 +783,7 @@ app.delete('/deleteNotification/:id', async (req, res) => {
 });
 
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 

@@ -21,7 +21,7 @@ function MembersPage() {
   const fetchMembers = async (sortCriteria = '') => {
     try {
       // Update the URL with sort parameter
-      const response = await axios.get(`http://localhost:3001/members?sort=${sortCriteria}`);
+      const response = await axios.get(`https://gms-deployment-heroku-129176233d83.herokuapp.com/members?sort=${sortCriteria}`);
       // Update the members state with the fetched data
       setMembers(response.data);
     } catch (error) {
@@ -55,7 +55,7 @@ function MembersPage() {
 
     try {
       // Use Axios to make a PUT request to update the membe
-      await axios.put(`http://localhost:3001/members/${member.id}`, member);
+      await axios.put(`https://gms-deployment-heroku-129176233d83.herokuapp.com/members/${member.id}`, member);
       // Update the members state with the edited member
       setMembers(members.map(m => m.id === member.id ? member : m));
       // Close modal after saving
@@ -69,7 +69,7 @@ function MembersPage() {
   const removeMember = async (memberId) => {
     try {
       // Use Axios to make a DELETE request to remove the member
-      await axios.delete(`http://localhost:3001/members/${memberId}`);
+      await axios.delete(`https://gms-deployment-heroku-129176233d83.herokuapp.com/members/${memberId}`);
       // Update the members state to exclude the removed member
       setMembers(members.filter(m => m.id !== memberId));
       // Close modal after removing

@@ -29,7 +29,7 @@ function Dashboard() {
 
     // Fetching dashboard data from the server
     useEffect(() => {
-        axios.get('http://localhost:3001/dashboard')
+        axios.get('https://gms-deployment-heroku-129176233d83.herokuapp.com/dashboard')
             .then(response => {
                 // Set dashboard data using Axios response data
                 setDashboardData(response.data);

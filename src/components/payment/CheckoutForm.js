@@ -41,7 +41,7 @@ const CheckoutForm = ({ price, email }) => {
 
     try {
       // Calling backend to create payment intent
-      const response = await fetch('http://localhost:3001/create-payment-intent', {
+      const response = await fetch('https://gms-deployment-heroku-129176233d83.herokuapp.com/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

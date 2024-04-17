@@ -45,7 +45,7 @@ function ClassesPage() {
   const fetchClasses = async () => {
     try {
       // Send a GET request to fetch class data from the server
-      const response = await axios.get('http://localhost:3001/classes');
+      const response = await axios.get('https://gms-deployment-heroku-129176233d83.herokuapp.com/classes');
       setClasses(response.data);
     } catch (error) {
       console.error('Failed to fetch classes:', error);
@@ -76,7 +76,7 @@ function ClassesPage() {
   
     try {
       // Send POST request to add new class
-      await axios.post('http://localhost:3001/classes', classData, {
+      await axios.post('https://gms-deployment-heroku-129176233d83.herokuapp.com/classes', classData, {
         // Set content type header
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const handleEditClass = async (event) => {
 
   try {
     // Send a PUT request to update the class data on the server using axios
-    await axios.put(`http://localhost:3001/classes/${editingClass.id}`, classData, {
+    await axios.put(`https://gms-deployment-heroku-129176233d83.herokuapp.com/classes/${editingClass.id}`, classData, {
       headers: {
         'Content-Type': 'application/json', // Set content type header
       },
@@ -126,7 +126,7 @@ const handleEditClass = async (event) => {
 const handleDeleteClass = async (classId) => {
   try {
     // Send a DELETE request to delete the class data on the server using axios
-    await axios.delete(`http://localhost:3001/classes/${classId}`);
+    await axios.delete(`https://gms-deployment-heroku-129176233d83.herokuapp.com/classes/${classId}`);
     // Refresh the classes data after deleting a class
     fetchClasses();
     // Show an alert message indicating successful class deletion
@@ -181,7 +181,7 @@ const handleBookingClass = async (event) => {
 
   try {
     // Make a POST request to the server to book the class using Axios
-    const response = await axios.post('http://localhost:3001/bookClass', bookingData, {
+    const response = await axios.post('https://gms-deployment-heroku-129176233d83.herokuapp.com/bookClass', bookingData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -198,9 +198,9 @@ const handleBookingClass = async (event) => {
   } catch (error) {
     // If an error occurs during the booking process
     console.error('Failed to book class:', error);
-
+    setShowBooking(false);
     // Show an alert with the error message
-    showAlertWithMessage(`Failed to book class. ${error.message}`);
+    showAlertWithMessage(`Failed to book class. Email address does not exists.`);
   }
 };
 

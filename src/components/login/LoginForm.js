@@ -15,13 +15,14 @@ function LoginForm() {
     // Hook that provides access to the authentication context 
     const { login } = useAuth();
     const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+    const [errorMessage, setErrorMessage] = useState(''); // State to store error message
 
     const handleSubmit = async (e) => {
         e.preventDefault();
     
         try {
             // Attempts sending a POST request to the server with the email and password.
-            const response = await axios.post('http://localhost:3001/login', {
+            const response = await axios.post('https://gms-deployment-heroku-129176233d83.herokuapp.com/login', {
                 email,
                 password
             });
@@ -37,7 +38,11 @@ function LoginForm() {
                 throw new Error('Unauthorized');
             }
         } catch (error) {
-            alert('Login failed: ' + error.message);
+            if (error.response && error.response.status === 401) {
+                setErrorMessage('Incorrect email or password');
+            } else {
+                setErrorMessage('Login failed: ' + error.message);
+            }
         }
     };
 
@@ -53,6 +58,7 @@ function LoginForm() {
                                 <MDBCardBody className='p-5 d-flex flex-column align-items-center mx-auto w-100'>
                                     <h1 className="fw-bold mb-2 text-white">Login</h1>
                                     <p className="text-white-50 mb-5">Please enter your login and password!</p>
+                                    {errorMessage && <p className="text-danger mb-3">{errorMessage}</p>}
                                     {/* Email section */}
                                     <MDBInput
                                         wrapperClass='mb-4 mx-5 w-100'

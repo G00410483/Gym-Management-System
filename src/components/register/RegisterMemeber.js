@@ -65,7 +65,7 @@ function RegisterMembers() {
 
     try {
       // Send POST request to register member endpoint using Axios
-      const response = await axios.post('http://localhost:3001/registerMember', {
+      const response = await axios.post('https://gms-deployment-heroku-129176233d83.herokuapp.com/registerMember', {
         ppsNumber,
         firstName,
         secondName,

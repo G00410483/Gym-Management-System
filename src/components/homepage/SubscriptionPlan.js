@@ -18,7 +18,7 @@ const SubscriptionPlans = () => {
 
     // Effect hook to fetch subscription plans data when component mounts
 useEffect(() => {
-    axios.get('http://localhost:3001/') // Fetch data from server
+    axios.get('https://gms-deployment-heroku-129176233d83.herokuapp.com/') // Fetch data from server
       .then(response => {
         // Parse response as JSON and update state with fetched data
         setPlans(response.data);

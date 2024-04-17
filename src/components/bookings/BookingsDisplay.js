@@ -15,7 +15,7 @@ function BookingsDisplay() {
   const fetchBookings = async (sortCriteria = '') => {
     try {
       // Send GET request to the server with an optional sort criteria
-      const response = await axios.get(`http://localhost:3001/bookingsDisplay?sort=${sortCriteria}`);
+      const response = await axios.get(`https://gms-deployment-heroku-129176233d83.herokuapp.com/bookingsDisplay?sort=${sortCriteria}`);
       // Updating the bookings state with the fetched data
       setBookings(response.data);
     } catch (error) {
