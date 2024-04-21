@@ -64,7 +64,7 @@ function LoginForm() {
                                         wrapperClass='mb-4 mx-5 w-100'
                                         labelClass='text-white'
                                         label='Email address'
-                                        id='formControlLg'
+                                        id='formControlmail'
                                         type='email'
                                         size="lg"
                                         value={email}
@@ -75,7 +75,7 @@ function LoginForm() {
                                         wrapperClass='mb-4 mx-5 w-100'
                                         labelClass='text-white'
                                         label='Password'
-                                        id='formControlLg'
+                                        id='formControlpass'
                                         type={showPassword ? 'text' : 'password'} // Ternary operator to toggle password visibility
                                         size="lg"
                                         value={password}

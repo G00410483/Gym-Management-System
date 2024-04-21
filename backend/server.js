@@ -719,6 +719,11 @@ app.get('/displayMember', async (req, res) => {
     // Establish connection to databse
     const connection = await mysql.createConnection(dbConfig);
 
+     // Check and delete past bookings
+     const today = new Date().toISOString().slice(0, 10); // Get today's date in YYYY-MM-DD format
+     const deleteQuery = 'DELETE FROM bookings WHERE email_address = ? AND booking_date < ?';
+     await connection.execute(deleteQuery, [userEmail, today]);
+
     // Select all columns from the 'members' table where the email address matches the user's email.
     const memberQuery = 'SELECT * FROM members WHERE email_address = ?';
     const [memberRows] = await connection.execute(memberQuery, [userEmail]);
