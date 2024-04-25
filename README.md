@@ -1,70 +1,32 @@
-# Getting Started with Create React App
+Gym Membership Management (GMS) Web Application
+Overview
+The Gym Membership Management System (GMS) is designed to enhance the operational efficiency of fitness centers. This web application facilitates easy management of gym memberships, class schedules, and interactions between staff and members.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Developed by
+Student: David Vlasic
+Student Number: G00410483
+Supervisor: Joseph Corr
 
-## Available Scripts
+Quick Start
+Clone the project: git clone https://github.com/G00410483/Gym-Membership-Management
+Install dependencies: npm install
+Set up the environment
+Start the server: npm start
 
-In the project directory, you can run:
+Features
+User Authentication: Secure login/logout and role-based access.
+Class Management: Schedule, update, and manage classes.
+Membership Management: Register and manage gym members.
+Payment System: Integrated payment processing for memberships.
+Real-Time Scheduling: Book and manage classes in real-time.
 
-### `npm start`
+Technologies
+Frontend: React.js
+Backend: Node.js, Express
+Database: MySQL
+Authentication: JWT
+Payment: Stripe
+Deployment: Heroku
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Deployment
+Heroku: The application is deployed on Heroku, ensuring high availability and scalability.
