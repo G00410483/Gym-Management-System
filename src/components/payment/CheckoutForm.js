@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './CheckoutForm.css';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,9 @@ const CheckoutForm = ({ price, email }) => {
   const elements = useElements();
 
   const navigate = useNavigate();
+
+  // State to manage button disabled/enabled
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleSubmit = async (event) => {
     // Prevent the form from submitting in the traditional way
@@ -24,6 +27,8 @@ const CheckoutForm = ({ price, email }) => {
      // Retrieves the card details element.
     const cardElement = elements.getElement(CardElement);
 
+    setIsProcessing(true); // Disable the button when the request starts
+
     // Attempt of creating payment method using the card details
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
@@ -33,6 +38,7 @@ const CheckoutForm = ({ price, email }) => {
     // In case of an error stop the process
     if (error) {
       console.log('[error]', error);
+      setIsProcessing(false); // Re-enable the button if there's an error
       return; 
     } 
     else {
@@ -71,7 +77,7 @@ const CheckoutForm = ({ price, email }) => {
 
       if (result.error) {
         console.log('[error]', result.error);
-        
+        setIsProcessing(false); // Re-enable the button if there's an error
       } 
       else {
         // If payment was successful navigate to homepage
@@ -83,6 +89,7 @@ const CheckoutForm = ({ price, email }) => {
       }
     } catch (error) {
       console.error('There was an error!', error);
+      setIsProcessing(false); // Re-enable the button if catch an error
     }
   };
 
@@ -95,8 +102,8 @@ const CheckoutForm = ({ price, email }) => {
       <p>Total Price: € {price}</p>
       <hr/>
       <CardElement />
-      <button className='formBtn' type="submit" disabled={!stripe}>
-        Pay
+      <button className='formBtn' type="submit" disabled={!stripe || isProcessing}>
+        {isProcessing ? 'Processing...' : 'Pay'}
       </button>
     </form>
   );
